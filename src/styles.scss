@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('./assets/global-styles/buttons.scss');
+@import url('./assets/global-styles/fonts.scss');
+
+*{
+  box-sizing: border-box;
+}
+
+
+html, body {
+  margin: 0;
+  background-color: #ebe8e8;
+  box-sizing: border-box;
+}
+
+:root {
+  scrollbar-gutter: stable; 
+}

@@ -1,0 +1,16 @@
+.default-button{
+    background-color: #FCDA00;
+    color: #333333;
+    padding: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    &:hover{
+        opacity: 0.9;
+    }
+}

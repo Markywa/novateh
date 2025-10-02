@@ -1,0 +1,22 @@
+.main-page{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    position: relative;
+    &__entity{
+        max-width: 1140px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 32px 0 128px;
+        @media screen and (max-width: 1140px) {
+            padding: 32px 18px 128px;
+        }
+    }
+    &__footer{
+    position: relative;
+    width: 100%;
+    margin-top: auto;
+}
+}

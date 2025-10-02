@@ -1,0 +1,17 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 18px 18px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+
+    &-img{
+
+    }
+    &-name{
+        text-align: center;
+        margin: 12px 0;
+    }
+}
