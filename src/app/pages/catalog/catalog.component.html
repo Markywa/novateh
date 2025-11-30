@@ -1,16 +1,35 @@
+<app-bread-crumbs></app-bread-crumbs>
 <div class="container">
-    <app-news-section></app-news-section>
-
     <div class="container-section">
+        <h2 class="main-title">КАТАЛОГ ПРОДУКЦИИ</h2>
+        
         <h3>ПРОИЗВОДИТЕЛИ</h3>
-        <app-producer-line></app-producer-line>
+        @if(brandsLoading){
+            <div class="container-section__load">
+                <svg-icon src="assets/images/loading.svg"></svg-icon>
+            </div>
+        } @else {
+            <app-producer-line [producerList]="brandsList"></app-producer-line>
+        }
     </div>
     <div class="container-section">
         <h3>ПО НАЗНАЧЕНИЮ</h3>
-        <app-product-line></app-product-line>
+         @if(groupsLoading){
+            <div class="container-section__load">
+                <svg-icon src="assets/images/loading.svg"></svg-icon>
+            </div>
+        } @else {
+            <app-group-line [groupList]="groupsList"></app-group-line>
+        }
     </div>
         <div class="container-section">
         <h3>ПОПУЛЯРНАЯ ПРОДУКЦИЯ</h3>
-        <app-product-line></app-product-line>
+         @if(popularProductLoading){
+            <div class="container-section__load">
+                <svg-icon src="assets/images/loading.svg"></svg-icon>
+            </div>
+        } @else {
+            <app-product-line [productList]="popularProductList"></app-product-line>
+        }
     </div>
 </div>

@@ -1,0 +1,21 @@
+<nav class="breadcrumbs">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item" 
+            *ngFor="let breadcrumb of breadcrumbs; let last = last"
+            [class.active]="!breadcrumb.isClickable">
+          
+          <a *ngIf="breadcrumb.isClickable && !last"
+             (click)="onBreadcrumbClick(breadcrumb)"
+             class="breadcrumb-link">
+            {{ formatLabel(breadcrumb.label) }}
+          </a>
+          
+          <span *ngIf="!breadcrumb.isClickable || last"
+                class="breadcrumb-text">
+            {{ formatLabel(breadcrumb.label) }}
+          </span>
+          
+          <span *ngIf="!last" class="breadcrumb-separator">/</span>
+        </li>
+      </ol>
+    </nav>

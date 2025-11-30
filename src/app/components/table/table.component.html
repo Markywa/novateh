@@ -1,0 +1,28 @@
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th>Техническая характеристика</th>
+                <th>Единица измерения</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(item of tableList; track $index){
+            <tr>
+                <td>
+                    {{item.name}}
+                </td>
+                <td>
+                    {{ item.unit }}
+                </td>
+                <td>
+                    {{item.value}}
+                </td>
+            </tr>
+            }
+            
+        </tbody>
+    </table>
+
+</div>

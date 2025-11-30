@@ -1,3 +1,12 @@
-<div class="container" [routerLink]="'/main/producer/' + producerItem.id">
-    <img class="container-img" [src]="producerItem.img" alt="">
+<div class="container" [routerLink]="'/main/producer/' + producerItem.slug">
+    <img 
+    class="container-img" 
+        [ngClass]="{
+            'contain': producerItem.media && producerItem.media.length < 4,
+            'cover': producerItem.media && producerItem.media.length >= 4,
+        }"
+        [src]="producerItem.media.length > 4 ? env.baseUrl + producerItem.media : 'assets/images/no-image2.png'" alt="">
+    <span>
+        {{ producerItem.name }}
+    </span>
 </div>

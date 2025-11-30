@@ -1,0 +1,30 @@
+<div class="modal-container">
+  <div class="header">
+    <button (click)="onClose()" class="close-btn">
+        x
+    </button>
+  </div>
+
+  <div class="content">
+    <h2>Задать вопрос</h2>
+    <span>Здесь вы можете задать свой вопрос, оставить отзыв или обратиться к директору</span>
+
+    <form  (ngSubmit)="onSubmit()">
+        <input placeholder="Имя" [(ngModel)]="formData.name" required>
+
+        <input placeholder="Ваш телефон" [(ngModel)]="formData.phone" required>
+
+        <input placeholder="E-mail" [(ngModel)]="formData.email" required>
+
+        <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" required></textarea>
+
+      <button type="submit" class="default-button">
+        ОТПРАВИТЬ СООБЩЕНИЕ
+      </button>
+
+      <span class="policy-text">
+        Отправляя заявку, вы соглашаетесь с политикой конфиденциальности
+      </span>
+    </form>
+  </div>
+</div>

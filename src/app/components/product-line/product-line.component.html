@@ -1,5 +1,5 @@
 <div class="container">
-    <ng-container *ngFor="let item of productList">
+    @for(item of productList; track productList){
         <app-product-card [productItem]="item"></app-product-card>
-    </ng-container>
+    }
 </div>

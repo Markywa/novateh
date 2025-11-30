@@ -1,10 +1,27 @@
 .container{
     background-color: white;
-    padding: 28px 28px;
+    padding: 20px 20px 4px 20px;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    flex-direction: column;
+    gap: 12px;
+    &-img{
+        height: 65px;
+        width: 212px;
+    }
+    & > span{
+        font-weight: 600;
+    }
+}
+
+.contain{
+    object-fit: contain;
+}
+
+.cover{
+    object-fit: cover;
 }

@@ -1,0 +1,33 @@
+<div class="container">
+    <label class="custom-checkbox">
+        <input type="checkbox" (change)="toggleCheckbox()" [checked]="isSelected"/>
+        <span class="checkmark"></span>
+    </label>
+    <img src="assets/images/no-image.png" alt="">
+    <div class="container-info__wrap">
+        <div class="container-info__description">
+          <span>{{ product.name }}</span>
+          <span class="wrap-text">{{ product.description }}</span>
+        </div>
+        <button class="container-info__delete" (click)="deleteFromCart(product.id)">удалить</button>
+    </div>
+     <div class="counter">
+      <button 
+        class="counter-btn counter-btn--minus"
+        (click)="decrement()"
+        [disabled]="value <= min"
+        [class.counter-btn--disabled]="value <= min">
+        −
+      </button>
+      
+      <span class="counter-value">{{ value }}</span>
+      
+      <button 
+        class="counter-btn counter-btn--plus"
+        (click)="increment()"
+        [disabled]="value >= max"
+        [class.counter-btn--disabled]="value >= max">
+        +
+      </button>
+    </div>
+</div>

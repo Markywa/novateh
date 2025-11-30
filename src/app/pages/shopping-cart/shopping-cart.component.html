@@ -1,0 +1,29 @@
+<app-bread-crumbs></app-bread-crumbs>
+<div class="container">
+    <div class="container-cart" [ngClass]="{'shadow': isLoading}">
+        <h2>Корзина</h2>
+        <span>Товаров — {{ this.userCart.length }}</span>
+        <div class="container-cart__action">
+            <label class="custom-checkbox">
+                <input type="checkbox" (change)="toggleCheckbox()" />
+                <span class="checkmark"></span>
+                Выбрать все
+            </label>
+            <button class="container-cart__action-delete">Удалить выбранное</button>
+        </div>
+        <div class="container-divider"></div>
+        <div class="container-cart__wrap">
+            @for(item of this.userCart; track item){
+                <app-shopping-card [product]="item" [value]="item.count" (updateList)="updateList()" [isSelected]="isChecked"></app-shopping-card>
+            } 
+        </div>
+    </div>
+    <div class="container-request">
+        <span>Товары - {{ this.userCart.length }}</span>
+        <div class="container-request__comment">
+            <span>Если у вас есть пожелания или вопросы, можете указать их в этом поле и наш менеджер обязательно вам ответит</span>
+            <textarea type="text" rows="4"></textarea>
+        </div>
+        <button class="default-button" [disabled]="this.userCart.length === 0">ОСТАВИТЬ ЗАЯВКУ</button>
+    </div>
+</div>

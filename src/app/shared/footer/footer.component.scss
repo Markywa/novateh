@@ -15,11 +15,12 @@
         &__rout{
             display: flex;
             flex-direction: row;
-            gap: 32px;
+            gap: 16px;
             &-item{
                 text-decoration: none;
                 color: #B5B5B5;
                 font-weight: 600;
+                white-space: nowrap;
                 &.active{
                     color: #333333;
                 }
@@ -59,4 +60,19 @@
     width: 100%;
     height: 600px;
     overflow: hidden;
+}
+
+@media screen and (max-width: 680px) {
+    .container{
+        &-menu{
+                padding: 12px;
+                align-items: flex-start;
+            &__rout{
+                flex-direction: column;
+            }
+            &__info{
+                flex-direction: column;
+            }
+        }
+    }
 }

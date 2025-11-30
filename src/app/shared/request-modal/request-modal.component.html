@@ -1,0 +1,28 @@
+<div class="modal-container">
+  <div class="header">
+    <button (click)="onClose()" class="close-btn">
+        x
+    </button>
+  </div>
+
+  <div class="content">
+    <h2>{{ data.name }}</h2>
+    <span>Чтобы получить дополнительную информацию о товаре свяжитесь с нами по номеру телефона:</span>
+    <div class="phone-number">+7 (383) 263-20-99</div>
+    <span>либо отправьте нам свои контактные данные, и наш менеджер свяжется с Вами в ближайшее время.</span>
+
+    <form  (ngSubmit)="onSubmit()">
+        <input placeholder="Имя" [(ngModel)]="formData.name" required>
+
+        <input placeholder="Ваш телефон" [(ngModel)]="formData.phone" required>
+
+      <button type="submit" class="default-button">
+        ОТПРАВИТЬ ЗАЯВКУ
+      </button>
+
+      <span class="policy-text">
+        Отправляя заявку, вы соглашаетесь с политикой конфиденциальности
+      </span>
+    </form>
+  </div>
+</div>

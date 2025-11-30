@@ -6,12 +6,12 @@
             </span>
             
             <div class="container-menu__rout" id="main-menu">
-                <ng-container *ngFor="let item of linkArr">
+                <ng-container *ngFor="let item of linkArr; last as isLast">
                     <a class="container-menu__rout-item" [routerLink]="item.link" routerLinkActive="active">{{ item.name }}</a>
                 </ng-container>
             </div>
             
-            <button class="default-button">
+            <button (click)="sendQuestionModal()" class="default-button">
                 ЗАДАТЬ ВОПРОС
             </button>
             
@@ -20,7 +20,7 @@
             </button>
         </div>
 
-        <div class="mobile-menu__overlay" (click)="closeMenu()"></div>
+        <div *ngIf="isMenuOpen" class="mobile-menu__overlay" (click)="closeMenu()"></div>
         
         <div class="mobile-menu" [class.active]="isMenuOpen">
             <div class="mobile-menu__content">
@@ -29,7 +29,7 @@
                 </button>
                 
                 <div class="mobile-menu__items">
-                    <ng-container *ngFor="let item of linkArr">
+                    <ng-container *ngFor="let item of mobileArr">
                         <a class="mobile-menu__item" [routerLink]="item.link" 
                         routerLinkActive="active" (click)="closeMenu()">
                         {{ item.name }}
@@ -43,16 +43,33 @@
             </div>
         </div>
         <div class="container-menu">
-            <a routerLink="catalog">
+            <a routerLink="welcome">
                 <svg-icon src="assets\images\logo.svg"></svg-icon>
             </a>
             <button class="default-button" routerLink="catalog">
                 <svg-icon src="assets/images/catalog.svg"></svg-icon>
                 <span>КАТАЛОГ</span>
             </button>
-            <div class="container-search">
+            <div class="container-search" *ngIf="!(isMobile$ | async)">
                 <input class="container-search__input" type="text" placeholder="ПОИСК">
             </div>
+            
+            <div class="container-menu__rout-shopping">
+                <a class="container-menu__rout-item container-menu__rout-shopping" 
+                    [ngClass]="{
+                        'active': isActiveCart$ | async,
+                        'passive': (isActiveCart$ | async) === false
+                        }"
+                    routerLink="shopping-cart">
+                    <div class="container-menu__rout-shopping-counter">
+                        <span>{{ cartService.itemsCounter$() | async }}</span>
+                    </div>
+                    <svg-icon src="assets/images/shopping.svg"></svg-icon>
+                </a>
+            </div>
         </div>
-    </div>  
+        <div class="container-search container-search__mobile" *ngIf="isMobile$ | async">
+            <input class="container-search__input" type="text" placeholder="ПОИСК">
+        </div>
+</div>  
 </div>

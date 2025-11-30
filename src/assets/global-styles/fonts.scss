@@ -1,7 +1,19 @@
 body {
-    font-family: 'RazerF5', Arial, sans-serif;
-    // font-family: 'Montserrat', Arial, sans-serif;
+    // font-family: 'RazerF5', Arial, sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
 }
+
+.main-title{
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 0;
+}
+
+.second-title{
+    font-size: 22px;
+    font-weight: 600;
+}
+
 
 // Обычный шрифт
 @font-face {

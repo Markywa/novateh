@@ -1,0 +1,44 @@
+table{
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    font-size: 14px;
+    thead{
+        & > tr > th:first-child{
+            text-align: start;
+        }
+        & > tr > th:not(:first-child){
+            text-align: center;
+        }
+        th{
+            padding: 12px;
+            border: 1px solid #e1e1e1;  
+            text-align: left;      
+        }
+    }
+    tbody{
+       & > tr> td:first-child{
+            text-align: start;
+        }
+        & > tr > td:not(:first-child){
+            text-align: center;
+        }
+        tr{
+            padding: 14px 24px;
+        }
+        td{
+            border: 1px solid #e1e1e1; 
+            padding: 12px;          
+            text-align: left;       
+        }
+    }
+}
+
+.container{
+    width: 100%;
+    background-color: white;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+}

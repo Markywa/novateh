@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ProductCardComponent } from '../../shared/product-card/product-card.component';
 import { CommonModule } from '@angular/common';
+import { BrandsService, TBrandsContent } from '../../services/brands-service/brands.service';
+import { Observable } from 'rxjs';
+import { TGroupsContent } from '../../services/groups-service/groups.service';
+import { TProductsContent } from '../../services/products-service/products.service';
 
 @Component({
   selector: 'app-product-line',
@@ -13,46 +17,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './product-line.component.scss'
 })
 export class ProductLineComponent {
-  productList = [
-    {
-      img: 'assets/images/energoroll-alu 4.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/truba.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/energoroll-alu 4.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/energoroll-alu 4.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/energoroll-alu 4.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/truba.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/truba.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-    {
-      img: 'assets/images/energoroll-alu 4.png',
-      id: '1',
-      name: 'Тестовый образец'
-    },
-  ]
+  @Input() productList!: TProductsContent[]
 }

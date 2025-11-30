@@ -10,7 +10,12 @@
     border: none;
     border-radius: 6px;
     font-weight: 700;
+    justify-content: center;
     &:hover{
         opacity: 0.9;
+    }
+    &:disabled{
+        opacity: 0.5;
+        cursor: default;
     }
 }

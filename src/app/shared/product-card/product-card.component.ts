@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TBrandsContent } from '../../services/brands-service/brands.service';
+import { TProductsContent } from '../../services/products-service/products.service';
 
 @Component({
   selector: 'app-product-card',
@@ -11,5 +13,5 @@ import { RouterLink } from '@angular/router';
   styleUrl: './product-card.component.scss'
 })
 export class ProductCardComponent {
-  @Input() productItem!: {id: string, img: string, name: string}
+  @Input() productItem!: TProductsContent
 }

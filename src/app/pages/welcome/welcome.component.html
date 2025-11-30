@@ -1,0 +1,35 @@
+<div class="container">
+    <app-news-section
+    [newsList]="newsList"></app-news-section>
+
+    <div class="container-section">
+        <h3>ПРОИЗВОДИТЕЛИ</h3>
+        @if(brandsLoading){
+            <div class="container-section__load">
+                <svg-icon src="assets/images/loading.svg"></svg-icon>
+            </div>
+        } @else {
+            <app-producer-line [producerList]="brandsList"></app-producer-line>
+        }
+    </div>
+    <div class="container-section">
+        <h3>ПО НАЗНАЧЕНИЮ</h3>
+         @if(groupsLoading){
+            <div class="container-section__load">
+                <svg-icon src="assets/images/loading.svg"></svg-icon>
+            </div>
+        } @else {
+            <app-group-line [groupList]="groupsList"></app-group-line>
+        }
+    </div>
+        <div class="container-section">
+        <h3>ПОПУЛЯРНАЯ ПРОДУКЦИЯ</h3>
+         @if(popularProductLoading){
+            <div class="container-section__load">
+                <svg-icon src="assets/images/loading.svg"></svg-icon>
+            </div>
+        } @else {
+            <app-product-line [productList]="popularProductList"></app-product-line>
+        }
+    </div>
+</div>

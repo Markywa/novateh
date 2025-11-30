@@ -1,0 +1,13 @@
+<app-bread-crumbs></app-bread-crumbs>
+<div class="container">
+    @if(loading){
+        <div class="container-load">
+            <svg-icon src="assets/images/loading.svg"></svg-icon>
+        </div>
+    } @else {
+        <div class="container-categories">
+            <span class="second-title">{{ groupEntity.category.name }}</span>
+            <app-product-line [productList]="groupEntity.products"></app-product-line>
+        </div>
+    }
+</div>

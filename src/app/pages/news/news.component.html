@@ -1,1 +1,18 @@
-<div>НОВОСТИ</div>
+
+<app-bread-crumbs></app-bread-crumbs>
+<div class="container">
+    <div class="main-title">НОВОСТИ</div>
+    @if(loading){
+        <div class="container-load">
+            <svg-icon src="assets/images/loading.svg"></svg-icon>
+        </div>
+    } @else {
+    <div class="container-wrap">
+        @for(news of newsList; track newsList){
+            <app-news-card
+            [newsFields]="news">
+            </app-news-card>
+        }
+    </div>
+    }
+</div>

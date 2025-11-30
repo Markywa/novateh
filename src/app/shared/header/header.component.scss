@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     &-menu{
         display: flex;
         flex-direction: row;
@@ -13,12 +14,43 @@
             display: flex;
             flex-direction: row;
             gap: 32px;
+            align-items: center;
             &-item{
                 text-decoration: none;
                 color: #B5B5B5;
                 font-weight: 600;
                 &.active{
                     color: #333333;
+                }
+            }
+            &-shopping{
+                transform: scaleX(-1);
+                cursor: pointer;
+                & > a {
+                    position: relative;
+                }
+                & > svg-icon{
+                    & > svg {
+                        width: 32px;
+                        height: 32px;
+                    }
+                }
+                
+                &-counter{
+                    transform: scaleX(-1);
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    font-size: 10px;
+                    font-weight: 700;
+                    background-color: #FCDA00;
+                    color: black;
+                    border-radius: 100%;
+                    width: 14px;
+                    height: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
             }
         }
@@ -36,6 +68,9 @@
     &-search{
         width: 100%;
         height: 41px;
+        &__mobile {
+            margin-bottom: 24px;
+        }
         &__input{
             width: 100%;
             height: 100%;
@@ -107,8 +142,9 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     pointer-events: none;
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s ease;
+    z-index: 10;
 }
 
 .mobile-menu__content {
@@ -146,6 +182,26 @@
     color: #333;
     font-size: 18px;
     border-bottom: 1px solid #eee;
+}
+
+.active{
+    & > svg-icon{
+        & > svg {
+            & > g {
+                fill: black;
+            }
+        }
+    }
+}
+
+.passive{
+    & > svg-icon{
+        & > svg {
+            & > g {
+                fill: #B5B5B5;
+            }
+        }
+    }
 }
 
 .mobile-menu__button {
@@ -186,3 +242,4 @@
     pointer-events: auto;
     opacity: 1;
 }
+

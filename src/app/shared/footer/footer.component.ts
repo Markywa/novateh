@@ -29,6 +29,14 @@ const DEFAULT_COORDINATES = [92.85690366, 56.00178477];
 export class FooterComponent implements AfterViewInit{
   public linkArr: {name: string, link: string}[] = [
     {
+      name: 'ГЛАВНАЯ',
+      link: '/main/welcome'
+    },
+    {
+      name: 'КАТАЛОГ',
+      link: '/main/catalog'
+    },
+    {
       name: 'О КОМПАНИИ',
       link: '/main/about'
     },
@@ -44,7 +52,7 @@ export class FooterComponent implements AfterViewInit{
       name: 'КОНТАКТЫ',
       link: '/main/contacts'
     },
-]
+  ]
 
   public map = new Map();
   public zoomLevel: number = 13;

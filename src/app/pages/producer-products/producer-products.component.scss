@@ -1,0 +1,29 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    width: 100%;
+    height: 100%;
+    &-header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        &__img{
+            width: 268px;
+            height: 41px;
+            object-fit: cover;
+        }
+    }
+    &-categories{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    &-load{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+}

@@ -7,47 +7,78 @@ import { ContactsComponent } from './pages/contacts/contacts.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { DetailsPageComponent } from './pages/details-page/details-page.component';
 import { ProducerProductsComponent } from './pages/producer-products/producer-products.component';
+import { GroupPageComponent } from './pages/group-page/group-page.component';
+import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        redirectTo: 'main/catalog',
-        pathMatch: 'full'
-    },
-    {
-        path: 'main',
-        component: MainPageComponent,
-        children: [
-            {
-                path: 'about',
-                component: AboutComponent,
-            },
-            {
-                path: 'news',
-                component: NewsComponent,
-            },
-            {
-                path: 'contacts',
-                component: ContactsComponent,
-            },
-            {
-                path: 'certificates',
-                component: CertificatesComponent,
-            },
-            {
-                path: 'catalog',
-                component: CatalogComponent,
-            },
-            {
-                path: 'product/:id',
-                component: DetailsPageComponent,
-            },
-            {
-                path: 'producer/:id',
-                component: ProducerProductsComponent,
-            }
-        ]
-    },
+  {
+    path: '',
+    redirectTo: 'main/welcome',
+    pathMatch: 'full'
+  },
+  {
+    path: 'main',
+    component: MainPageComponent,
+    data: { breadcrumb: 'Главная' },
+    children: [
+        {
+            path: '',
+            redirectTo: 'welcome',
+            pathMatch: 'full'
+        },
+      {
+        path: 'about',
+        component: AboutComponent,
+        data: { breadcrumb: 'О компании' }
+      },
+      {
+        path: 'news',
+        component: NewsComponent,
+        data: { breadcrumb: 'Новости' }
+      },
+      {
+        path: 'contacts',
+        component: ContactsComponent,
+        data: { breadcrumb: 'Контакты' }
+      },
+      {
+        path: 'certificates',
+        component: CertificatesComponent,
+        data: { breadcrumb: 'Сертификаты' }
+      },
+      {
+        path: 'catalog',
+        component: CatalogComponent,
+        data: { breadcrumb: 'Каталог' }
+      },
+      {
+        path: 'welcome',
+        component: WelcomeComponent,
+        data: { breadcrumb: 'Добро пожаловать' }
+      },
+      {
+        path: 'shopping-cart',
+        component: ShoppingCartComponent,
+        data: { breadcrumb: 'Корзина' }
+      },
+      {
+        path: 'product/:id',
+        component: DetailsPageComponent,
+        data: { breadcrumb: 'Товар' }
+      },
+      {
+        path: 'producer/:slug',
+        component: ProducerProductsComponent,
+        data: { breadcrumb: 'Производитель' }
+      },
+      {
+        path: 'group/:slug',
+        component: GroupPageComponent,
+        data: { breadcrumb: 'Группа' }
+      }
+    ]
+  },
 
     {
         path: '**',
