@@ -10,6 +10,7 @@ import { GroupsService, TGroupsContent } from '../../services/groups-service/gro
 import { GroupLineComponent } from '../../components/group-line/group-line.component';
 import { NewsFields, NewsService } from '../../services/news/news.service';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-catalog',
@@ -21,7 +22,8 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
     GroupLineComponent,
     AngularSvgIconModule,
     AsyncPipe,
-    BreadCrumbsComponent
+    BreadCrumbsComponent,
+    LoaderComponent
   ],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'

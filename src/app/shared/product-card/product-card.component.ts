@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TBrandsContent } from '../../services/brands-service/brands.service';
 import { TProductsContent } from '../../services/products-service/products.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-product-card',
@@ -14,4 +15,5 @@ import { TProductsContent } from '../../services/products-service/products.servi
 })
 export class ProductCardComponent {
   @Input() productItem!: TProductsContent
+  environment = environment
 }

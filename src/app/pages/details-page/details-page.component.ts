@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { CarouselComponent, CarouselItem } from '../../components/carousel/carousel.component';
 import { TableComponent } from '../../components/table/table.component';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-details-page',
@@ -20,7 +21,8 @@ import { TableComponent } from '../../components/table/table.component';
     BreadCrumbsComponent,
     CommonModule,
     CarouselComponent,
-    TableComponent
+    TableComponent,
+    LoaderComponent
   ],
   templateUrl: './details-page.component.html',
   styleUrl: './details-page.component.scss'
@@ -54,7 +56,7 @@ export class DetailsPageComponent implements OnInit{
                 res.media_list.forEach((item) => {
                   this.carouselItems.push({
                     id: item.id,
-                    image: item.url.slice(1, item.url.length),
+                    image: item.url,
                     // title: res.name
                   })
                 })

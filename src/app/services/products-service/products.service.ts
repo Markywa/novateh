@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 export type TProductsContent = {
   id: number,
@@ -62,10 +63,10 @@ export class ProductsService {
       httpParams = httpParams.append('name', name)
     }
 
-    return this.http.get<TProductsContent[]>("http://26.39.56.58:8000/products", { params: httpParams })
+    return this.http.get<TProductsContent[]>(`${environment.baseUrl}/products`, { params: httpParams })
   }
 
   getProductDetails$(id: number): Observable<TProductCardDetails>{
-    return this.http.get<TProductCardDetails>(`http://26.39.56.58:8000/products/${id}`)
+    return this.http.get<TProductCardDetails>(`${environment.baseUrl}/products/${id}`)
   }
 }

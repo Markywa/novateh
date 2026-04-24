@@ -29,9 +29,15 @@ export class ShoppingCartComponent implements OnInit {
   private productService = inject(ProductsService);
   public isLoading = false;
   public userCart: any = [];
+  public selectedArr: number[] = [];
 
   toggleCheckbox() {
-    this.isChecked = !this.isChecked;
+    if(this.userCart.length === this.selectedArr.length){
+      this.selectedArr = [];
+    } else {
+      const allIds = this.userCart.map((item: any) => item.id);
+      this.selectedArr = [...new Set(allIds)] as number[];
+    }
   }
 
   ngOnInit(): void {
@@ -41,6 +47,8 @@ export class ShoppingCartComponent implements OnInit {
   getUserCart(): void {
     this.isLoading = true;
     const items = this.cartService.getCart();
+    console.log(items);
+    
     
     if (items.length === 0) {
       this.userCart = [];
@@ -60,9 +68,7 @@ export class ShoppingCartComponent implements OnInit {
 
     forkJoin(requests).subscribe({
       next: (products) => {
-        this.userCart = products;
-        console.log(this.userCart);
-        
+        this.userCart = products;        
         this.isLoading = false;
       },
       error: (error) => {
@@ -72,6 +78,11 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   updateList(): void {
+    this.getUserCart();
+  }
+
+  deleteSelected(): void {
+    this.cartService.removeFromCart(this.selectedArr)
     this.getUserCart();
   }
 }

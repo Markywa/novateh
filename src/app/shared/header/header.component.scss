@@ -1,3 +1,9 @@
+:host{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
 .container{
     display: flex;
     flex-direction: column;
@@ -68,6 +74,7 @@
     &-search{
         width: 100%;
         height: 41px;
+        position: relative;
         &__mobile {
             margin-bottom: 24px;
         }
@@ -135,7 +142,7 @@
 }
 
 .mobile-menu__overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -242,4 +249,295 @@
     pointer-events: auto;
     opacity: 1;
 }
+
+
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 40px 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .search-icons {
+      position: absolute;
+      right: 12px;
+      top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      animation: rotate 2s linear infinite;
+    }
+
+    .spinner .path {
+      stroke: #007bff;
+      stroke-linecap: round;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes dash {
+      0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+      50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+      100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+    }
+
+    .clear-icon {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      fill: #999;
+      transition: fill 0.2s;
+    }
+
+    .clear-icon:hover {
+      fill: #666;
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      max-height: 500px;
+      overflow-y: auto;
+      z-index: 1000;
+      animation: slideDown 0.2s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-section {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .search-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-header {
+      padding: 12px 16px;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .view-all-link {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: none;
+    }
+
+    .view-all-link:hover {
+      text-decoration: underline;
+    }
+
+    .group-card {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .group-card:hover {
+      background: #f8f9fa;
+    }
+
+    .group-image {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+
+    .group-info {
+      flex: 1;
+    }
+
+    .group-name {
+      font-weight: 600;
+      color: #212529;
+      margin-bottom: 4px;
+    }
+
+    .group-hint {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .products-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .product-card {
+      display: flex;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .product-card:hover {
+      background: #f8f9fa;
+    }
+
+    .product-card:last-child {
+      border-bottom: none;
+    }
+
+    .product-image {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .product-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .product-brand {
+      color: #007bff;
+      font-weight: 500;
+    }
+
+    .product-sku {
+      color: #6c757d;
+    }
+
+    .product-name {
+      font-weight: 600;
+      color: #212529;
+      margin-bottom: 4px;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-description {
+      font-size: 12px;
+      color: #6c757d;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .product-price {
+      font-weight: 700;
+      color: #28a745;
+      font-size: 14px;
+    }
+
+    .price-on-request {
+      color: #ffc107;
+      font-size: 12px;
+    }
+
+    .product-availability {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: #ffc10720;
+      color: #ff8c00;
+    }
+
+    .product-availability.available {
+      background: #28a74520;
+      color: #28a745;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .no-results-icon {
+      width: 48px;
+      height: 48px;
+      fill: #dee2e6;
+      margin-bottom: 12px;
+    }
+
+    .no-results p {
+      color: #495057;
+      font-weight: 500;
+      margin: 0 0 4px;
+    }
+
+    .no-results .hint {
+      font-size: 12px;
+      color: #6c757d;
+    }
 

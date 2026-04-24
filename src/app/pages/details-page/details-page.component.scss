@@ -2,6 +2,12 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    &-fade{
+        animation: fadeIn 0.5s ease-in-out forwards;
+        gap: 12px;
+        display: flex;
+        flex-direction: column;
+    }
     &-sections{
         & > div{
             margin-top: 16px;

@@ -1,0 +1,33 @@
+<div class="container-slider">
+    <!-- Фоновое изображение слайдера -->
+    <img class="container-slider__img" [src]="backgroundImage" alt="slider background">
+
+    <!-- Контент слайдера поверх фона -->
+    <div class="slider-content" *ngIf="slides.length > 0">
+        <div class="slider-container">
+            <div class="slider-track" [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'">
+                <div class="slide" *ngFor="let slide of slides; let i = index">
+                    <div class="slide-left">
+                        <img [src]="slide.imageSrc" [alt]="'Slide ' + (i + 1) + ' image'">
+                    </div>
+                    <div class="slide-right">
+                        <h3>{{ slide.title }}</h3>
+                        <p>{{ slide.description }}</p>
+                        <button class="btn-details" (click)="onButtonClick(slide)">
+                            {{ slide.buttonText || 'Подробнее' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Пагинация снизу по центру -->
+        <div class="slider-pagination" *ngIf="slides.length > 1">
+            <span class="dot" 
+                  *ngFor="let slide of slides; let i = index"
+                  [class.active]="i === currentIndex"
+                  (click)="goToSlide(i)">
+            </span>
+        </div>
+    </div>
+</div>

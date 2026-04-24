@@ -5,6 +5,7 @@ import { NewsFields, NewsService } from '../../services/news/news.service';
 import { AsyncPipe } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-news',
@@ -14,7 +15,8 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
     NewsCardComponent,
     AsyncPipe,
     AngularSvgIconModule,
-    BreadCrumbsComponent
+    BreadCrumbsComponent,
+    LoaderComponent
   ],
   templateUrl: './news.component.html',
   styleUrl: './news.component.scss'

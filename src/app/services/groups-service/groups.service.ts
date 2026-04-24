@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TProductsContent } from '../products-service/products.service';
+import { environment } from '../../../environments/environment.development';
 
 export type TGroupsContent = {
     id: number,
@@ -29,10 +30,10 @@ export class GroupsService {
       httpParams = httpParams.append('name', name)
     }
 
-    return this.http.get<TGroupsContent[]>('http://26.39.56.58:8000/groups', { params: httpParams })
+    return this.http.get<TGroupsContent[]>(`${environment.baseUrl}/groups`, { params: httpParams })
   }
 
   getGroupDetailsPage$(slug: string): Observable<TGroupsPageContent>{
-    return this.http.get<TGroupsPageContent>(`http://26.39.56.58:8000/groups/${slug}`)
+    return this.http.get<TGroupsPageContent>(`${environment.baseUrl}/groups/${slug}`)
   } 
 }

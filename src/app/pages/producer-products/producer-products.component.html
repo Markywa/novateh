@@ -1,8 +1,6 @@
 <div class="container">
     @if(loading){
-        <div class="container-load">
-            <svg-icon src="assets/images/loading.svg"></svg-icon>
-        </div>
+        <app-loader></app-loader>
     } @else {
         <div class="container-header">
             <span class="main-title">Товары {{ brandEntity.brand.name }}</span>

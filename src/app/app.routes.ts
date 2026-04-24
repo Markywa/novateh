@@ -10,6 +10,7 @@ import { ProducerProductsComponent } from './pages/producer-products/producer-pr
 import { GroupPageComponent } from './pages/group-page/group-page.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart.component';
+import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,11 @@ export const routes: Routes = [
         path: 'news',
         component: NewsComponent,
         data: { breadcrumb: 'Новости' }
+      },
+      {
+        path: 'news/:id',
+        component: NewsDetailComponent,
+        data: { breadcrumb: 'Новость' },
       },
       {
         path: 'contacts',

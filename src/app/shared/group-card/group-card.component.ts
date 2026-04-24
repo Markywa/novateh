@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { TGroupsContent } from '../../services/groups-service/groups.service';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-group-card',
@@ -13,5 +14,5 @@ import { RouterLink } from '@angular/router';
 })
 export class GroupCardComponent {
   @Input() groupItem!: TGroupsContent
-
+  environment = environment;
 }

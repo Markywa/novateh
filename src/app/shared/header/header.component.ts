@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterLink } from '@angular/router';
 import { QuestionModalComponent } from '../question-modal/question-modal.component';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, first, fromEvent, map, Observable, startWith, throttleTime } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, first, fromEvent, map, Observable, of, retry, shareReplay, startWith, Subject, switchMap, takeUntil, tap, throttleTime, timeout } from 'rxjs';
 import { CartService } from '../../services/cart-service/cart.service';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +18,9 @@ import { CartService } from '../../services/cart-service/cart.service';
     CommonModule,
     RouterLinkActive,
     AngularSvgIconModule,
-    RouterLink
+    RouterLink,
+    ReactiveFormsModule,
+    FormsModule
 ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -23,6 +28,8 @@ import { CartService } from '../../services/cart-service/cart.service';
 export class HeaderComponent {
   private router = inject(Router);
   public cartService = inject(CartService); 
+  private http = inject(HttpClient)
+  environment = environment;
 
   public linkArr: {name: string, link: string}[] = [
     {
@@ -140,5 +147,58 @@ export class HeaderComponent {
     dialogus.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+  searchControl = new FormControl('');
+  searchResults$: Observable<any>;
+  showDropdown = false;
+  isLoading = false;
+  
+  private destroy$ = new Subject<void>();
+  
+  constructor(private elementRef: ElementRef) {
+    this.searchResults$ = this.searchControl.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      tap(() => this.isLoading = true),
+      tap(() => this.showDropdown = true),
+      switchMap(query => {
+        if (!query || query.trim().length < 2) {
+          return of(null);
+        }
+        return this.http.get<any>(`${environment.baseUrl}/search?q=${encodeURIComponent(query)}`).pipe(
+          catchError(error => {
+            console.error('Search error:', error);
+            return of(null);
+          })
+        );
+      }),
+      tap(() => this.isLoading = false),
+      takeUntil(this.destroy$)
+    );
+  }
+  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+  
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.showDropdown = false;
+  }
+  
+  closeDropdown(): void {
+    this.showDropdown = false;
+  }
+  
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/images/no-image.png';
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.showDropdown = false;
+    }
   }
 }

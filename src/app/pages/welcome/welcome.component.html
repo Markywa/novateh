@@ -5,9 +5,7 @@
     <div class="container-section">
         <h3>ПРОИЗВОДИТЕЛИ</h3>
         @if(brandsLoading){
-            <div class="container-section__load">
-                <svg-icon src="assets/images/loading.svg"></svg-icon>
-            </div>
+            <app-loader></app-loader>
         } @else {
             <app-producer-line [producerList]="brandsList"></app-producer-line>
         }
@@ -15,9 +13,7 @@
     <div class="container-section">
         <h3>ПО НАЗНАЧЕНИЮ</h3>
          @if(groupsLoading){
-            <div class="container-section__load">
-                <svg-icon src="assets/images/loading.svg"></svg-icon>
-            </div>
+            <app-loader></app-loader>
         } @else {
             <app-group-line [groupList]="groupsList"></app-group-line>
         }
@@ -25,9 +21,7 @@
         <div class="container-section">
         <h3>ПОПУЛЯРНАЯ ПРОДУКЦИЯ</h3>
          @if(popularProductLoading){
-            <div class="container-section__load">
-                <svg-icon src="assets/images/loading.svg"></svg-icon>
-            </div>
+            <app-loader></app-loader>
         } @else {
             <app-product-line [productList]="popularProductList"></app-product-line>
         }

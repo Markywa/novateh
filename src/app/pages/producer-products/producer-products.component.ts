@@ -5,6 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { BrandsService, TBrandDetailsContent } from '../../services/brands-service/brands.service';
 import { ProductLineComponent } from '../../components/product-line/product-line.component';
 import { environment } from '../../../environments/environment.development';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-producer-products',
@@ -12,7 +13,8 @@ import { environment } from '../../../environments/environment.development';
   imports: [
     CommonModule,
     AngularSvgIconModule,
-    ProductLineComponent
+    ProductLineComponent,
+    LoaderComponent
   ],
   templateUrl: './producer-products.component.html',
   styleUrl: './producer-products.component.scss'

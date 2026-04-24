@@ -51,8 +51,106 @@
                 <span>КАТАЛОГ</span>
             </button>
             <div class="container-search" *ngIf="!(isMobile$ | async)">
-                <input class="container-search__input" type="text" placeholder="ПОИСК">
-            </div>
+                 <input
+                    type="text"
+                    [formControl]="searchControl"
+                    placeholder="ПОИСК"
+                    class="search-input"
+                    (focus)="showDropdown = true"
+                    autocomplete="off"
+                    />
+                     <div class="search-icons">
+                        <svg *ngIf="isLoading" class="spinner" viewBox="0 0 50 50">
+                            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+                        </svg>
+                        <svg *ngIf="searchControl.value && !isLoading" 
+                            (click)="clearSearch()" 
+                            class="clear-icon" 
+                            viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                        </div>
+
+                    <div *ngIf="showDropdown && (searchResults$ | async) as response" 
+                        class="search-dropdown"
+                        [class.active]="showDropdown">
+                        
+                        <div *ngIf="response.navigation?.group?.name" class="search-section">
+                        <div class="section-header">
+                            <span class="section-title">Категория</span>
+                        </div>
+                        <div class="group-card" [routerLink]="'/main/group/' + response.navigation.group.slug" (click)="closeDropdown()">
+                            <img [src]="(environment.baseUrl + response.navigation.group.media) || 'assets/images/no-image.png'" 
+                                [alt]="response.navigation.group.name"
+                                class="group-image">
+                            <div class="group-info">
+                            <div class="group-name">{{ response.navigation.group.name }}</div>
+                            <div class="group-hint">Все товары категории</div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div *ngIf="response.results.products.length > 0" class="search-section">
+                        <div class="section-header">
+                            <span class="section-title">Товары ({{ response.results.products.length }})</span>
+                            <a *ngIf="response.results.products.length > 5" 
+                            [routerLink]="['/search']" 
+                            [queryParams]="{ q: searchControl.value }"
+                            class="view-all-link">Показать все</a>
+                        </div>
+                        
+                        <div class="products-list">
+                            <div *ngFor="let product of response.results.products.slice(0, 5)" 
+                                class="product-card"
+                                [routerLink]="'/main/product/' + product.id"
+                                (click)="closeDropdown()">
+                            
+                            <img [src]="(environment.baseUrl + product.media[0]) || 'assets/images/no-image.png'" 
+                                [alt]="product.name"
+                                class="product-image"
+                                (error)="onImageError($event)">
+                            
+                            <div class="product-info">
+                                <div class="product-header">
+                                <span class="product-brand">{{ product.brand?.name }}</span>
+                                <span class="product-sku">Арт: {{ product.sku }}</span>
+                                </div>
+                                
+                                <div class="product-name">{{ product.name }}</div>
+                                
+                                <div class="product-description" *ngIf="product.description">
+                                {{ product.description | slice:0:80 }}{{ product.description.length > 80 ? '...' : '' }}
+                                </div>
+                                
+                                <div class="product-footer">
+                                <div class="product-price">
+                                    <span *ngIf="product.price > 0; else priceOnRequest">
+                                    {{ product.price | number }} {{ product.currency }}
+                                    </span>
+                                    <ng-template #priceOnRequest>
+                                    <span class="price-on-request">Цена по запросу</span>
+                                    </ng-template>
+                                </div>
+                                
+                                <div class="product-availability" [class.available]="product.available">
+                                    {{ product.available ? 'В наличии' : 'Под заказ' }}
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div *ngIf="response.results.products.length === 0 && !response.navigation?.group?.name" 
+                            class="no-results">
+                        <svg class="no-results-icon" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <p>Ничего не найдено</p>
+                        <span class="hint">Попробуйте изменить запрос</span>
+                        </div>
+                    </div>
+                </div>
             
             <div class="container-menu__rout-shopping">
                 <a class="container-menu__rout-item container-menu__rout-shopping" 
@@ -69,7 +167,105 @@
             </div>
         </div>
         <div class="container-search container-search__mobile" *ngIf="isMobile$ | async">
-            <input class="container-search__input" type="text" placeholder="ПОИСК">
+    <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="ПОИСК"
+        class="container-search__input"
+        (focus)="showDropdown = true"
+        autocomplete="off"
+        />
+            <div class="search-icons">
+            <svg *ngIf="isLoading" class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+            </svg>
+            <svg *ngIf="searchControl.value && !isLoading" 
+                (click)="clearSearch()" 
+                class="clear-icon" 
+                viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+            </div>
+
+        <div *ngIf="showDropdown && (searchResults$ | async) as response" 
+            class="search-dropdown"
+            [class.active]="showDropdown">
+            
+            <div *ngIf="response.navigation?.group?.name" class="search-section">
+            <div class="section-header">
+                <span class="section-title">Категория</span>
+            </div>
+            <div class="group-card"  [routerLink]="'/main/group/' + response.navigation.group.slug" (click)="closeDropdown()">
+                <img [src]="response.navigation.group.media || 'assets/images/no-image.png'" 
+                    [alt]="response.navigation.group.name"
+                    class="group-image">
+                <div class="group-info">
+                <div class="group-name">{{ response.navigation.group.name }}</div>
+                <div class="group-hint">Все товары категории</div>
+                </div>
+            </div>
+            </div>
+
+            <div *ngIf="response.results.products.length > 0" class="search-section">
+            <div class="section-header">
+                <span class="section-title">Товары ({{ response.results.products.length }})</span>
+                <a *ngIf="response.results.products.length > 5" 
+                [routerLink]="['/search']" 
+                [queryParams]="{ q: searchControl.value }"
+                class="view-all-link">Показать все</a>
+            </div>
+            
+            <div class="products-list">
+                <div *ngFor="let product of response.results.products.slice(0, 5)" 
+                    class="product-card"
+                    [routerLink]="'/main/product/' + product.id"
+                    (click)="closeDropdown()">
+                
+                <img [src]="product.media[0] || 'assets/images/no-image.png'" 
+                    [alt]="product.name"
+                    class="product-image"
+                    (error)="onImageError($event)">
+                
+                <div class="product-info">
+                    <div class="product-header">
+                    <span class="product-brand">{{ product.brand?.name }}</span>
+                    <span class="product-sku">Арт: {{ product.sku }}</span>
+                    </div>
+                    
+                    <div class="product-name">{{ product.name }}</div>
+                    
+                    <div class="product-description" *ngIf="product.description">
+                    {{ product.description | slice:0:80 }}{{ product.description.length > 80 ? '...' : '' }}
+                    </div>
+                    
+                    <div class="product-footer">
+                    <div class="product-price">
+                        <span *ngIf="product.price > 0; else priceOnRequest">
+                        {{ product.price | number }} {{ product.currency }}
+                        </span>
+                        <ng-template #priceOnRequest>
+                        <span class="price-on-request">Цена по запросу</span>
+                        </ng-template>
+                    </div>
+                    
+                    <div class="product-availability" [class.available]="product.available">
+                        {{ product.available ? 'В наличии' : 'Под заказ' }}
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div *ngIf="response.results.products.length === 0 && !response.navigation?.group?.name" 
+                class="no-results">
+            <svg class="no-results-icon" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <p>Ничего не найдено</p>
+            <span class="hint">Попробуйте изменить запрос</span>
+            </div>
+        </div>
         </div>
 </div>  
 </div>

@@ -6,9 +6,14 @@
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    align-items: center;
+    height: 395px;
+    animation: fadeIn 0.5s ease-in-out forwards;
 
     &-img{
-        object-fit: cover;
+        object-fit: contain;
+        width: 212px;
+        height: 297px;
     }
     &-name{
         text-align: center;

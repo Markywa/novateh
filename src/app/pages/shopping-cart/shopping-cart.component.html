@@ -9,12 +9,12 @@
                 <span class="checkmark"></span>
                 Выбрать все
             </label>
-            <button class="container-cart__action-delete">Удалить выбранное</button>
+            <button (click)="deleteSelected()" class="container-cart__action-delete">Удалить выбранное</button>
         </div>
         <div class="container-divider"></div>
         <div class="container-cart__wrap">
             @for(item of this.userCart; track item){
-                <app-shopping-card [product]="item" [value]="item.count" (updateList)="updateList()" [isSelected]="isChecked"></app-shopping-card>
+                <app-shopping-card [product]="item" [value]="item.count" (updateList)="updateList()" [isSelected]="selectedArr.includes(item.id! ?? false)"></app-shopping-card>
             } 
         </div>
     </div>

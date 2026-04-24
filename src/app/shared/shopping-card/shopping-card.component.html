@@ -3,7 +3,7 @@
         <input type="checkbox" (change)="toggleCheckbox()" [checked]="isSelected"/>
         <span class="checkmark"></span>
     </label>
-    <img src="assets/images/no-image.png" alt="">
+    <img class="container-img" [src]="(environment.baseUrl + product.media[0]) || 'assets/images/no-image.png'" alt="">
     <div class="container-info__wrap">
         <div class="container-info__description">
           <span>{{ product.name }}</span>

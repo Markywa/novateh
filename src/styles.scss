@@ -16,3 +16,12 @@ html, body {
 :root {
   scrollbar-gutter: stable; 
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

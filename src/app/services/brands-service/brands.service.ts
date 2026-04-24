@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TGroupsContent } from '../groups-service/groups.service';
 import { TProductsContent } from '../products-service/products.service';
+import { environment } from '../../../environments/environment.development';
 
 export type TBrandsContent = {
     id: number,
@@ -30,10 +31,10 @@ export class BrandsService {
       httpParams = httpParams.append('name', name)
     }
 
-    return this.http.get<TBrandsContent[]>("http://26.39.56.58:8000/brands", { params: httpParams })
+    return this.http.get<TBrandsContent[]>(`${environment.baseUrl}/brands`, { params: httpParams })
   }
 
   getBrandsDetailsPage$(slug: string): Observable<TBrandDetailsContent>{
-    return this.http.get<TBrandDetailsContent>(`http://26.39.56.58:8000/brands/${slug}`)
+    return this.http.get<TBrandDetailsContent>(`${environment.baseUrl}/brands/${slug}`)
   } 
 }

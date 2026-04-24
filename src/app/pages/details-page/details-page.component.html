@@ -1,83 +1,84 @@
 <app-bread-crumbs></app-bread-crumbs>
 <div class="container">
     @if(loading){
-        <div class="container-fullwidth">
-            <svg-icon src="assets/images/loading.svg"></svg-icon>
-        </div>
+            <app-loader></app-loader>
     } @else {
-        <span class="main-title">{{ productEntity.name }}</span>
-        <div class="container-content">
-            <div class="container-content__img">
-                <app-carousel 
-                    [items]="carouselItems"
-                    [autoPlay]="true"
-                    [autoPlayInterval]="5000"
-                    [showControls]="true"
-                    [showIndicators]="true">
-                </app-carousel>
-            </div>
-            <div class="container-content__wrap">
-                <div class="container-content__desc">
-                    <span>{{ productEntity.description }}</span>
+        <div class="container-fade">
+            <span class="main-title">{{ productEntity.name }}</span>
+            <div class="container-content">
+                <div class="container-content__img">
+                    <app-carousel 
+                        [items]="carouselItems"
+                        [autoPlay]="true"
+                        [autoPlayInterval]="5000"
+                        [showControls]="true"
+                        [showIndicators]="true">
+                    </app-carousel>
                 </div>
-                <div class="container-content__info">
-                    <span>Актуальную цену уточняйте у наших менеджеров</span>
-                    @if(itemIsAdded$ | async){
-                        <span class="default-button">ТОВАР ДОБАВЛЕН В КОРЗИНУ</span>
-                    } @else {
-                        <button class="default-button" (click)="addToCart(productEntity.id)">ДОБАВИТЬ В КОРЗИНУ</button>
-                    }
+                <div class="container-content__wrap">
+                    <div class="container-content__desc">
+                        <span>{{ productEntity.description }}</span>
+                    </div>
+                    <div class="container-content__info">
+                        <span>Актуальную цену уточняйте у наших менеджеров</span>
+                        @if(itemIsAdded$ | async){
+                            <span class="default-button">ТОВАР ДОБАВЛЕН В КОРЗИНУ</span>
+                        } @else {
+                            <button class="default-button" (click)="addToCart(productEntity.id)">ДОБАВИТЬ В КОРЗИНУ</button>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-    <div>
-        <div class="container-switcher">
-            <button class="container-switcher__item" [class.active]="activeView === 'view1'" (click)="switchView('view1')">Технические характеристики</button>
-            <button class="container-switcher__item" [class.active]="activeView === 'view2'" (click)="switchView('view2')">Ассортимент</button>
-            <button class="container-switcher__item" [class.active]="activeView === 'view3'" (click)="switchView('view3')">Сертификаты</button>
-            <button class="container-switcher__item" [class.active]="activeView === 'view4'" (click)="switchView('view4')">Фото и видео о товаре</button>
-        </div>
+        <div>
+            <div class="container-switcher">
+                <button class="container-switcher__item" [class.active]="activeView === 'view1'" (click)="switchView('view1')">Технические характеристики</button>
+                <button class="container-switcher__item" [class.active]="activeView === 'view2'" (click)="switchView('view2')">Ассортимент</button>
+                <button class="container-switcher__item" [class.active]="activeView === 'view3'" (click)="switchView('view3')">Сертификаты</button>
+                <button class="container-switcher__item" [class.active]="activeView === 'view4'" (click)="switchView('view4')">Фото и видео о товаре</button>
+            </div>
 
-        <div class="container-sections" [ngSwitch]="activeView">
-            <div *ngSwitchCase="'view1'">
-                <app-table [tableList]="productEntity.attributes"></app-table>
+            <div class="container-sections" [ngSwitch]="activeView">
+                <div *ngSwitchCase="'view1'">
+                    <app-table [tableList]="productEntity.attributes"></app-table>
+                </div>
+                <div *ngSwitchCase="'view2'">
+                    <h3>Недоступно</h3>
+                </div>
+                <div *ngSwitchCase="'view3'">
+                    <h3>Недоступно</h3>
+                </div>
+                <div *ngSwitchDefault>
+                    <h3>Пожалуйста, выберите вкладку.</h3>
+                </div>
             </div>
-            <div *ngSwitchCase="'view2'">
-                <h3>Недоступно</h3>
+        </div>
+        <div class="meta-info">
+            <div class="header" colspan="2">
+                <span>Поможем и проконсультируем по всем вопросам</span>
             </div>
-            <div *ngSwitchCase="'view3'">
-                <h3>Недоступно</h3>
+            <div class="row">
+                <div class="column">
+                    <span>Головырина Людмила Николаевна</span>
+                    <span>менеджер по работе с клиентами</span>
+                </div>
+                <div class="column">
+                    <span>Волкова Елена Владимировна</span>
+                    <span>специалист отдела продаж</span>
+                </div>
             </div>
-            <div *ngSwitchDefault>
-                <h3>Пожалуйста, выберите вкладку.</h3>
+            <div class="row">
+                <div class="column">
+                    <span>+7 961 228-31-00</span>
+                    <span>{{'1223@teplo-sib.ru'}}</span>
+                </div>
+                <div class="column">
+                    <span>+7 909 533-85-86</span>
+                    <span>{{'111@teplo-sib.ru'}}</span>
+                </div>
             </div>
         </div>
     </div>
-    <div class="meta-info">
-        <div class="header" colspan="2">
-            <span>Поможем и проконсультируем по всем вопросам</span>
-        </div>
-        <div class="row">
-            <div class="column">
-                <span>Головырина Людмила Николаевна</span>
-                <span>менеджер по работе с клиентами</span>
-            </div>
-            <div class="column">
-                <span>Волкова Елена Владимировна</span>
-                <span>специалист отдела продаж</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="column">
-                <span>+7 961 228-31-00</span>
-                <span>{{'1223@teplo-sib.ru'}}</span>
-            </div>
-            <div class="column">
-                <span>+7 909 533-85-86</span>
-                <span>{{'111@teplo-sib.ru'}}</span>
-            </div>
-        </div>
-    </div>
+    }
+
 
 </div>

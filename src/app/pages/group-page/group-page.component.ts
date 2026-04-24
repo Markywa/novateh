@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ProductLineComponent } from '../../components/product-line/product-line.component';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-group-page',
@@ -13,7 +14,8 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
     CommonModule,
     AngularSvgIconModule,
     ProductLineComponent,
-    BreadCrumbsComponent
+    BreadCrumbsComponent,
+    LoaderComponent
   ],
   templateUrl: './group-page.component.html',
   styleUrl: './group-page.component.scss'

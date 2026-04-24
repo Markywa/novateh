@@ -31,10 +31,18 @@ export class CartService {
     this.cartSubject.next(cart); 
   }
 
-  removeFromCart(id: number): void {
-    const cart = this.getCart().filter(item => item.id !== id);
-    this.saveCart(cart);
-    this.cartSubject.next(cart);
+  removeFromCart(id: number | number[]): void {
+    const cart = this.getCart();
+    
+    if(Array.isArray(id)) {
+      const filteredCart = cart.filter(item => !id.includes(item.id));
+      this.saveCart(filteredCart);
+      this.cartSubject.next(filteredCart);
+    } else {
+      const filteredCart = cart.filter(item => item.id !== id);
+      this.saveCart(filteredCart);
+      this.cartSubject.next(filteredCart);
+    }
   }
 
   updateCount(id: number, count: number): void {

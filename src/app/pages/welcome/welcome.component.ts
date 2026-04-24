@@ -9,6 +9,7 @@ import { ProductLineComponent } from '../../components/product-line/product-line
 import { GroupLineComponent } from '../../components/group-line/group-line.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AsyncPipe } from '@angular/common';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-welcome',
@@ -19,7 +20,8 @@ import { AsyncPipe } from '@angular/common';
       ProductLineComponent,
       GroupLineComponent,
       AngularSvgIconModule,
-      AsyncPipe
+      AsyncPipe,
+      LoaderComponent
     ],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.scss'

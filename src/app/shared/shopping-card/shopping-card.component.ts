@@ -1,5 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CartService } from '../../services/cart-service/cart.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-shopping-card',
@@ -11,6 +12,7 @@ import { CartService } from '../../services/cart-service/cart.service';
 export class ShoppingCardComponent {
   isChecked: boolean = false;
   private cartService = inject(CartService);
+  environment = environment;
 
   toggleCheckbox() {
     this.isChecked = !this.isChecked;

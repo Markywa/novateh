@@ -1,0 +1,41 @@
+<div class="news-detail-container">
+  <app-bread-crumbs></app-bread-crumbs>
+
+  <app-loader [loading]="loading"></app-loader>
+
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button (click)="fetchNewsData()" class="retry-btn">Попробовать снова</button>
+  </div>
+
+  <div *ngIf="newsItem && !loading" class="news-content">
+    <h1 class="news-title">{{ newsItem.title }}</h1>
+    
+    <div class="news-meta">
+      <span class="publish-date">
+        📅 {{ formatDate(newsItem.published_at) }}
+      </span>
+      <span *ngIf="newsItem.is_published" class="published-badge">
+        Опубликовано
+      </span>
+    </div>
+
+    <div class="news-media__wrap" [ngClass]="{
+            'news-media__wrap': newsItem.content, 
+            'news-media__wrap-full': !newsItem.content
+        }">
+        <div *ngIf="newsItem.media" class="news-media">
+            <img [src]="(environment.baseUrl + newsItem.media)" [alt]="newsItem.title" class="news-image">
+        </div>
+
+        <div class="news-text">
+            <p>{{ newsItem.content }}</p>
+        </div>
+    </div>
+
+    <div class="news-footer">
+      <a [routerLink]="'/main/news'" class="back-link">← Назад к списку новостей</a>
+    </div>
+  </div>
+</div>
