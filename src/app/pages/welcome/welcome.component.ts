@@ -56,7 +56,7 @@ export class WelcomeComponent {
       error: () => this.groupsLoading = false
     });
 
-    this.productsService.getProductsList$().subscribe({
+    this.productsService.getProductsList$(undefined, true).subscribe({
       next: (response) => {
         this.popularProductLoading = false;
         this.popularProductList = response;

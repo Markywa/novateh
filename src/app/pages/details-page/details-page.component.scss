@@ -45,25 +45,30 @@
         &__img{
             background-color: white;
             border-radius: 6px;
-            padding: 32px;
+            height: 400px;
+            // padding: 32px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             &-block{
                 width: 389px;
                 height: 420px;
                 object-fit: contain;
             }
+            @media screen and (max-width: 840px) {
+              height: 100%
+
+            }
         }
         &__desc{
-            background-color: white;
+            // background-color: white;
             border-radius: 6px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 0 16px;
+            // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         &__wrap{
             display: grid;
             grid-template-rows: 1fr auto;
             gap: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         &__info{
             margin-top: auto;
@@ -146,3 +151,1054 @@
         }
     }
 }
+
+.certificates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.certificate-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    
+    &:hover {
+        background: #f5f5f5;
+    }
+}
+
+.certificate-icon {
+    font-size: 20px;
+}
+
+.certificate-title {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+}
+
+.certificate-download {
+    font-size: 13px;
+    color: #2196F3;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.certificates-empty {
+    background: white;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+// Стили для модального окна превью
+.preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.preview-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+.preview-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.preview-video-container,
+.preview-image-container {
+  max-width: 85vw;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.preview-video {
+  max-width: 100%;
+  max-height: 70vh;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.preview-info {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+// Анимации
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Стили для галереи
+.media-gallery {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.media-item {
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f5f5f5;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+    .media-overlay {
+      opacity: 1;
+    }
+  }
+}
+
+.media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .thumbnail-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+
+    .play-icon {
+      width: 30px;
+      height: 30px;
+      color: white;
+    }
+  }
+
+  &:hover .play-overlay {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.media-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.media-type-badge {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.media-empty {
+  background: white;
+  border-radius: 8px;
+  padding: 60px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .media-gallery {
+    padding: 16px;
+  }
+  
+  .preview-modal-content {
+    max-width: 95vw;
+  }
+}
+
+//////
+/// // Полноэкранное модальное окно
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fullscreen-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Кнопка закрытия
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Кнопки навигации
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 42px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+  
+  &.modal-prev {
+    left: 20px;
+  }
+  
+  &.modal-next {
+    right: 20px;
+  }
+}
+
+// Кнопки управления масштабом
+.zoom-controls {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 40px;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.zoom-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.zoom-level {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+  line-height: 36px;
+}
+
+.reset-btn {
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0;
+  
+  &:hover {
+    border-left-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+// Счетчик
+.modal-counter {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+// Контент модального окна
+.modal-content {
+  width: 100%;
+  height: calc(100% - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.fullscreen-video {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+// Контейнер изображения с поддержкой масштабирования
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: grab;
+  
+  &.dragging {
+    cursor: grabbing;
+  }
+}
+
+.fullscreen-image {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.1s ease-out;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: scale(0.95);
+  
+  &.loaded {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+}
+
+// Загрузчик изображения
+.image-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Подсказка о перетаскивании
+.drag-hint {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: 12px;
+  z-index: 10;
+  pointer-events: none;
+  animation: fadeInUp 0.3s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  svg {
+    opacity: 0.8;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+// Футер модального окна
+.modal-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  padding: 30px 20px 20px;
+  color: white;
+  text-align: center;
+}
+
+.modal-title {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.modal-info {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.info-badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+// Анимации
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Остальные стили галереи (оставьте предыдущие)
+
+// Адаптивность
+@media screen and (max-width: 768px) {
+  .modal-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 32px;
+    
+    &.modal-prev {
+      left: 10px;
+    }
+    
+    &.modal-next {
+      right: 10px;
+    }
+  }
+  
+  .modal-close {
+    width: 40px;
+    height: 40px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .modal-counter {
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .zoom-controls {
+    bottom: 80px;
+    padding: 6px 12px;
+  }
+  
+  .zoom-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .zoom-level {
+    font-size: 12px;
+    min-width: 40px;
+  }
+  
+  .drag-hint {
+    bottom: 100px;
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+  
+  .modal-title {
+    font-size: 14px;
+  }
+  
+  .info-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modal-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 28px;
+  }
+  
+  .fullscreen-image {
+    max-width: 95vw;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////
+/// 
+/// Стили для страницы деталей продукта
+/// // Полноэкранное модальное окно
+// .fullscreen-modal {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   background: rgba(0, 0, 0, 0.95);
+//   z-index: 9999;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   animation: fadeIn 0.3s ease-in-out;
+// }
+
+// .fullscreen-container {
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// // Кнопка закрытия
+// .modal-close {
+//   position: absolute;
+//   top: 20px;
+//   right: 20px;
+//   width: 44px;
+//   height: 44px;
+//   border-radius: 50%;
+//   background: rgba(255, 255, 255, 0.2);
+//   color: white;
+//   border: none;
+//   font-size: 24px;
+//   cursor: pointer;
+//   z-index: 10;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   transition: all 0.2s;
+  
+//   &:hover {
+//     background: rgba(255, 255, 255, 0.3);
+//     transform: scale(1.1);
+//   }
+// }
+
+// // Кнопки навигации
+// .modal-nav {
+//   position: absolute;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   width: 50px;
+//   height: 50px;
+//   border-radius: 50%;
+//   background: rgba(255, 255, 255, 0.2);
+//   color: white;
+//   border: none;
+//   font-size: 36px;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   transition: all 0.2s;
+//   z-index: 10;
+  
+//   &:hover {
+//     background: rgba(255, 255, 255, 0.3);
+//     transform: translateY(-50%) scale(1.1);
+//   }
+  
+//   &.modal-prev {
+//     left: 20px;
+//   }
+  
+//   &.modal-next {
+//     right: 20px;
+//   }
+// }
+
+// // Счетчик
+// .modal-counter {
+//   position: absolute;
+//   top: 20px;
+//   left: 20px;
+//   background: rgba(0, 0, 0, 0.6);
+//   color: white;
+//   padding: 6px 12px;
+//   border-radius: 20px;
+//   font-size: 14px;
+//   font-weight: 500;
+//   z-index: 10;
+// }
+
+// // Контент модального окна
+// .modal-content {
+//   width: 100%;
+//   height: calc(100% - 120px);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 20px;
+// }
+
+// .fullscreen-video {
+//   max-width: 90%;
+//   max-height: 100%;
+//   border-radius: 8px;
+//   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+// }
+
+// .image-wrapper {
+//   max-width: 90%;
+//   max-height: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .fullscreen-image {
+//   max-width: 100%;
+//   max-height: 100%;
+//   object-fit: contain;
+//   border-radius: 8px;
+//   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+//   animation: zoomIn 0.3s ease-in-out;
+// }
+
+// // Футер модального окна
+// .modal-footer {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+//   padding: 40px 20px 20px;
+//   color: white;
+//   text-align: center;
+// }
+
+// .modal-title {
+//   margin: 0 0 12px 0;
+//   font-size: 18px;
+//   font-weight: 500;
+// }
+
+// .modal-info {
+//   display: flex;
+//   gap: 12px;
+//   justify-content: center;
+//   flex-wrap: wrap;
+// }
+
+// .info-badge {
+//   background: rgba(255, 255, 255, 0.2);
+//   padding: 4px 12px;
+//   border-radius: 20px;
+//   font-size: 12px;
+//   color: white;
+// }
+
+// // Анимации
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
+
+// @keyframes zoomIn {
+//   from {
+//     transform: scale(0.8);
+//     opacity: 0;
+//   }
+//   to {
+//     transform: scale(1);
+//     opacity: 1;
+//   }
+// }
+
+// Стили для галереи (оставляем существующие)
+// .media-gallery {
+//   background: white;
+//   border-radius: 8px;
+//   padding: 24px;
+//   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+// }
+
+// .media-grid {
+//   display: grid;
+//   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+//   gap: 20px;
+// }
+
+// .media-item {
+//   position: relative;
+//   cursor: pointer;
+//   border-radius: 8px;
+//   overflow: hidden;
+//   aspect-ratio: 1 / 1;
+//   background: #f5f5f5;
+//   transition: transform 0.2s, box-shadow 0.2s;
+
+//   &:hover {
+//     transform: translateY(-4px);
+//     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+//     .media-overlay {
+//       opacity: 1;
+//     }
+//   }
+// }
+
+// .media-image {
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+// }
+
+// .video-thumbnail {
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+
+//   .thumbnail-video {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: cover;
+//   }
+
+//   .play-overlay {
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     width: 60px;
+//     height: 60px;
+//     background: rgba(0, 0, 0, 0.6);
+//     border-radius: 50%;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     transition: background 0.2s;
+
+//     .play-icon {
+//       width: 30px;
+//       height: 30px;
+//       color: white;
+//     }
+//   }
+
+//   &:hover .play-overlay {
+//     background: rgba(0, 0, 0, 0.8);
+//   }
+// }
+
+// .media-overlay {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   background: rgba(0, 0, 0, 0.5);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   opacity: 0;
+//   transition: opacity 0.2s;
+// }
+
+// .media-type-badge {
+//   background: rgba(0, 0, 0, 0.7);
+//   color: white;
+//   padding: 6px 12px;
+//   border-radius: 20px;
+//   font-size: 12px;
+//   font-weight: 500;
+// }
+
+// .media-empty {
+//   background: white;
+//   border-radius: 8px;
+//   padding: 60px 20px;
+//   text-align: center;
+//   color: #999;
+//   font-size: 16px;
+//   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+// }
+
+// // Адаптивность
+// @media screen and (max-width: 768px) {
+//   .media-grid {
+//     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+//     gap: 12px;
+//   }
+
+//   .media-gallery {
+//     padding: 16px;
+//   }
+  
+//   .modal-nav {
+//     width: 40px;
+//     height: 40px;
+//     font-size: 28px;
+//   }
+  
+//   .modal-title {
+//     font-size: 14px;
+//   }
+  
+//   .info-badge {
+//     font-size: 10px;
+//   }
+// }
+
+// @media screen and (max-width: 480px) {
+//   .modal-nav {
+//     width: 32px;
+//     height: 32px;
+//     font-size: 24px;
+    
+//     &.modal-prev {
+//       left: 10px;
+//     }
+    
+//     &.modal-next {
+//       right: 10px;
+//     }
+//   }
+  
+//   .modal-close {
+//     width: 36px;
+//     height: 36px;
+//     font-size: 20px;
+//     top: 10px;
+//     right: 10px;
+//   }
+  
+//   .modal-counter {
+//     font-size: 12px;
+//     top: 10px;
+//     left: 10px;
+//   }
+// }
+
+
+
+
+

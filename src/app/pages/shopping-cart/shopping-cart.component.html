@@ -1,29 +1,127 @@
 <app-bread-crumbs></app-bread-crumbs>
+
 <div class="container">
-    <div class="container-cart" [ngClass]="{'shadow': isLoading}">
-        <h2>Корзина</h2>
-        <span>Товаров — {{ this.userCart.length }}</span>
-        <div class="container-cart__action">
-            <label class="custom-checkbox">
-                <input type="checkbox" (change)="toggleCheckbox()" />
-                <span class="checkmark"></span>
-                Выбрать все
-            </label>
-            <button (click)="deleteSelected()" class="container-cart__action-delete">Удалить выбранное</button>
+    <div class="container-cart" [ngClass]="{'container-cart--loading': isLoading}">
+        <div class="container-cart__header">
+            <h2 class="container-cart__title">Корзина</h2>
+            <span class="container-cart__count">Товаров — {{ userCart.length }}</span>
         </div>
-        <div class="container-divider"></div>
-        <div class="container-cart__wrap">
-            @for(item of this.userCart; track item){
-                <app-shopping-card [product]="item" [value]="item.count" (updateList)="updateList()" [isSelected]="selectedArr.includes(item.id! ?? false)"></app-shopping-card>
-            } 
+        
+        <div class="container-cart__actions">
+            <label class="checkbox">
+                <input type="checkbox" (change)="toggleCheckbox()" [checked]="isAllSelected" />
+                <span class="checkbox__mark"></span>
+                <span class="checkbox__text">Выбрать все</span>
+            </label>
+            <button 
+                (click)="deleteSelected()" 
+                class="button button--delete"
+                [disabled]="selectedArr.length === 0">
+                Удалить выбранное
+            </button>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="container-cart__items">
+            @for(item of userCart; track item.id){
+                <app-shopping-card 
+                    [product]="item" 
+                    [value]="item.count" 
+                    (updateList)="updateList()" 
+                    [isSelected]="selectedArr.includes(item.id)">
+                </app-shopping-card>
+            } @empty {
+                <div class="container-cart__empty">
+                    <p>Ваша корзина пуста</p>
+                    <button [routerLink]="'/main/catalog'" class="button button--primary">Перейти в каталог</button>
+                </div>
+            }
         </div>
     </div>
+    
     <div class="container-request">
-        <span>Товары - {{ this.userCart.length }}</span>
-        <div class="container-request__comment">
-            <span>Если у вас есть пожелания или вопросы, можете указать их в этом поле и наш менеджер обязательно вам ответит</span>
-            <textarea type="text" rows="4"></textarea>
-        </div>
-        <button class="default-button" [disabled]="this.userCart.length === 0">ОСТАВИТЬ ЗАЯВКУ</button>
+        <form [formGroup]="orderForm" (ngSubmit)="sendForm()">
+            <div class="container-request__summary">
+                <span class="container-request__total">Всего товаров: <strong>{{ userCart.length }}</strong></span>
+            </div>
+            
+            <div class="container-request__comment">
+                <div class="form-field">
+                    <input 
+                        class="container-request__input" 
+                        placeholder="Имя" 
+                        formControlName="name"
+                        [class.invalid]="orderForm.get('name')?.invalid && orderForm.get('name')?.touched">
+                    @if(orderForm.get('name')?.invalid && orderForm.get('name')?.touched){
+                        <span class="error-message">Имя обязательно для заполнения</span>
+                    }
+                </div>
+
+                <div class="form-field">
+                    <input 
+                        class="container-request__input" 
+                        placeholder="Ваш телефон" 
+                        type="tel" 
+                        formControlName="phone"
+                        [class.invalid]="orderForm.get('phone')?.invalid && orderForm.get('phone')?.touched">
+                    @if(orderForm.get('phone')?.invalid && orderForm.get('phone')?.touched){
+                        <span class="error-message">Введите корректный номер телефона (минимум 10 цифр)</span>
+                    }
+                </div>
+
+                <div class="form-field">
+                    <input 
+                        class="container-request__input" 
+                        placeholder="E-mail" 
+                        type="email"
+                        formControlName="email"
+                        [class.invalid]="orderForm.get('email')?.invalid && orderForm.get('email')?.touched">
+                    @if(orderForm.get('email')?.invalid && orderForm.get('email')?.touched){
+                        <span class="error-message">Введите корректный email</span>
+                    }
+                </div>
+
+                <div class="form-field">
+                    <input 
+                        class="container-request__input" 
+                        placeholder="Адрес" 
+                        formControlName="address"
+                        [class.invalid]="orderForm.get('address')?.invalid && orderForm.get('address')?.touched">
+                    @if(orderForm.get('address')?.invalid && orderForm.get('address')?.touched){
+                        <span class="error-message">Адрес обязателен для заполнения</span>
+                    }
+                </div>
+
+                <label class="container-request__label">Комментарий к заказу</label>
+                <textarea 
+                    formControlName="comment"
+                    rows="4" 
+                    placeholder="Если у вас есть пожелания или вопросы, можете указать их в этом поле и наш менеджер обязательно вам ответит"
+                    class="container-request__textarea"></textarea>
+            </div>
+            
+            <button 
+                type="submit"
+                class="button button--primary button--full" 
+                [disabled]="userCart.length === 0 || orderForm.invalid || isSubmitting">
+                Оформить заявку
+            </button>
+        </form>
     </div>
 </div>
+
+@if(showSuccessMessage){
+    <div class="success-toast">
+        <div class="success-toast__content">
+            <svg class="success-toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="success-toast__text">
+                <strong>Заявка успешно отправлена!</strong>
+                <span>Наш менеджер свяжется с вами в ближайшее время</span>
+            </div>
+            <button class="success-toast__close" (click)="closeSuccessMessage()">✕</button>
+        </div>
+    </div>
+}

@@ -43,9 +43,15 @@
 .slide {
     flex: 0 0 100%;
     display: flex;
-    gap: 20px;
+    gap: 90px;
     align-items: center;
     height: 100%;
+}
+
+.slide-wrap{
+    width: 100%;
+    display: flex;
+    
 }
 
 /* Левая часть - изображение */
@@ -70,7 +76,7 @@
     color: #fff;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 30px;
     padding-right: 10px;
 }
 
@@ -78,7 +84,7 @@
     font-size: 18px;
     font-weight: bold;
     margin: 0;
-    color: #fff;
+    color: black;
 }
 
 .slide-right p {
@@ -86,19 +92,12 @@
     line-height: 1.4;
     margin: 0;
     opacity: 0.9;
-    color: #fff;
+    color: black;
 }
 
-.btn-details {
-    background-color: #ff6b35;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    width: fit-content;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
+.margin{
+    margin-left: auto;
+
 }
 
 .btn-details:hover {

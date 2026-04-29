@@ -29,7 +29,9 @@ export type TProductCardDetails = {
   available: boolean,
   search_tsv: string,
   media_list: TProductMedia[],
-  attributes: TProductAttributes[]
+  attributes: TProductAttributes[],
+  certificates_list: any[],
+  gallery: any;
 }
 
 export type TProductMedia = {
@@ -57,16 +59,20 @@ export type TProductAttributes = {
 export class ProductsService {
   private http = inject(HttpClient);
 
-  getProductsList$(name?: string): Observable<TProductsContent[]> {
+  getProductsList$(name?: string, popular?: boolean): Observable<TProductsContent[]> {
     let httpParams = new HttpParams()
     if(name){
       httpParams = httpParams.append('name', name)
     }
 
-    return this.http.get<TProductsContent[]>(`${environment.baseUrl}/products`, { params: httpParams })
+    if(popular){
+      httpParams = httpParams.append('popular', popular)
+    }
+
+    return this.http.get<TProductsContent[]>(`${environment.baseUrl}/v1/products`, { params: httpParams })
   }
 
   getProductDetails$(id: number): Observable<TProductCardDetails>{
-    return this.http.get<TProductCardDetails>(`${environment.baseUrl}/products/${id}`)
+    return this.http.get<TProductCardDetails>(`${environment.baseUrl}/v1/products/${id}`)
   }
 }

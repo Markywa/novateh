@@ -1,33 +1,55 @@
+<!-- shopping-card.component.html -->
 <div class="container">
     <label class="custom-checkbox">
         <input type="checkbox" (change)="toggleCheckbox()" [checked]="isSelected"/>
         <span class="checkmark"></span>
     </label>
-    <img class="container-img" [src]="(environment.baseUrl + product.media[0]) || 'assets/images/no-image.png'" alt="">
+    
+    <img class="container-img" [src]="(environment.baseUrl + product.media[0]) || 'assets/images/no-image.png'" [alt]="product.name">
+    
     <div class="container-info__wrap">
         <div class="container-info__description">
-          <span>{{ product.name }}</span>
-          <span class="wrap-text">{{ product.description }}</span>
+            <div class="product-header">
+                <span class="product-name">{{ product.name }}</span>
+                <span class="product-sku" *ngIf="product.sku">Арт.: {{ product.sku }}</span>
+            </div>
+            <span class="wrap-text">{{ product.description }}</span>
+            
+            <!-- Блок с атрибутами товара -->
+            <!-- <div class="product-attributes" *ngIf="product.attributes?.length">
+                <div class="attribute-item" *ngFor="let attr of product.attributes">
+                    <span class="attribute-name">{{ attr.name }}:</span>
+                    <span class="attribute-value">{{ attr.value }} {{ attr.unit || '' }}</span>
+                </div>
+            </div> -->
+            
+            <!-- Блок с ценой -->
+            <div class="product-price" *ngIf="product.price > 0">
+                <span class="price-value">{{ product.price | number:'1.2-2' }}</span>
+                <span class="price-currency">{{ product.currency }}</span>
+            </div>
         </div>
+        
         <button class="container-info__delete" (click)="deleteFromCart(product.id)">удалить</button>
     </div>
-     <div class="counter">
-      <button 
-        class="counter-btn counter-btn--minus"
-        (click)="decrement()"
-        [disabled]="value <= min"
-        [class.counter-btn--disabled]="value <= min">
-        −
-      </button>
-      
-      <span class="counter-value">{{ value }}</span>
-      
-      <button 
-        class="counter-btn counter-btn--plus"
-        (click)="increment()"
-        [disabled]="value >= max"
-        [class.counter-btn--disabled]="value >= max">
-        +
-      </button>
+    
+    <div class="counter">
+        <button 
+            class="counter-btn counter-btn--minus"
+            (click)="decrement()"
+            [disabled]="value <= min"
+            [class.counter-btn--disabled]="value <= min">
+            −
+        </button>
+        
+        <span class="counter-value">{{ value }}</span>
+        
+        <button 
+            class="counter-btn counter-btn--plus"
+            (click)="increment()"
+            [disabled]="value >= max"
+            [class.counter-btn--disabled]="value >= max">
+            +
+        </button>
     </div>
 </div>

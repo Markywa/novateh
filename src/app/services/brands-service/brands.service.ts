@@ -31,10 +31,10 @@ export class BrandsService {
       httpParams = httpParams.append('name', name)
     }
 
-    return this.http.get<TBrandsContent[]>(`${environment.baseUrl}/brands`, { params: httpParams })
+    return this.http.get<TBrandsContent[]>(`${environment.baseUrl}/v1/brands`, { params: httpParams })
   }
 
   getBrandsDetailsPage$(slug: string): Observable<TBrandDetailsContent>{
-    return this.http.get<TBrandDetailsContent>(`${environment.baseUrl}/brands/${slug}`)
+    return this.http.get<TBrandDetailsContent>(`${environment.baseUrl}/v1/brands/${slug}`)
   } 
 }

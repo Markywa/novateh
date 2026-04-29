@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 
 export interface SlideItem {
   imageSrc: string;
@@ -16,11 +17,12 @@ export interface SlideItem {
   styleUrls: ['./slider.component.scss'],
   imports: [CommonModule],
 })
-export class SliderComponent implements OnInit, AfterViewInit {
+export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() slides: SlideItem[] = [];
   @Input() backgroundImage: string = 'assets/images/slider-back.png';
   @Input() autoPlay: boolean = false;
   @Input() autoPlayInterval: number = 5000;
+  environment = environment
   
   currentIndex: number = 0;
   totalSlides: number = 0;
@@ -28,6 +30,15 @@ export class SliderComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.totalSlides = this.slides.length;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['slides']){
+      this.totalSlides = this.slides.length;
+      if (this.autoPlay && this.totalSlides > 1) {
+        this.startAutoPlay();
+      }
+    }
   }
 
   ngAfterViewInit(): void {
@@ -50,8 +61,9 @@ export class SliderComponent implements OnInit, AfterViewInit {
     if (this.currentIndex < this.totalSlides - 1) {
       this.currentIndex++;
     } else if (this.totalSlides > 0) {
-      this.currentIndex = 0; // Зацикливание
+      this.currentIndex = 0; 
     }
+    console.log(this.currentIndex);
     
     if (this.autoPlay) {
       this.resetAutoPlay();
@@ -62,7 +74,7 @@ export class SliderComponent implements OnInit, AfterViewInit {
     if (this.currentIndex > 0) {
       this.currentIndex--;
     } else if (this.totalSlides > 0) {
-      this.currentIndex = this.totalSlides - 1; // Зацикливание
+      this.currentIndex = this.totalSlides - 1; 
     }
     
     if (this.autoPlay) {
@@ -85,7 +97,6 @@ export class SliderComponent implements OnInit, AfterViewInit {
 
   onButtonClick(slide: SlideItem): void {
     if (slide.buttonLink) {
-      // Используйте Router для навигации
       console.log('Navigate to:', slide.buttonLink);
     } else {
       console.log('Button clicked for slide:', slide);

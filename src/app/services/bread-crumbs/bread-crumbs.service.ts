@@ -38,9 +38,6 @@ export class BreadCrumbsService {
       });
   }
 
-  /**
-   * Рекурсивно строим хлебные крошки из ActivatedRoute
-   */
   private buildBreadcrumbs(
     route: ActivatedRoute, 
     url: string = '', 
@@ -60,7 +57,7 @@ export class BreadCrumbsService {
 
       const label = this.getBreadcrumbLabel(child);
       if (label && label !== 'welcome') {
-        const isClickable = url !== this.router.url; // Текущая страница не кликабельна
+        const isClickable = url !== this.router.url;
         breadcrumbs.push({ label, url, isClickable });
       }
 
@@ -70,29 +67,20 @@ export class BreadCrumbsService {
     return breadcrumbs;
   }
 
-  /**
-   * Получаем читабельную метку для хлебной крошки
-   */
   private getBreadcrumbLabel(route: ActivatedRoute): string {
     const snapshot = route.snapshot;
     
-    // Пытаемся получить label из data
     if (snapshot.data && snapshot.data['breadcrumb']) {
       return snapshot.data['breadcrumb'];
     }
 
-    // Для динамических параметров (id, slug)
     if (snapshot.params['id'] || snapshot.params['slug']) {
       return snapshot.params['slug'] || snapshot.params['id'] || '';
     }
 
-    // Используем path как fallback
     return snapshot.url[0]?.path || '';
   }
 
-  /**
-   * Навигация по хлебной крошке
-   */
   navigateToBreadcrumb(breadcrumb: Breadcrumb): void {
     if (breadcrumb.isClickable) {
       this.router.navigate([breadcrumb.url]);

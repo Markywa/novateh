@@ -5,26 +5,51 @@
     </button>
   </div>
 
-  <div class="content">
+<div class="content">
     <h2>Задать вопрос</h2>
     <span>Здесь вы можете задать свой вопрос, оставить отзыв или обратиться к директору</span>
 
-    <form  (ngSubmit)="onSubmit()">
-        <input placeholder="Имя" [(ngModel)]="formData.name" required>
+    <form #questionForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+            <input placeholder="Имя" [(ngModel)]="formData.name" name="name" #name="ngModel" required minlength="2" maxlength="50">
+            <div class="error-message" *ngIf="name.invalid && name.touched">
+                <span *ngIf="name.errors?.['required']">Имя обязательно для заполнения</span>
+                <span *ngIf="name.errors?.['minlength']">Имя должно содержать минимум 2 символа</span>
+                <span *ngIf="name.errors?.['maxlength']">Имя не может превышать 50 символов</span>
+            </div>
+        </div>
 
-        <input placeholder="Ваш телефон" [(ngModel)]="formData.phone" required>
+        <div class="form-field">
+            <input placeholder="Ваш телефон" type="tel" [(ngModel)]="formData.phone" name="phone" #phone="ngModel" required pattern="^\+?[0-9]{10,15}$">
+            <div class="error-message" *ngIf="phone.invalid && phone.touched">
+                <span *ngIf="phone.errors?.['required']">Телефон обязателен для заполнения</span>
+                <span *ngIf="phone.errors?.['pattern']">Введите корректный номер телефона (10-15 цифр, возможно с +)</span>
+            </div>
+        </div>
 
-        <input placeholder="E-mail" [(ngModel)]="formData.email" required>
+        <div class="form-field">
+            <input placeholder="E-mail" type="email" [(ngModel)]="formData.email" name="email" #email="ngModel" required email>
+            <div class="error-message" *ngIf="email.invalid && email.touched">
+                <span *ngIf="email.errors?.['required']">E-mail обязателен для заполнения</span>
+                <span *ngIf="email.errors?.['email']">Введите корректный email адрес</span>
+            </div>
+        </div>
 
-        <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" required></textarea>
+        <div class="form-field">
+            <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="message" #message="ngModel" required minlength="10" maxlength="1000"></textarea>
+            <div class="error-message" *ngIf="message.invalid && message.touched">
+                <span *ngIf="message.errors?.['required']">Сообщение обязательно для заполнения</span>
+                <span *ngIf="message.errors?.['maxlength']">Сообщение не может превышать 1000 символов</span>
+            </div>
+        </div>
 
-      <button type="submit" class="default-button">
-        ОТПРАВИТЬ СООБЩЕНИЕ
-      </button>
+        <button type="submit" class="default-button" [disabled]="questionForm.invalid">
+            ОТПРАВИТЬ СООБЩЕНИЕ
+        </button>
 
-      <span class="policy-text">
-        Отправляя заявку, вы соглашаетесь с политикой конфиденциальности
-      </span>
+        <span class="policy-text">
+            Отправляя заявку, вы соглашаетесь с политикой конфиденциальности
+        </span>
     </form>
-  </div>
+</div>
 </div>

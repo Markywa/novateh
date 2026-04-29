@@ -20,6 +20,6 @@ export class NewsService {
   private http = inject(HttpClient);
 
   getNewsList$(only_published: boolean): Observable<NewsFields[]> {
-    return this.http.get<NewsFields[]>(`${environment.baseUrl}/news`, { params: {only_published: only_published} })
+    return this.http.get<NewsFields[]>(`${environment.baseUrl}/v1/news`, { params: {only_published: only_published} })
   }
 }

@@ -30,7 +30,6 @@ export class BreadCrumbsComponent {
   }
 
   formatLabel(label: string): string {
-    // Форматируем label (убираем дефисы, делаем первую букву заглавной и т.д.)
     return label
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))

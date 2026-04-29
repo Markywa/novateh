@@ -45,8 +45,133 @@
                     <h3>Недоступно</h3>
                 </div>
                 <div *ngSwitchCase="'view3'">
-                    <h3>Недоступно</h3>
+                    <div *ngSwitchCase="'view3'">
+                        @if(productEntity.certificates_list && productEntity.certificates_list.length > 0) {
+                            <div class="certificates-list">
+                                @for(certificate of productEntity.certificates_list; track certificate.id) {
+                                    <div class="certificate-item" (click)="downloadCertificate(certificate)">
+                                        <svg-icon src="assets/images/pdf.svg"></svg-icon>
+                                        <span class="certificate-title">{{ certificate.title }}.pdf</span>
+                                        <!-- <span class="certificate-download">Скачать</span> -->
+                                    </div>
+                                }
+                            </div>
+                        } @else {
+                            <div class="certificates-empty">
+                                <span>Сертификаты отсутствуют</span>
+                            </div>
+                        }
+                    </div>
                 </div>
+<div class="container" tabindex="0" (keydown)="onKeydown($event)">
+
+  <div *ngSwitchCase="'view4'">
+      @if(galleryItems.length > 0) {
+          <div class="media-gallery">
+              <div class="media-grid">
+                  @for(mediaItem of galleryItems; track mediaItem.id; let i = $index) {
+                      <div class="media-item" (click)="openMediaPreview(mediaItem, i)">
+                          @if(mediaItem.type === 'video') {
+                              <div class="video-thumbnail">
+                                  <video [src]="environment.baseUrl +mediaItem.url" preload="metadata" class="thumbnail-video"></video>
+                                  <div class="play-overlay">
+                                      <svg-icon src="assets/images/play-button.svg" class="play-icon"></svg-icon>
+                                  </div>
+                              </div>
+                          } @else {
+                              <img [src]="environment.baseUrl +mediaItem.url" [alt]="mediaItem.title" class="media-image" loading="lazy">
+                          }
+                          <div class="media-overlay">
+                              <span class="media-type-badge">
+                                  {{ mediaItem.type === 'video' ? 'Видео' : 'Фото' }}
+                              </span>
+                          </div>
+                      </div>
+                  }
+              </div>
+          </div>
+      } @else {
+          <div class="media-empty">
+              <span>Фото и видео материалы отсутствуют</span>
+          </div>
+      }
+  </div>
+
+  @if(previewVisible && previewMedia) {
+    <div class="fullscreen-modal" (click)="closePreview()" (wheel)="onWheel($event)">
+        <div class="fullscreen-container" (click)="$event.stopPropagation()">
+            
+            <button class="modal-close" (click)="closePreview()" aria-label="Закрыть">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            
+            @if(galleryItems.length > 1) {
+                <button class="modal-nav modal-prev" (click)="prevItem()" aria-label="Предыдущий">
+                    ‹
+                </button>
+                <button class="modal-nav modal-next" (click)="nextItem()" aria-label="Следующий">
+                    ›
+                </button>
+            }
+            
+            <div class="modal-counter">
+                {{ currentIndex + 1 }} / {{ galleryItems.length }}
+            </div>
+            
+            <div class="modal-content">
+                @if(previewMedia.type === 'video') {
+                    <video 
+                        controls 
+                        autoplay 
+                        class="fullscreen-video"
+                        [src]="environment.baseUrl + previewMedia.url"
+                        [title]="previewMedia.title">
+                        <source [src]="environment.baseUrl + previewMedia.url" [type]="previewMedia.mime_type">
+                        Ваш браузер не поддерживает видео.
+                    </video>
+                } @else {
+                    <div 
+                        class="image-container"
+                        [class.dragging]="isDragging"
+                        (mousedown)="startDragging($event)"
+                        (mousemove)="onDragging($event)"
+                        (mouseup)="stopDragging()"
+                        (mouseleave)="stopDragging()">
+                        
+                        @if(!imageLoaded) {
+                            <div class="image-loader">
+                                <div class="spinner"></div>
+                            </div>
+                        }
+                        
+                        <img 
+                            [src]="environment.baseUrl + previewMedia.url" 
+                            [alt]="previewMedia.title" 
+                            class="fullscreen-image"
+                            [style.transform]="'translate(' + position.x + 'px, ' + position.y + 'px) scale(' + scale + ')'"
+                            [style.cursor]="scale > 1 ? 'grab' : 'default'"
+                            [class.loaded]="imageLoaded"
+                            (load)="onImageLoad()"
+                            loading="eager">
+                    </div>
+                    
+                    @if(scale > 1) {
+                        <div class="drag-hint">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M8 5V19M16 5V19M5 8H19M5 16H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Перетащите для просмотра</span>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+</div>
                 <div *ngSwitchDefault>
                     <h3>Пожалуйста, выберите вкладку.</h3>
                 </div>
@@ -82,3 +207,4 @@
 
 
 </div>
+

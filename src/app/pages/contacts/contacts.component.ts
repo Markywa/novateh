@@ -1,21 +1,54 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { LayoutPageComponent } from '../layout-page/layout-page.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
+import { RequestService } from '../../services/request/request.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ContactsService } from '../../services/contacts/contacts.service';
 
 @Component({
   selector: 'app-contacts',
   standalone: true,
   imports: [
     LayoutPageComponent,
-    BreadCrumbsComponent
+    BreadCrumbsComponent,
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.scss'
 })
-export class ContactsComponent {
+export class ContactsComponent implements OnInit {
   private breadCrumbs = inject(BreadCrumbsService);
+  private contactsService = inject(ContactsService);
 
+ngOnInit(): void {
+  this.contactsService.getContacts$().subscribe({
+    next: (htmlString) => {
+      console.log(htmlString); // сырой HTML как строка
+      
+      // Варианты обработки HTML:
+      
+      // 1. Парсинг через DOMParser
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlString, 'text/html');
+      const contacts = doc.querySelectorAll('.contact-item');
+      
+      // 2. Создание временного элемента
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlString;
+      const contactsData = tempDiv.querySelectorAll('.contact');
+      
+      // 3. Извлечение данных через регулярные выражения
+      const pattern = /<div class="contact-name">(.*?)<\/div>/g;
+      const matches = [...htmlString.matchAll(pattern)];
+      
+    },
+    error: (error) => {
+      console.error('Error loading HTML:', error);
+    }
+  });
+}
   public information = {
     address: [
       {
@@ -78,4 +111,39 @@ export class ContactsComponent {
       },
     ],
   }
+
+    private requestService = inject(RequestService);
+  
+    public formData = {
+      name: '',
+      phone: '',
+      email: '',
+      message: ''
+    };
+  
+  
+    onSubmit() {
+      this.requestService.sendRequest(this.formData).subscribe({
+        complete: () => {
+          this.showSuccessMessage = true;
+
+          this.formData = {
+            name: '',
+            phone: '',
+            email: '',
+            message: ''
+          };
+
+          setTimeout(() => {
+            this.closeSuccessMessage();
+          }, 5000);
+        }
+      })
+    }
+
+    showSuccessMessage: boolean = false;
+
+    closeSuccessMessage(): void {
+      this.showSuccessMessage = false;
+    }
 }

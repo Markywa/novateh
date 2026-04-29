@@ -30,10 +30,10 @@ export class GroupsService {
       httpParams = httpParams.append('name', name)
     }
 
-    return this.http.get<TGroupsContent[]>(`${environment.baseUrl}/groups`, { params: httpParams })
+    return this.http.get<TGroupsContent[]>(`${environment.baseUrl}/v1/groups`, { params: httpParams })
   }
 
   getGroupDetailsPage$(slug: string): Observable<TGroupsPageContent>{
-    return this.http.get<TGroupsPageContent>(`${environment.baseUrl}/groups/${slug}`)
+    return this.http.get<TGroupsPageContent>(`${environment.baseUrl}/v1/groups/${slug}`)
   } 
 }

@@ -1,2 +1,54 @@
 <app-bread-crumbs></app-bread-crumbs>
-<div>СЕРТИФИКАТЫ</div>
+<div class="certificates-container">
+  <h1 class="page-title">СЕРТИФИКАТЫ</h1>
+  
+  @if(isLoading){
+    <app-loader></app-loader>
+  } @else {
+  <div class="certificates-list">
+    <div *ngFor="let cert of certificates" class="certificate-item">
+      <div class="certificate-info">
+        <div class="certificate-title">{{ cert.title }}</div>
+        <div class="certificate-meta">
+          <span class="file-size">Размер: {{ formatFileSize(cert.size_bytes) }}</span>
+          <span class="file-type">Тип: {{ getFileType(cert.mime_type) }}</span>
+        </div>
+      </div>
+      <div class="certificate-actions">
+        <!-- <a [href]="environment.baseUrl + cert.url" 
+            target="_blank"
+           [download]="getFileName(cert)"
+           
+           class="download-btn">
+          <span class="btn-icon"></span>
+          Скачать
+        </a> -->
+        <button class="download-btn" (click)="downloadFile(cert)">Скачать</button>
+        <button (click)="previewFile(cert)" class="preview-btn" *ngIf="isPreviewable(cert.mime_type)">
+          <span class="btn-icon"></span>
+          Предпросмотр
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+<div class="modal" [class.show]="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ selectedCert?.title }}</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <iframe *ngIf="selectedCert?.mime_type === 'application/pdf'" 
+              [src]="environment.baseUrl + selectedCert!.url | safeUrl" 
+              width="100%" 
+              height="700px">
+      </iframe>
+      <img *ngIf="selectedCert?.mime_type?.startsWith('image/')" 
+           [src]="selectedCert?.url" 
+           alt="{{ selectedCert?.title }}">
+    </div>
+  </div>
+</div>

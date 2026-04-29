@@ -165,7 +165,7 @@ export class HeaderComponent {
         if (!query || query.trim().length < 2) {
           return of(null);
         }
-        return this.http.get<any>(`${environment.baseUrl}/search?q=${encodeURIComponent(query)}`).pipe(
+        return this.http.get<any>(`${environment.baseUrl}/v1/search?q=${encodeURIComponent(query)}`).pipe(
           catchError(error => {
             console.error('Search error:', error);
             return of(null);

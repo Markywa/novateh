@@ -1,57 +1,69 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ShoppingCardComponent } from '../../shared/shopping-card/shopping-card.component';
-import { CartService } from '../../services/cart-service/cart.service';
-import { ProductCardComponent } from '../../shared/product-card/product-card.component';
-import { ProductsService } from '../../services/products-service/products.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { forkJoin, map } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { CommonModule, NgClass } from "../../../../node_modules/@angular/common";
+
+import { ShoppingCardComponent } from '../../shared/shopping-card/shopping-card.component';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
+import { CartService } from '../../services/cart-service/cart.service';
+import { ProductsService } from '../../services/products-service/products.service';
+import { OrdersService } from '../../services/orders/orders.service';
 
 @Component({
   selector: 'app-shopping-cart',
   standalone: true,
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    RouterLink,
     ShoppingCardComponent,
     AngularSvgIconModule,
-    NgClass,
-    CommonModule,
-    BreadCrumbsComponent
-],
+    BreadCrumbsComponent,
+  ],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.scss'
 })
 export class ShoppingCartComponent implements OnInit {
-  isChecked: boolean = false;
   private cartService = inject(CartService);
   private productService = inject(ProductsService);
+  private ordersService = inject(OrdersService);
+  private fb = inject(FormBuilder);
+  
   public isLoading = false;
-  public userCart: any = [];
+  public isSubmitting = false;
+  public userCart: any[] = [];
   public selectedArr: number[] = [];
-
-  toggleCheckbox() {
-    if(this.userCart.length === this.selectedArr.length){
-      this.selectedArr = [];
-    } else {
-      const allIds = this.userCart.map((item: any) => item.id);
-      this.selectedArr = [...new Set(allIds)] as number[];
-    }
+  public showSuccessMessage = false;
+  
+  public orderForm: FormGroup;
+  
+  get isAllSelected(): boolean {
+    return this.userCart.length > 0 && this.selectedArr.length === this.userCart.length;
   }
-
+  
+  constructor() {
+    this.orderForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      phone: ['', [Validators.required, Validators.pattern(/^[\d\s\-+()]{10,}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      address: ['', [Validators.required, Validators.minLength(5)]],
+      comment: ['']
+    });
+  }
+  
   ngOnInit(): void {
     this.getUserCart();
   }
-
+  
   getUserCart(): void {
     this.isLoading = true;
     const items = this.cartService.getCart();
-    console.log(items);
-    
     
     if (items.length === 0) {
       this.userCart = [];
+      this.selectedArr = [];
       this.isLoading = false;
       return;
     }
@@ -65,24 +77,86 @@ export class ShoppingCartComponent implements OnInit {
         }))
       )
     );
-
+    
     forkJoin(requests).subscribe({
       next: (products) => {
-        this.userCart = products;        
+        this.userCart = products;
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Ошибка загрузки корзины:', error);
+        this.isLoading = false;
       }
     });
   }
-
+  
+  toggleCheckbox(): void {
+    if (this.isAllSelected) {
+      this.selectedArr = [];
+    } else {
+      const allIds = this.userCart.map(item => item.id);
+      this.selectedArr = [...allIds];
+    }
+  }
+  
   updateList(): void {
     this.getUserCart();
   }
-
+  
   deleteSelected(): void {
-    this.cartService.removeFromCart(this.selectedArr)
+    if (this.selectedArr.length === 0) return;
+    
+    this.cartService.removeFromCart(this.selectedArr);
+    this.selectedArr = [];
     this.getUserCart();
+  }
+  
+  sendForm(): void {
+    if (this.orderForm.invalid || this.userCart.length === 0) {
+      // Отмечаем все поля как touched для показа ошибок
+      Object.keys(this.orderForm.controls).forEach(key => {
+        const control = this.orderForm.get(key);
+        control?.markAsTouched();
+      });
+      return;
+    }
+    
+    this.isSubmitting = true;
+    
+    const items = this.cartService.getCart();
+    const orderData = {
+      ...this.orderForm.value,
+      items: items.map(item => ({ product_id: item.id, qty: item.count }))
+    };
+    
+    this.ordersService.postOrder$(orderData).subscribe({
+      next: () => {
+        this.showSuccessMessage = true;
+        
+        this.cartService.clearCart();
+        
+        this.userCart = [];
+        this.selectedArr = [];
+        
+        this.orderForm.reset();
+        
+        setTimeout(() => {
+          this.closeSuccessMessage();
+        }, 5000);
+        
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Ошибка при отправке заказа:', error);
+        this.isSubmitting = false;
+      },
+      complete: () => {
+        this.isSubmitting = false;
+      }
+    });
+  }
+  
+  closeSuccessMessage(): void {
+    this.showSuccessMessage = false;
   }
 }

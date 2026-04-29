@@ -22,15 +22,38 @@
         </div>
         <div class="container-form">
             <span class="container-section__item-title">Напишите нам</span>
-            <div class="container-form__wrap">
-                <input type="text" placeholder="Имя">
-                <input type="text" placeholder="Email">
-                <textarea name="" id="" rows="4"></textarea>
-            </div>
-            <span class="container-form__description">Нажимая на кнопку, вы подтверждаете своё согласие
-            на обработку персональных данных и ознакомление с
-            политикой конфиденциальности</span>
-            <button class="default-button">Отправить</button>
+            <form (ngSubmit)="onSubmit()" class="container-form__wrap">
+                <input placeholder="Имя" [(ngModel)]="formData.name" name="Имя" required>
+
+                <input placeholder="Ваш телефон" type="number" [(ngModel)]="formData.phone" name="Телефон" required>
+
+                <input placeholder="E-mail" [(ngModel)]="formData.email" name="Емаил" required>
+
+                <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="Текст" required></textarea>
+
+                <button type="submit" class="default-button">
+                    ОТПРАВИТЬ
+                </button>
+
+                <span class="container-form__description">Нажимая на кнопку, вы подтверждаете своё согласие
+                    на обработку персональных данных и ознакомление с
+                    политикой конфиденциальности</span>
+            </form>
         </div>
     </div>
 </div>
+
+@if(showSuccessMessage){
+    <div class="success-toast">
+        <div class="success-toast__content">
+            <svg class="success-toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="success-toast__text">
+                <strong>Заявка успешно отправлена!</strong>
+                <span>Наш менеджер свяжется с вами в ближайшее время</span>
+            </div>
+            <button class="success-toast__close" (click)="closeSuccessMessage()">✕</button>
+        </div>
+    </div>
+}

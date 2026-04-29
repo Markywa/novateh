@@ -8,14 +8,16 @@
             <div class="slider-track" [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'">
                 <div class="slide" *ngFor="let slide of slides; let i = index">
                     <div class="slide-left">
-                        <img [src]="slide.imageSrc" [alt]="'Slide ' + (i + 1) + ' image'">
+                        <img [src]="environment.baseUrl + slide.imageSrc" [alt]="'Slide ' + (i + 1) + ' image'">
                     </div>
                     <div class="slide-right">
                         <h3>{{ slide.title }}</h3>
                         <p>{{ slide.description }}</p>
-                        <button class="btn-details" (click)="onButtonClick(slide)">
-                            {{ slide.buttonText || 'Подробнее' }}
-                        </button>
+                        <div class="slide-wrap">
+                            <button class="default-button margin" (click)="onButtonClick(slide)">
+                                {{ slide.buttonText || 'Подробнее' }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

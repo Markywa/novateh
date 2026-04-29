@@ -36,9 +36,8 @@ export class NewsDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Получаем ID новости из URL
     this.route.params.subscribe(params => {
-      this.newsId = +params['id']; // Преобразуем строку в число
+      this.newsId = +params['id']; 
       if (this.newsId) {
         this.fetchNewsData();
       } else {
@@ -52,9 +51,7 @@ export class NewsDetailComponent implements OnInit {
     this.loading = true;
     this.error = null;
     
-    // Запрос к серверу для получения данных новости
-    // Замените URL на ваш реальный API endpoint
-    const apiUrl = `${environment.baseUrl}/news`;
+    const apiUrl = `${environment.baseUrl}/v1/news`;
     
     this.http.get<NewsItem>(apiUrl).subscribe({
       next: (data: any) => {
@@ -69,7 +66,6 @@ export class NewsDetailComponent implements OnInit {
     });
   }
 
-  // Метод для форматирования даты
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('ru-RU', {

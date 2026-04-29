@@ -1,11 +1,13 @@
+// shopping-card.component.ts (обновлённый)
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Добавьте для *ngIf и пайпов
 import { CartService } from '../../services/cart-service/cart.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-shopping-card',
   standalone: true,
-  imports: [],
+  imports: [CommonModule], // Добавлен CommonModule для *ngIf и number pipe
   templateUrl: './shopping-card.component.html',
   styleUrl: './shopping-card.component.scss'
 })
@@ -16,6 +18,7 @@ export class ShoppingCardComponent {
 
   toggleCheckbox() {
     this.isChecked = !this.isChecked;
+    this.checked.emit(this.product?.id);
   }
 
   @Input() value: number = 1;
@@ -46,13 +49,17 @@ export class ShoppingCardComponent {
 
   private updateValue(newValue: number): void {
     this.value = newValue;
-    this.cartService.updateCount(this.product.id, newValue);
+    if (this.cartService) {
+      this.cartService.updateCount(this.product.id, newValue);
+    }
     this.valueChange.emit(this.value);
     this.changed.emit(this.value);
   }
 
   public deleteFromCart(id: number): void {
-    this.cartService.removeFromCart(id);
+    if (this.cartService) {
+      this.cartService.removeFromCart(id);
+    }
     this.updateList.emit();
   }
 }

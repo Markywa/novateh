@@ -1,4 +1,4 @@
-// Стили для загрузки
+
 .loading-state {
   text-align: center;
   padding: 50px 20px;
@@ -24,7 +24,6 @@
   100% { transform: rotate(360deg); }
 }
 
-// Стили для ошибки
 .error-state {
   text-align: center;
   padding: 50px 20px;
@@ -58,7 +57,6 @@
   }
 }
 
-// Стили для контента новости
 .news-content {
   background: white;
   border-radius: 8px;
@@ -146,7 +144,6 @@
   }
 }
 
-// Адаптивность
 @media (max-width: 768px) {
   .news-detail-container {
     padding: 10px;
