@@ -1,29 +1,71 @@
 <app-bread-crumbs></app-bread-crumbs>
 <div class="container">
-    <div class="container-section">
-        <h2 class="main-title">КАТАЛОГ ПРОДУКЦИИ</h2>
+    
+    @if(isSearchMode && searchQuery) {
+        <div class="search-header">
+            <h2>Результаты поиска: "{{ searchQuery }}"</h2>
+        </div>
+    }
+    
+    @if(searchLoading) {
+        <div class="container-section__load">
+            <app-loader></app-loader>
+        </div>
+    } @else {
         
-        <h3>ПРОИЗВОДИТЕЛИ</h3>
-        @if(brandsLoading){
-            <app-loader></app-loader>
-        } @else {
-            <app-producer-line [producerList]="brandsList"></app-producer-line>
-        }
-    </div>
-    <div class="container-section">
-        <h3>ПО НАЗНАЧЕНИЮ</h3>
-         @if(groupsLoading){
-            <app-loader></app-loader>
-        } @else {
-            <app-group-line [groupList]="groupsList"></app-group-line>
-        }
-    </div>
         <div class="container-section">
-        <h3>ПОПУЛЯРНАЯ ПРОДУКЦИЯ</h3>
-         @if(popularProductLoading){
-            <app-loader></app-loader>
-        } @else {
-            <app-product-line [productList]="popularProductList"></app-product-line>
-        }
-    </div>
+            @if(isSearchMode) {
+                <h3>ПРОИЗВОДИТЕЛИ ПО ЗАПРОСУ "{{ searchQuery }}"</h3>
+            } @else {
+                <h3>ПРОИЗВОДИТЕЛИ</h3>
+            }
+            
+            @if(brandsLoading){
+                <div class="container-section__load">
+                    <app-loader></app-loader>
+                </div>
+            } @else if(brandsList.length === 0) {
+                <div class="empty-state">Нет данных о производителях</div>
+            } @else {
+                <app-producer-line [producerList]="brandsList"></app-producer-line>
+            }
+        </div>
+        
+        <div class="container-section">
+            @if(isSearchMode) {
+                <h3>ПО НАЗНАЧЕНИЮ ПО ЗАПРОСУ "{{ searchQuery }}"</h3>
+            } @else {
+                <h3>ПО НАЗНАЧЕНИЮ</h3>
+            }
+            
+            @if(groupsLoading){
+                <div class="container-section__load">
+                    <app-loader></app-loader>
+                </div>
+            } @else if(groupsList.length === 0) {
+                <div class="empty-state">Нет данных по категориям</div>
+            } @else {
+                <app-group-line [groupList]="groupsList"></app-group-line>
+            }
+        </div>
+        
+        <div class="container-section">
+            @if(isSearchMode) {
+                <h3>ТОВАРЫ ПО ЗАПРОСУ "{{ searchQuery }}"</h3>
+            } @else {
+                <h3>ПОПУЛЯРНАЯ ПРОДУКЦИЯ</h3>
+            }
+            
+            @if(popularProductLoading){
+                <div class="container-section__load">
+                    <app-loader></app-loader>
+                </div>
+            } @else if(popularProductList.length === 0) {
+                <div class="empty-state">Товары не найдены</div>
+            } @else {
+                <app-product-line [productList]="popularProductList"></app-product-line>
+            }
+        </div>
+        
+    }
 </div>

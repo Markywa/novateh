@@ -1,4 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { ProducerLineComponent } from '../../components/producer-line/producer-line.component';
 import { NewsSectionComponent } from '../../components/news-section/news-section.component';
 import { ProductLineComponent } from '../../components/product-line/product-line.component';
@@ -11,6 +14,24 @@ import { GroupLineComponent } from '../../components/group-line/group-line.compo
 import { NewsFields, NewsService } from '../../services/news/news.service';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { environment } from '../../../environments/environment';
+
+export interface TSearchResult {
+  navigation: {
+    mode: string;
+  };
+  query: string;
+  results: {
+    products: TProductsContent[];
+    brands: TBrandsContent[];
+    groups: TGroupsContent[];
+  };
+  brands: TBrandsContent[];
+  characteristics: any[];
+  groups: TGroupsContent[];
+  products: TProductsContent[];
+  tokens: string[];
+}
 
 @Component({
   selector: 'app-catalog',
@@ -28,45 +49,123 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
 })
-export class CatalogComponent implements OnInit {
+export class CatalogComponent implements OnInit, OnDestroy {
   private brandsService = inject(BrandsService);
   private groupsService = inject(GroupsService);
   private productsService = inject(ProductsService);
   private newsService = inject(NewsService);
-  public brandsLoading = true;
-  public groupsLoading = true;
-  public popularProductLoading = true;
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  
+  private querySubscription?: Subscription;
+  private searchSubscription?: Subscription;
+  
+  public brandsLoading = false;
+  public groupsLoading = false;
+  public popularProductLoading = false;
   public brandsList: TBrandsContent[] = [];
   public groupsList: TGroupsContent[] = [];
   public popularProductList: TProductsContent[] = [];
-  public newsList: NewsFields[] = []
+  public newsList: NewsFields[] = [];
+  
+  public isSearchMode = false;
+  public searchLoading = false;
+  public searchQuery = '';
 
   ngOnInit(): void {
+    this.querySubscription = this.route.queryParams.subscribe(params => {
+      const query = params['query'];
+      
+      if (query && query.trim()) {
+        this.searchQuery = query;
+        this.performSearch(query);
+      } else {
+        this.isSearchMode = false;
+        this.loadCatalogData();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.querySubscription?.unsubscribe();
+    this.searchSubscription?.unsubscribe();
+  }
+
+  private performSearch(query: string): void {
+    this.searchSubscription?.unsubscribe();
+    
+    this.isSearchMode = true;
+    this.searchLoading = true;
+    
+    this.brandsList = [];
+    this.groupsList = [];
+    this.popularProductList = [];
+    
+    this.searchSubscription = this.http.get<any>(`${environment.baseUrl}/v1/search?q=${encodeURIComponent(query)}`)
+      .subscribe({
+        next: (response) => {
+          this.searchLoading = false;
+          
+          this.brandsList = response.brands || response.results?.brands || [];
+          this.groupsList = response.groups || response.results?.groups || [];
+          this.popularProductList = response.products || response.results?.products || [];
+          
+        },
+        error: (error) => {
+          console.error('Search error:', error);
+          this.searchLoading = false;
+          this.brandsList = [];
+          this.groupsList = [];
+          this.popularProductList = [];
+        }
+      });
+  }
+
+  private loadCatalogData(): void {
+    this.brandsLoading = true;
     this.brandsService.getBrandsList$().subscribe({
       next: (response) => {
         this.brandsLoading = false;
         this.brandsList = response;
       },
-      error: () => this.brandsLoading = false
+      error: () => {
+        this.brandsLoading = false;
+        this.brandsList = [];
+      }
     });
 
+    this.groupsLoading = true;
     this.groupsService.getGroupsList$().subscribe({
       next: (response) => {
         this.groupsLoading = false;
         this.groupsList = response;
       },
-      error: () => this.groupsLoading = false
+      error: () => {
+        this.groupsLoading = false;
+        this.groupsList = [];
+      }
     });
 
+    this.popularProductLoading = true;
     this.productsService.getProductsList$().subscribe({
       next: (response) => {
         this.popularProductLoading = false;
         this.popularProductList = response;
       },
-      error: () => this.popularProductLoading = false
+      error: () => {
+        this.popularProductLoading = false;
+        this.popularProductList = [];
+      }
     });
 
-    this.newsService.getNewsList$(true).subscribe((response) => this.newsList = response)
+    this.newsService.getNewsList$(true).subscribe({
+      next: (response) => {
+        this.newsList = response;
+      },
+      error: () => {
+        this.newsList = [];
+      }
+    });
   }
-
 }

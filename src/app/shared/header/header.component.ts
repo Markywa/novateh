@@ -201,4 +201,11 @@ export class HeaderComponent {
       this.showDropdown = false;
     }
   }
+
+  onEnterPressed(): void {
+    this.router.navigate(['/main/catalog'], { 
+      queryParams: { query: this.searchControl.value } 
+    });
+    this.clearSearch();
+  }
 }

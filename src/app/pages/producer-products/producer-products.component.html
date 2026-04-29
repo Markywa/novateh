@@ -6,11 +6,40 @@
             <span class="main-title">Товары {{ brandEntity.brand.name }}</span>
             <img class="container-header__img" [src]="env.baseUrl + brandEntity.brand.media || 'assets/images/no-image2.png'"/>
         </div>
-        @for(categories of brandEntity.categories; track categories.id){
-        <div class="container-categories">
-            <span class="second-title">{{ categories.name }}</span>
-            <app-product-line [productList]="categories.products"></app-product-line>
+        
+        <div class="category-buttons">
+            <button 
+                class="category-btn" 
+                [class.active]="selectedCategoryId === null"
+                (click)="filterByCategory(null)">
+                Вся продукция
+            </button>
+            @for(category of brandEntity.categories; track category.id){
+                <button 
+                    class="category-btn"
+                    [class.active]="selectedCategoryId === category.id"
+                    (click)="filterByCategory(category.id)">
+                    {{ category.name }}
+                </button>
+            }
         </div>
+
+        @if(selectedCategoryId === null){
+            @for(category of brandEntity.categories; track category.id){
+                <div class="container-categories">
+                    <span class="second-title">{{ category.name }}</span>
+                    <app-product-line [productList]="category.products"></app-product-line>
+                </div>
+            }
+        } @else {
+            @for(category of brandEntity.categories; track category.id){
+                @if(selectedCategoryId === category.id){
+                    <div class="container-categories">
+                        <span class="second-title">{{ category.name }}</span>
+                        <app-product-line [productList]="category.products"></app-product-line>
+                    </div>
+                }
+            }
         }
     }
 </div>

@@ -58,6 +58,7 @@
                     class="search-input"
                     (focus)="showDropdown = true"
                     autocomplete="off"
+                    (keydown.enter)="onEnterPressed()"
                     />
                      <div class="search-icons">
                         <svg *ngIf="isLoading" class="spinner" viewBox="0 0 50 50">
