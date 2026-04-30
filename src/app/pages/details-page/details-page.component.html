@@ -177,6 +177,14 @@
                 </div>
             </div>
         </div>
+
+    <!-- Ассортимент отображается перед meta-info -->
+    @if(parsedAssortmentHtml) {
+        <div class="assortment-section">
+            <div [innerHTML]="parsedAssortmentHtml"></div>
+        </div>
+    }
+
         <div class="meta-info">
             <div class="header" colspan="2">
                 <span>Поможем и проконсультируем по всем вопросам</span>

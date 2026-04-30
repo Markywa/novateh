@@ -32,6 +32,7 @@ export type TProductCardDetails = {
   attributes: TProductAttributes[],
   certificates_list: any[],
   gallery: any;
+  assortment_html: string;
 }
 
 export type TProductMedia = {

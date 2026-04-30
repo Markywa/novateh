@@ -197,7 +197,7 @@
                 <span class="section-title">Категория</span>
             </div>
             <div class="group-card"  [routerLink]="'/main/group/' + response.navigation.group.slug" (click)="closeDropdown()">
-                <img [src]="response.navigation.group.media || 'assets/images/no-image.png'" 
+                <img [src]="environment.baseUrl + response.navigation.group.media || 'assets/images/no-image.png'" 
                     [alt]="response.navigation.group.name"
                     class="group-image">
                 <div class="group-info">
@@ -222,7 +222,7 @@
                     [routerLink]="'/main/product/' + product.id"
                     (click)="closeDropdown()">
                 
-                <img [src]="product.media[0] || 'assets/images/no-image.png'" 
+                <img [src]="environment.baseUrl + product.media[0] || 'assets/images/no-image.png'" 
                     [alt]="product.name"
                     class="product-image"
                     (error)="onImageError($event)">
