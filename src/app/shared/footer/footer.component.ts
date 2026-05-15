@@ -78,7 +78,7 @@ export class FooterComponent implements AfterViewInit{
           layers: [
             new TileLayer({
               source: new XYZ({
-                url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+                url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
               })
             })
           ],
