@@ -7,7 +7,6 @@
         flex-direction: row;
         justify-content: space-between;
         padding: 16px 0;
-        gap: 12px;
         align-items: center;
         max-width: 1140px;
         margin: 0 auto;
@@ -86,7 +85,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 4px 8px;
     border-radius: 6px;
     transition: all 0.2s ease;
     text-decoration: none;
@@ -99,8 +98,8 @@
     
     .phone-number {
         font-family: 'Inter', monospace;
-        font-size: 22px;
-        font-weight: 500;
+        font-size: 18px;
+        font-weight: 600;
         color: #0f172a;
         letter-spacing: 0.3px;
         transition: color 0.2s ease;
