@@ -31,8 +31,12 @@
         <div class="container-menu__info">
             <!-- <span>Красноярск, ул.60лет Октября 78</span>
             <span>+79832070699</span> -->
-            <span>{{ contact.address }}</span>
-            <span>{{ contact.phone }}</span>
+            <span>{{ contact.address }}</span>            
+            <a [href]="'tel:' + contact.phone" class="phone-link">
+                <span class="phone-number">
+                    {{ contact.phone }}
+                </span>
+            </a>
         </div>
         <div class="container-menu__rout">
             <ng-container *ngFor="let item of linkArr">

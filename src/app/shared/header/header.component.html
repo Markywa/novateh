@@ -1,9 +1,11 @@
 <div class="container">
     <div class="container__wrap">
         <div class="container-menu">
-            <span>
-                {{ contactPhone$ | async }}
-            </span>
+            <a [href]="'tel:' + (contactPhone$ | async)" class="phone-link">
+                <span class="phone-number">
+                    {{ contactPhone$ | async }}
+                </span>
+            </a>
             
             <div class="container-menu__rout" id="main-menu">
                 <ng-container *ngFor="let item of linkArr; last as isLast">
@@ -95,8 +97,8 @@
                         <div class="section-header">
                             <span class="section-title">Товары ({{ response.results.products.length }})</span>
                             <a *ngIf="response.results.products.length > 5" 
-                            [routerLink]="['/search']" 
-                            [queryParams]="{ q: searchControl.value }"
+                            [routerLink]="['/main/catalog']" 
+                            [queryParams]="{ query: searchControl.value }"
                             class="view-all-link">Показать все</a>
                         </div>
                         
@@ -211,8 +213,8 @@
             <div class="section-header">
                 <span class="section-title">Товары ({{ response.results.products.length }})</span>
                 <a *ngIf="response.results.products.length > 5" 
-                [routerLink]="['/search']" 
-                [queryParams]="{ q: searchControl.value }"
+                [routerLink]="['/main/catalog']" 
+                [queryParams]="{ query: searchControl.value }"
                 class="view-all-link">Показать все</a>
             </div>
             
