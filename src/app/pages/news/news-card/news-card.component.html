@@ -1,17 +1,17 @@
 <div class="container">
-    <img [src]="(environment.baseUrl + newsFields.media) || 'assets/images/no-image2.png'" alt="">
+    <img [src]="(environment.baseUrl + _newsFields.media) || 'assets/images/no-image2.png'" alt="">
     <div class="container-entity">
         <div class="container-entity__textfields">
             <span class="container-entity__textfields-title">
-                {{ newsFields.title }}
+                {{ _newsFields.title }}
             </span>
-            <span class="container-entity__textfields-text" [innerHTML]="newsFields.content">
-                <!-- {{ newsFields.content }} -->
+            <span class="container-entity__textfields-text" [innerHTML]="_newsFields.content">
+                <!-- {{ _newsFields.content }} -->
             </span>
         </div>
         <div class="container-entity__meta">
-            <span>{{ convertDate(newsFields.published_at) }}</span>
-            <button [routerLink]="'/main/news/' + newsFields.id">подробнее</button>
+            <span>{{ convertDate(_newsFields.published_at) }}</span>
+            <button [routerLink]="'/main/news/' + _newsFields.id">подробнее</button>
         </div>
     </div>
 </div>

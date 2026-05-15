@@ -6,6 +6,8 @@ import { AsyncPipe } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { Router } from '@angular/router';
+import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 
 @Component({
   selector: 'app-news',
@@ -23,10 +25,17 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
 })
 export class NewsComponent implements OnInit {
   public newsService = inject(NewsService);
+  private breadCrumbsService = inject(BreadCrumbsService);
+  private router = inject(Router);
   public newsList: NewsFields[] = [];
   public loading = false;
 
   ngOnInit(): void {
+    this.breadCrumbsService.setBreadcrumbs([
+      { label: 'Главная', url: '/', isClickable: true },
+      { label: 'Новости', url: this.router.url, isClickable: true },
+    ]);
+
     this.loading = true;
     this.newsService.getNewsList$(true).subscribe((res) => {
       this.newsList = res;

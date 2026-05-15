@@ -50,12 +50,14 @@
 // }
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { BrandsService, TBrandDetailsContent } from '../../services/brands-service/brands.service';
 import { ProductLineComponent } from '../../components/product-line/product-line.component';
 import { environment } from '../../../environments/environment.development';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
+import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 
 @Component({
   selector: 'app-producer-products',
@@ -64,14 +66,17 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
     CommonModule,
     AngularSvgIconModule,
     ProductLineComponent,
-    LoaderComponent
+    LoaderComponent,
+    BreadCrumbsComponent
   ],
   templateUrl: './producer-products.component.html',
   styleUrl: './producer-products.component.scss'
 })
 export class ProducerProductsComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private producerService = inject(BrandsService)
+  private producerService = inject(BrandsService);
+  private breadCrumbsService = inject(BreadCrumbsService);
+  private router = inject(Router);
   public brandEntity!: TBrandDetailsContent;
   public loading = true;
   public selectedCategoryId: number | null = null;
@@ -85,6 +90,11 @@ export class ProducerProductsComponent implements OnInit {
           if (slug) {
               this.producerService.getBrandsDetailsPage$(slug).subscribe({
                   next: (res) => {
+                    
+                    this.breadCrumbsService.setBreadcrumbs([
+                      { label: 'Главная', url: '/', isClickable: true },
+                      { label: res.brand.name, url: this.router.url, isClickable: true },
+                    ]);
                     this.brandEntity = res;
                     this.loading = false;
                   },

@@ -25,10 +25,16 @@ export class ContactsComponent implements OnInit {
   private breadCrumbs = inject(BreadCrumbsService);
   private contactsService = inject(ContactsService);
   private htmlContentsService = inject(HtmlContentsService);
+  private breadCrumbsService = inject(BreadCrumbsService);
 
   public htmlContent$ =  this.htmlContentsService.getHtmlContent$();
 
 ngOnInit(): void {
+  this.breadCrumbsService.setBreadcrumbs([
+    { label: 'Главная', url: '/', isClickable: true },
+    { label: 'Контакты', url: '', isClickable: false },
+  ]);
+
   this.contactsService.getContacts$().subscribe({
     next: (htmlString) => {
       console.log(htmlString); // сырой HTML как строка

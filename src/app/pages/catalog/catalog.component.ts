@@ -15,6 +15,7 @@ import { NewsFields, NewsService } from '../../services/news/news.service';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { environment } from '../../../environments/environment';
+import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 
 export interface TSearchResult {
   navigation: {
@@ -57,6 +58,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private breadCrumbsService = inject(BreadCrumbsService);
   
   private querySubscription?: Subscription;
   private searchSubscription?: Subscription;
@@ -75,6 +77,12 @@ export class CatalogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.querySubscription = this.route.queryParams.subscribe(params => {
+
+    this.breadCrumbsService.setBreadcrumbs([
+      { label: 'Главная', url: '/', isClickable: true },
+      { label: 'Каталог', url: this.router.url, isClickable: true },
+    ]);
+      
       const query = params['query'];
       
       if (query && query.trim()) {

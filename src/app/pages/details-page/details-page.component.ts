@@ -14,6 +14,7 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
 import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SeoService } from '../../services/seo/seo.service';
+import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 
 interface MediaGalleryItem {
   id: number;
@@ -49,6 +50,7 @@ export class DetailsPageComponent implements OnInit {
   private cartService = inject(CartService);
   private sanitizer = inject(DomSanitizer);
   private seoService = inject(SeoService);
+  private breadCrumbsService = inject(BreadCrumbsService);
   
   carouselItems: CarouselItem[] = [];
   galleryItems: MediaGalleryItem[] = [];
@@ -75,14 +77,17 @@ export class DetailsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loading = true;
     this.route.paramMap.subscribe((paramMap) => {
+    this.loading = true;
       const id = paramMap.get('id');
       
       if (id) {
         this.productService.getProductDetails$(+id).subscribe({
           next: (res) => {
             this.seoService.updateSeo(res.seo);
+            
+            this.breadCrumbsService.pushBreadcrumb(res.name, '', false)
+
             this.productEntity = res;
             this.loading = false;
             this.itemIsAdded$ = this.cartService.itemIsAdded$(res.id);
@@ -96,6 +101,7 @@ export class DetailsPageComponent implements OnInit {
             }
 
             if (res.media_list) {
+              this.carouselItems = [];
               res.media_list.forEach((item) => {
                 this.carouselItems.push({
                   id: item.id,

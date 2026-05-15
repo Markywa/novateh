@@ -8,6 +8,7 @@ import { SafeUrlPipe } from './safe-url/safe-url.pipe';
 import { environment } from '../../../environments/environment';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { finalize } from 'rxjs/operators';
+import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 
 interface Certificate {
   id: number;
@@ -36,7 +37,8 @@ interface Certificate {
 export class CertificatesComponent implements OnInit {
   private certsService = inject(CertsService);
   private sanitizer = inject(DomSanitizer);
-  
+  private breadCrumbsService = inject(BreadCrumbsService);
+
   certificates: Certificate[] = [];
   showModal = false;
   selectedCert: Certificate | null = null;
@@ -47,6 +49,10 @@ export class CertificatesComponent implements OnInit {
   isDownloading = false; // Отдельно для отслеживания загрузки файлов
 
   ngOnInit(): void {
+    this.breadCrumbsService.setBreadcrumbs([
+      { label: 'Главная', url: '/', isClickable: true },
+      { label: 'Сертификаты', url: '', isClickable: false },
+    ]);
     this.loadCertificates();
   }
 

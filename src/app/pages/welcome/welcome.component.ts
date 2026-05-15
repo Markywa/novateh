@@ -10,6 +10,7 @@ import { GroupLineComponent } from '../../components/group-line/group-line.compo
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AsyncPipe } from '@angular/common';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 
 @Component({
   selector: 'app-welcome',
@@ -38,6 +39,7 @@ export class WelcomeComponent {
   public groupsList: TGroupsContent[] = [];
   public popularProductList: TProductsContent[] = [];
   public newsList: NewsFields[] = []
+  private breadCrumbsService = inject(BreadCrumbsService);
 
   ngOnInit(): void {
     this.brandsService.getBrandsList$().subscribe({
@@ -63,6 +65,10 @@ export class WelcomeComponent {
       },
       error: () => this.popularProductLoading = false
     });
+
+    this.breadCrumbsService.setBreadcrumbs([
+      { label: 'Главная', url: '/', isClickable: true },
+    ]);
 
     this.newsService.getNewsList$(true).subscribe((response) => this.newsList = response)
   }
