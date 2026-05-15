@@ -162,24 +162,48 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .slide {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
+    .slider-content{
+        padding: 6px;
     }
+
+    .slide{
+        gap: 30px;
+    }
+
+    .slide-right{
+        gap: 6px;
+    }
+
+    .slide-right h3{
+        font-size: 14px;
+    }
+
+    .slide-right p{
+        font-size: 12px;
+    }
+
+    .default-button{
+        font-size: 12px;
+        padding: 6px    ;
+    }
+    // .slide {
+    //     flex-direction: column;
+    //     text-align: center;
+    //     gap: 10px;
+    // }
     
-    .slide-left {
-        flex: 0 0 auto;
-        height: auto;
-        max-height: 60%;
-    }
+    // .slide-left {
+    //     flex: 0 0 auto;
+    //     height: auto;
+    //     max-height: 60%;
+    // }
     
-    .slide-right {
-        padding-right: 0;
-        align-items: center;
-    }
+    // .slide-right {
+    //     padding-right: 0;
+    //     align-items: center;
+    // }
     
-    .btn-details {
-        margin: 0 auto;
-    }
+    // .btn-details {
+    //     margin: 0 auto;
+    // }
 }

@@ -29,8 +29,8 @@
             <img [src]="(environment.baseUrl + newsItem.media)" [alt]="newsItem.title" class="news-image">
         </div>
 
-        <div class="news-text">
-            <p>{{ newsItem.content }}</p>
+        <div class="news-text" [innerHTML]="newsItem.content">
+            <!-- <p>{{ newsItem.content }}</p> -->
         </div>
     </div>
 

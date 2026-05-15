@@ -5,8 +5,8 @@
             <span class="container-entity__textfields-title">
                 {{ newsFields.title }}
             </span>
-            <span class="container-entity__textfields-text">
-                {{ newsFields.content }}
+            <span class="container-entity__textfields-text" [innerHTML]="newsFields.content">
+                <!-- {{ newsFields.content }} -->
             </span>
         </div>
         <div class="container-entity__meta">

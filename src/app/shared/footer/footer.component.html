@@ -2,31 +2,37 @@
     <div 
         id="map" class="map">
     </div>
-    <div class="container-popup">
+    <div class="container-popup" *ngIf="contact$ | async as contact">
         <h2>НАШИ КОНТАКТЫ</h2>
         <div class="container-popup__item">
             <span>Адрес</span>
-            <span>630007, г. Новосибирск,</span>
-            <span>пер. Пристанский, 2</span>
+            <span>{{ contact.address }}</span>
+            <!-- <span>630007, г. Новосибирск,</span> -->
+            <!-- <span>пер. Пристанский, 2</span> -->
         </div>
         <div class="container-popup__item">
             <span>График работы</span>
-            <span>ПН-ЧТ: с 9.00 до 18.00</span>
-            <span>ПТ: с 9.00 до 17.00</span>
+            <span>{{ contact.schedule }}</span>
+            <!-- <span>ПН-ЧТ: с 9.00 до 18.00</span> -->
+            <!-- <span>ПТ: с 9.00 до 17.00</span> -->
         </div>
         <div class="container-popup__item">
             <span>Телефон</span>
-            <span>+7 (383) 263-20-99</span>
+            <span>{{ contact.phone }}</span>
+            <!-- <span>+7 (383) 263-20-99</span> -->
         </div>
         <div class="container-popup__item">
             <span>Email</span>
-            <span>nskteplo-sib.ru</span>
+            <span>{{ contact.email }}</span>
+            <!-- <span>nskteplo-sib.ru</span> -->
         </div>
     </div>
-    <div class="container-menu">
+    <div class="container-menu" *ngIf="contact$ | async as contact">
         <div class="container-menu__info">
-            <span>Красноярск, ул.60лет Октября 78</span>
-            <span>+79832070699</span>
+            <!-- <span>Красноярск, ул.60лет Октября 78</span>
+            <span>+79832070699</span> -->
+            <span>{{ contact.address }}</span>
+            <span>{{ contact.phone }}</span>
         </div>
         <div class="container-menu__rout">
             <ng-container *ngFor="let item of linkArr">

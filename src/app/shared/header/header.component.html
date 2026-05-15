@@ -2,7 +2,7 @@
     <div class="container__wrap">
         <div class="container-menu">
             <span>
-                {{ '8 (983) 207 06 99' }}
+                {{ contactPhone$ | async }}
             </span>
             
             <div class="container-menu__rout" id="main-menu">
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="container-menu">
-            <a routerLink="welcome">
+            <a routerLink="../main/welcome">
                 <svg-icon src="assets\images\logo.svg"></svg-icon>
             </a>
             <button class="default-button" routerLink="catalog">

@@ -5,6 +5,8 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
 import { RequestService } from '../../services/request/request.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactsService } from '../../services/contacts/contacts.service';
+import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-contacts',
@@ -13,7 +15,8 @@ import { ContactsService } from '../../services/contacts/contacts.service';
     LayoutPageComponent,
     BreadCrumbsComponent,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    AsyncPipe
   ],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.scss'
@@ -21,6 +24,9 @@ import { ContactsService } from '../../services/contacts/contacts.service';
 export class ContactsComponent implements OnInit {
   private breadCrumbs = inject(BreadCrumbsService);
   private contactsService = inject(ContactsService);
+  private htmlContentsService = inject(HtmlContentsService);
+
+  public htmlContent$ =  this.htmlContentsService.getHtmlContent$();
 
 ngOnInit(): void {
   this.contactsService.getContacts$().subscribe({

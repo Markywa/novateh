@@ -13,6 +13,7 @@ import { TableComponent } from '../../components/table/table.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo/seo.service';
 
 interface MediaGalleryItem {
   id: number;
@@ -47,21 +48,20 @@ export class DetailsPageComponent implements OnInit {
   private dialog = inject(MatDialog);
   private cartService = inject(CartService);
   private sanitizer = inject(DomSanitizer);
+  private seoService = inject(SeoService);
   
   carouselItems: CarouselItem[] = [];
   galleryItems: MediaGalleryItem[] = [];
-  Math = Math; // Для использования Math в шаблоне
+  Math = Math; 
   environment = environment;
   
-  // Для распарсенного assortment_html
   public parsedAssortmentHtml: SafeHtml = '';
+  public parsedCharacteristicsHtml: SafeHtml = '';
   
-  // Для превью модального окна
   previewVisible = false;
   previewMedia: MediaGalleryItem | null = null;
   currentIndex: number = 0;
   
-  // Для управления масштабом изображения
   scale: number = 1;
   position = { x: 0, y: 0 };
   isDragging = false;
@@ -82,16 +82,19 @@ export class DetailsPageComponent implements OnInit {
       if (id) {
         this.productService.getProductDetails$(+id).subscribe({
           next: (res) => {
+            this.seoService.updateSeo(res.seo);
             this.productEntity = res;
             this.loading = false;
             this.itemIsAdded$ = this.cartService.itemIsAdded$(res.id);
             
-            // Распарсиваем assortment_html
             if (res.assortment_html) {
               this.parsedAssortmentHtml = this.parseAssortmentHtml(res.assortment_html);
             }
-            
-            // Заполнение карусели основными изображениями
+
+            if (res.characteristics_html) {
+              this.parsedCharacteristicsHtml = this.parseAssortmentHtml(res.characteristics_html);
+            }
+
             if (res.media_list) {
               res.media_list.forEach((item) => {
                 this.carouselItems.push({
@@ -101,7 +104,6 @@ export class DetailsPageComponent implements OnInit {
               });
             }
             
-            // Заполнение галереи из объекта gallery
             this.initGallery(res);
           },
           error: (err) => {
@@ -115,40 +117,30 @@ export class DetailsPageComponent implements OnInit {
     });
   }
 
-  // Метод для парсинга HTML
 private parseAssortmentHtml(html: string): SafeHtml {
-  // Создаем временный DOM элемент
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = html;
   
-  // Проверяем, есть ли вообще содержимое
   if (!tempDiv.hasChildNodes()) {
     return this.sanitizer.bypassSecurityTrustHtml('');
   }
   
-  // Унифицированный парсинг всего содержимого с сохранением стилей
   const result = this.parseNodeWithStyles(tempDiv);
   
   return this.sanitizer.bypassSecurityTrustHtml(result);
 }
 
-/**
- * Рекурсивно парсит DOM узел с сохранением всех стилей и тегов
- */
 private parseNodeWithStyles(node: Node, level: number = 0): string {
-  // Обработка текстовых узлов
   if (node.nodeType === Node.TEXT_NODE) {
     const text = node.textContent?.trim();
     if (!text) return '';
     return this.escapeHtml(text);
   }
   
-  // Обработка element узлов
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as HTMLElement;
     const tagName = element.tagName.toLowerCase();
     
-    // Список разрешенных тегов (можно расширить)
     const allowedTags = [
       'div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
       'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'thead', 'tbody',
@@ -156,7 +148,6 @@ private parseNodeWithStyles(node: Node, level: number = 0): string {
       'section', 'article', 'header', 'footer', 'main'
     ];
     
-    // Если тег не разрешен - парсим только его содержимое
     if (!allowedTags.includes(tagName)) {
       let innerHtml = '';
       for (let i = 0; i < element.childNodes.length; i++) {
@@ -165,26 +156,21 @@ private parseNodeWithStyles(node: Node, level: number = 0): string {
       return innerHtml;
     }
     
-    // Сохраняем все атрибуты, особенно style и class
     const attributes = this.getAllAttributes(element);
     
-    // Специальная обработка для img - сохраняем src и alt
     if (tagName === 'img') {
       const src = element.getAttribute('src') || '';
       const alt = element.getAttribute('alt') || '';
       return `<img src="${this.escapeHtml(src)}" alt="${this.escapeHtml(alt)}" ${attributes}>`;
     }
     
-    // Специальная обработка для ссылок
     if (tagName === 'a') {
       const href = element.getAttribute('href') || '';
       return `<a href="${this.escapeHtml(href)}" ${attributes}>${this.parseChildren(element)}</a>`;
     }
     
-    // Для остальных тегов - сохраняем структуру и стили
     const childrenHtml = this.parseChildren(element);
     
-    // Если внутри ничего нет и это не пустой тег - возвращаем пустоту
     if (!childrenHtml && ['br', 'hr', 'img'].includes(tagName)) {
       return `<${tagName} ${attributes}>`;
     }
@@ -195,9 +181,6 @@ private parseNodeWithStyles(node: Node, level: number = 0): string {
   return '';
 }
 
-/**
- * Парсит все дочерние элементы узла
- */
 private parseChildren(element: HTMLElement): string {
   let result = '';
   for (let i = 0; i < element.childNodes.length; i++) {
@@ -206,9 +189,6 @@ private parseChildren(element: HTMLElement): string {
   return result;
 }
 
-/**
- * Сохраняет все атрибуты элемента, включая style и class
- */
 private getAllAttributes(element: HTMLElement): string {
   const attributes: string[] = [];
   
@@ -217,7 +197,6 @@ private getAllAttributes(element: HTMLElement): string {
     const attrName = attr.name.toLowerCase();
     const attrValue = attr.value;
     
-    // Разрешенные атрибуты (можно расширить)
     const allowedAttrs = [
       'style', 'class', 'id', 'href', 'src', 'alt', 'title',
       'width', 'height', 'align', 'valign', 'colspan', 'rowspan',
@@ -225,7 +204,6 @@ private getAllAttributes(element: HTMLElement): string {
     ];
     
     if (allowedAttrs.includes(attrName) && attrValue) {
-      // Экранируем значение атрибута
       const escapedValue = this.escapeHtml(attrValue);
       attributes.push(`${attrName}="${escapedValue}"`);
     }
@@ -235,9 +213,6 @@ private getAllAttributes(element: HTMLElement): string {
 }
 
 
-/**
- * Экранирование HTML специальных символов
- */
 private escapeHtml(str: string): string {
   if (!str) return '';
   return str
@@ -248,23 +223,13 @@ private escapeHtml(str: string): string {
     .replace(/'/g, '&#39;');
 }
 
-  // // Экранирование HTML специальных символов
-  // private escapeHtml(str: string): string {
-  //   const div = document.createElement('div');
-  //   div.textContent = str;
-  //   return div.innerHTML;
-  // }
-
-  // Инициализация галереи из объекта gallery
   private initGallery(product: TProductCardDetails): void {
     this.galleryItems = [];
     
-    // Получаем данные только из gallery
     if (product.gallery && product.gallery.length > 0) {
       product.gallery.forEach((galleryItem: any) => {
         let type: 'image' | 'video' = 'image';
         
-        // Определяем тип по file_kind или mime_type
         if (galleryItem.file_kind === 'video' || galleryItem.mime_type?.startsWith('video/')) {
           type = 'video';
         } else if (galleryItem.file_kind === 'image' || galleryItem.mime_type?.startsWith('image/')) {
@@ -283,7 +248,6 @@ private escapeHtml(str: string): string {
       });
     }
     
-    // Сортировка по sort_order, затем по id
     this.galleryItems.sort((a, b) => {
       if (a.sort_order !== b.sort_order) {
         return a.sort_order - b.sort_order;
@@ -344,14 +308,12 @@ private escapeHtml(str: string): string {
     return `${cert.title.replace(/[^a-zа-яё0-9]/gi, '_')}.pdf`;
   }
 
-  // Открытие превью медиа-файла
   openMediaPreview(mediaItem: MediaGalleryItem, index: number): void {
     this.previewMedia = mediaItem;
     this.currentIndex = index;
     this.previewVisible = true;
     this.resetZoom();
     
-    // Блокируем прокрутку body
     document.body.style.overflow = 'hidden';
 
     var element = document.body.getElementsByClassName('container__wrap')[0];
@@ -360,12 +322,10 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Закрытие превью
   closePreview(): void {
     this.previewVisible = false;
     this.previewMedia = null;
     this.resetZoom();
-    // Восстанавливаем прокрутку body
     document.body.style.overflow = '';
 
     var element = document.body.getElementsByClassName('container__wrap')[0];
@@ -374,7 +334,6 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Следующий элемент
   nextItem(): void {
     if (this.currentIndex < this.galleryItems.length - 1) {
       this.currentIndex++;
@@ -383,7 +342,6 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Предыдущий элемент
   prevItem(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
@@ -392,21 +350,18 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Сброс масштаба и позиции
   resetZoom(): void {
     this.scale = 1;
     this.position = { x: 0, y: 0 };
     this.imageLoaded = false;
   }
 
-  // Увеличение масштаба
   zoomIn(): void {
     if (this.scale < 3) {
       this.scale = Math.min(3, this.scale + 0.5);
     }
   }
 
-  // Уменьшение масштаба
   zoomOut(): void {
     if (this.scale > 1) {
       this.scale = Math.max(1, this.scale - 0.5);
@@ -415,7 +370,6 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Начало перетаскивания
   startDragging(event: MouseEvent): void {
     if (this.scale > 1) {
       this.isDragging = true;
@@ -424,7 +378,6 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Перетаскивание
   onDragging(event: MouseEvent): void {
     if (this.isDragging && this.scale > 1) {
       this.position = {
@@ -432,7 +385,6 @@ private escapeHtml(str: string): string {
         y: event.clientY - this.dragStart.y
       };
       
-      // Ограничиваем перемещение
       const maxX = (this.scale - 1) * 250;
       const maxY = (this.scale - 1) * 250;
       this.position.x = Math.min(Math.max(this.position.x, -maxX), maxX);
@@ -440,12 +392,10 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Конец перетаскивания
   stopDragging(): void {
     this.isDragging = false;
   }
 
-  // Обработка колесика мыши для масштабирования
   onWheel(event: WheelEvent): void {
     if (this.previewMedia?.type === 'image') {
       event.preventDefault();
@@ -457,7 +407,6 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Форматирование размера файла
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -466,7 +415,6 @@ private escapeHtml(str: string): string {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
-  // Обработка клавиш для навигации
   @HostListener('window:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (!this.previewVisible) return;
@@ -484,7 +432,6 @@ private escapeHtml(str: string): string {
     }
   }
 
-  // Загрузка изображения
   onImageLoad(): void {
     this.imageLoaded = true;
   }

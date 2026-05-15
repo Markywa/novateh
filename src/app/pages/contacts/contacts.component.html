@@ -1,46 +1,52 @@
 <app-bread-crumbs></app-bread-crumbs>
 <div class="container">
     <h2 class="main-title">Наши контакты</h2>
-    <div class="container-wrap">
-        <div class="container-section"> 
-            @for(address of information.address; track address){
-                <div class="container-section__item">
-                    <span class="container-section__item-title">{{ address.title }}</span>
-                    @for(descr of address.description; track descr){
-                        <span >{{ descr }}</span>
-                    }
-                </div>
-            }
+    @if(htmlContent$ | async; as content){
+        <div class="container-wrap">
+            <div class="container-section"> 
+                <!-- @for(address of information.address; track address){
+                    <div class="container-section__item">
+                        <span class="container-section__item-title">{{ address.title }}</span>
+                        @for(descr of address.description; track descr){
+                            <span >{{ descr }}</span>
+                        }
+                    </div>
+                } -->
+                    <div [innerHTML]="content.html_first"></div>
+            </div>
+            <div class="container-section">
+                <!-- @for(requisite of information.requisite; track requisite){
+                    <div class="container-section__item">
+                        <span class="container-section__item-title">{{ requisite.title }}</span>
+                        <span>{{ requisite.value }}</span>
+                    </div>
+                } -->
+                    
+                <div [innerHTML]="content.html_second"></div>
+            </div>
+            <div class="container-form">
+                <span class="container-section__item-title">Напишите нам</span>
+                <form (ngSubmit)="onSubmit()" class="container-form__wrap">
+                    <input placeholder="Имя" [(ngModel)]="formData.name" name="Имя" required>
+
+                    <input placeholder="Ваш телефон" type="number" [(ngModel)]="formData.phone" name="Телефон" required>
+
+                    <input placeholder="E-mail" [(ngModel)]="formData.email" name="Емаил" required>
+
+                    <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="Текст" required></textarea>
+
+                    <button type="submit" class="default-button">
+                        ОТПРАВИТЬ
+                    </button>
+
+                    <span class="container-form__description">Нажимая на кнопку, вы подтверждаете своё согласие
+                        на обработку персональных данных и ознакомление с
+                        политикой конфиденциальности</span>
+                </form>
+            </div>
         </div>
-        <div class="container-section">
-            @for(requisite of information.requisite; track requisite){
-                <div class="container-section__item">
-                    <span class="container-section__item-title">{{ requisite.title }}</span>
-                    <span>{{ requisite.value }}</span>
-                </div>
-            }
-        </div>
-        <div class="container-form">
-            <span class="container-section__item-title">Напишите нам</span>
-            <form (ngSubmit)="onSubmit()" class="container-form__wrap">
-                <input placeholder="Имя" [(ngModel)]="formData.name" name="Имя" required>
+    }
 
-                <input placeholder="Ваш телефон" type="number" [(ngModel)]="formData.phone" name="Телефон" required>
-
-                <input placeholder="E-mail" [(ngModel)]="formData.email" name="Емаил" required>
-
-                <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="Текст" required></textarea>
-
-                <button type="submit" class="default-button">
-                    ОТПРАВИТЬ
-                </button>
-
-                <span class="container-form__description">Нажимая на кнопку, вы подтверждаете своё согласие
-                    на обработку персональных данных и ознакомление с
-                    политикой конфиденциальности</span>
-            </form>
-        </div>
-    </div>
 </div>
 
 @if(showSuccessMessage){

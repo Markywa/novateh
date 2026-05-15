@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Feature, Overlay, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -12,6 +12,7 @@ import Icon from 'ol/style/Icon';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Map from 'ol/Map';
+import { ContactsService } from '../../services/contacts/contacts.service';
 
 const DEFAULT_COORDINATES = [92.85690366, 56.00178477];
 
@@ -21,12 +22,14 @@ const DEFAULT_COORDINATES = [92.85690366, 56.00178477];
   imports: [
     RouterLink,
     RouterLinkActive,
-    CommonModule
+    CommonModule,
+    AsyncPipe
   ],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements AfterViewInit{
+  private contactService = inject(ContactsService);
   public linkArr: {name: string, link: string}[] = [
     {
       name: 'ГЛАВНАЯ',
@@ -59,8 +62,12 @@ export class FooterComponent implements AfterViewInit{
   public maxZoomLevel: number = 18;
   public minZoomLevel: number = 14;
 
+  contact$ = this.contactService.getContacts$();
+
   ngAfterViewInit(): void {
     this.initializeMap();
+
+    
   }
 
     public initializeMap(): void {

@@ -10,6 +10,7 @@ import { CartService } from '../../services/cart-service/cart.service';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { ContactsService } from '../../services/contacts/contacts.service';
 
 @Component({
   selector: 'app-header',
@@ -30,6 +31,9 @@ export class HeaderComponent {
   public cartService = inject(CartService); 
   private http = inject(HttpClient)
   environment = environment;
+  private contactsSerbice = inject(ContactsService);
+
+  public contactPhone$ = this.contactsSerbice.getContacts$().pipe(map((contacts: any) => contacts.phone))
 
   public linkArr: {name: string, link: string}[] = [
     {
