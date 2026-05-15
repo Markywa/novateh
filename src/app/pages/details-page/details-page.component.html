@@ -39,7 +39,7 @@
 
             <div class="container-sections" [ngSwitch]="activeView">
                 <div *ngSwitchCase="'view1'">
-                    @if(productEntity.attributes && productEntity.attributes.length > 0){
+                    @if(productEntity.characteristics_html){
                         <!-- <app-table [tableList]="productEntity.attributes"></app-table> -->
                         <div [innerHTML]="parsedCharacteristicsHtml"></div>
                     } @else {
@@ -49,7 +49,7 @@
                     }
                 </div>
                 <div *ngSwitchCase="'view2'">
-                    @if(productEntity.attributes && productEntity.attributes.length > 0){
+                    @if(productEntity.assortment_html){
                         <!-- <app-table [tableList]="productEntity.attributes"></app-table> -->
                         <div class="assortment-section">
                             <div [innerHTML]="parsedAssortmentHtml"></div>
