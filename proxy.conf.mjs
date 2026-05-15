@@ -2,8 +2,9 @@ export default [
 {
     context: [
         '/v1',
+        '/static'
     ],
-    target: 'http://26.129.194.38:8001/',
+    target: 'https://nvt24.ru',
     secure: false,
     logLevel: 'debug',
     changeOrigin: true,
