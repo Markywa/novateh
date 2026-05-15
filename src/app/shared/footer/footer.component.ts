@@ -14,7 +14,7 @@ import VectorSource from 'ol/source/Vector';
 import Map from 'ol/Map';
 import { ContactsService } from '../../services/contacts/contacts.service';
 
-const DEFAULT_COORDINATES = [92.85690366, 56.00178477];
+const DEFAULT_COORDINATES = [92.86090366, 55.98028477];
 
 @Component({
   selector: 'app-footer',
@@ -72,7 +72,8 @@ export class FooterComponent implements AfterViewInit{
 
     public initializeMap(): void {
       proj.useGeographic() 
-      this.map = new Map({
+      this.contact$.subscribe((res) => {
+          this.map = new Map({
           target: 'map',
           layers: [
             new TileLayer({
@@ -82,7 +83,7 @@ export class FooterComponent implements AfterViewInit{
             })
           ],
           view: new View({
-            center: DEFAULT_COORDINATES,
+            center: res.longitude ? [res.longitude, res.latitude] : DEFAULT_COORDINATES,
             zoom: this.zoomLevel
           }),
           controls: [],
@@ -100,14 +101,16 @@ export class FooterComponent implements AfterViewInit{
         });      
 
         const marker = new Feature({
-          geometry: new Point([92.83890366, 56.00980877])  // Координаты маркера
+          geometry: new Point([res.longitude, res.latitude])  // Координаты маркера
         });
     
         // Опционально: устанавливаем стиль маркера
         const markerStyle = new Style({
           image: new Icon({
             anchor: [0.5, 1],
-            src: 'assets/icons/marker.svg',  // Путь к иконке маркера
+            src: 'assets/images/marker.svg',  // Путь к иконке маркера
+            width: 50,
+            height: 50
           })
         });
         marker.setStyle(markerStyle);
@@ -119,5 +122,7 @@ export class FooterComponent implements AfterViewInit{
           })
         });
         this.map.addLayer(vectorLayer);
+      })
+
     }
 }

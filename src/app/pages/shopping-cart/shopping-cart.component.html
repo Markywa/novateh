@@ -62,6 +62,7 @@
                         placeholder="Ваш телефон" 
                         type="tel" 
                         formControlName="phone"
+                        maxlength="15"
                         [class.invalid]="orderForm.get('phone')?.invalid && orderForm.get('phone')?.touched">
                     @if(orderForm.get('phone')?.invalid && orderForm.get('phone')?.touched){
                         <span class="error-message">Введите корректный номер телефона (минимум 10 цифр)</span>

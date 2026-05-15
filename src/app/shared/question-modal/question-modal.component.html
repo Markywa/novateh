@@ -20,10 +20,10 @@
         </div>
 
         <div class="form-field">
-            <input placeholder="Ваш телефон" type="tel" [(ngModel)]="formData.phone" name="phone" #phone="ngModel" required pattern="^\+?[0-9]{10,15}$">
+            <input placeholder="Ваш телефон" type="tel" [(ngModel)]="formData.phone" name="phone" #phone="ngModel" required pattern="^\+?[0-9]{10,15}$" maxlength="15">
             <div class="error-message" *ngIf="phone.invalid && phone.touched">
                 <span *ngIf="phone.errors?.['required']">Телефон обязателен для заполнения</span>
-                <span *ngIf="phone.errors?.['pattern']">Введите корректный номер телефона (10-15 цифр, возможно с +)</span>
+                <span *ngIf="phone.errors?.['pattern']">Введите корректный номер телефона (10-15 цифр, возможно с +, например +71234567890)</span>
             </div>
         </div>
 

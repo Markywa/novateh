@@ -31,6 +31,7 @@
             flex-direction: row;
             gap: 32px;
             align-items: center;
+            white-space: nowrap;
             & > span{
                 font-weight: 600;
             }
@@ -103,5 +104,14 @@
         color: #0f172a;
         letter-spacing: 0.3px;
         transition: color 0.2s ease;
+    }
+  }
+
+
+  svg-icon{
+    & > svg{
+        width: 24px;
+        height: 24px;
+        fill: #333333;
     }
   }

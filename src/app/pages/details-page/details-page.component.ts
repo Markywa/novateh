@@ -15,6 +15,7 @@ import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SeoService } from '../../services/seo/seo.service';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
+import { AgentsService } from '../../services/agents/agents.service';
 
 interface MediaGalleryItem {
   id: number;
@@ -51,6 +52,7 @@ export class DetailsPageComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
   private seoService = inject(SeoService);
   private breadCrumbsService = inject(BreadCrumbsService);
+  private agentService = inject(AgentsService);
   
   carouselItems: CarouselItem[] = [];
   galleryItems: MediaGalleryItem[] = [];
@@ -75,6 +77,8 @@ export class DetailsPageComponent implements OnInit {
   switchView(view: string) {
     this.activeView = view;
   }
+
+  public agentList$ = this.agentService.getAgentsList$();
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((paramMap) => {

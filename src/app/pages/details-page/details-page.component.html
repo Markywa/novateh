@@ -202,35 +202,26 @@
             <!-- <div [innerHTML]="parsedAssortmentHtml"></div> -->
         <!-- </div> -->
     <!-- } -->
-
-        <div class="meta-info">
-            <div class="header" colspan="2">
-                <span>Поможем и проконсультируем по всем вопросам</span>
+        @if(agentList$ | async; as agents){
+            <div class="meta-info">
+                <div class="header" colspan="2">
+                    <span>Поможем и проконсультируем по всем вопросам</span>
+                </div>
+                @for(agent of agents; track agent.id) {
+                    <div class="row">
+                        <div class="column">
+                            <span>{{ agent.full_name }}</span>
+                            <span>{{ agent.position }}</span>
+                        </div>
+                        <div class="column">
+                            <span>{{ agent.phone }}</span>
+                            <span>{{ agent.email }}</span>
+                        </div>
+                    </div>
+                }
             </div>
-            <div class="row">
-                <div class="column">
-                    <span>Головырина Людмила Николаевна</span>
-                    <span>менеджер по работе с клиентами</span>
-                </div>
-                <div class="column">
-                    <span>Волкова Елена Владимировна</span>
-                    <span>специалист отдела продаж</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <span>+7 961 228-31-00</span>
-                    <span>{{'1223@teplo-sib.ru'}}</span>
-                </div>
-                <div class="column">
-                    <span>+7 909 533-85-86</span>
-                    <span>{{'111@teplo-sib.ru'}}</span>
-                </div>
-            </div>
-        </div>
+        }
     </div>
     }
-
-
 </div>
 
