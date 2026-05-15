@@ -27,7 +27,7 @@
                     [product]="item" 
                     [value]="item.count" 
                     (updateList)="updateList()" 
-                    [isSelected]="selectedArr.includes(item.id)">
+                    [isSelected]="selectedArr.includes(item.slug)">
                 </app-shopping-card>
             } @empty {
                 <div class="container-cart__empty">

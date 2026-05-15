@@ -24,7 +24,7 @@
                         @if(itemIsAdded$ | async){
                             <span class="default-button">ТОВАР ДОБАВЛЕН В КОРЗИНУ</span>
                         } @else {
-                            <button class="default-button" (click)="addToCart(productEntity.id)">ДОБАВИТЬ В КОРЗИНУ</button>
+                            <button class="default-button" (click)="addToCart(productEntity.slug)">ДОБАВИТЬ В КОРЗИНУ</button>
                         }
                     </div>
                 </div>

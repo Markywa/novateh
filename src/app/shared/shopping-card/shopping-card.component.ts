@@ -50,15 +50,15 @@ export class ShoppingCardComponent {
   private updateValue(newValue: number): void {
     this.value = newValue;
     if (this.cartService) {
-      this.cartService.updateCount(this.product.id, newValue);
+      this.cartService.updateCount(this.product.slug, newValue);
     }
     this.valueChange.emit(this.value);
     this.changed.emit(this.value);
   }
 
-  public deleteFromCart(id: number): void {
+  public deleteFromCart(slug: string): void {
     if (this.cartService) {
-      this.cartService.removeFromCart(id);
+      this.cartService.removeFromCart(slug);
     }
     this.updateList.emit();
   }

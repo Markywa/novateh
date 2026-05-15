@@ -105,7 +105,7 @@
                         <div class="products-list">
                             <div *ngFor="let product of response.results.products.slice(0, 5)" 
                                 class="product-card"
-                                [routerLink]="'/main/product/' + product.id"
+                                [routerLink]="'/main/product/' + product.slug"
                                 (click)="closeDropdown()">
                             
                             <img [src]="(environment.baseUrl + product.media[0]) || 'assets/images/no-image.png'" 
@@ -221,7 +221,7 @@
             <div class="products-list">
                 <div *ngFor="let product of response.results.products.slice(0, 5)" 
                     class="product-card"
-                    [routerLink]="'/main/product/' + product.id"
+                    [routerLink]="'/main/product/' + product.slug"
                     (click)="closeDropdown()">
                 
                 <img [src]="environment.baseUrl + product.media[0] || 'assets/images/no-image.png'" 

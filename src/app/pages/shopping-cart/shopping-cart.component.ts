@@ -34,7 +34,7 @@ export class ShoppingCartComponent implements OnInit {
   public isLoading = false;
   public isSubmitting = false;
   public userCart: any[] = [];
-  public selectedArr: number[] = [];
+  public selectedArr: string[] = [];
   public showSuccessMessage = false;
   
   public orderForm: FormGroup;
@@ -69,11 +69,11 @@ export class ShoppingCartComponent implements OnInit {
     }
     
     const requests = items.map(item => 
-      this.productService.getProductDetails$(item.id).pipe(
+      this.productService.getProductDetails$(item.slug).pipe(
         map(product => ({
           ...product,
           count: item.count,
-          cartId: item.id
+          cartId: item.slug
         }))
       )
     );
@@ -94,8 +94,8 @@ export class ShoppingCartComponent implements OnInit {
     if (this.isAllSelected) {
       this.selectedArr = [];
     } else {
-      const allIds = this.userCart.map(item => item.id);
-      this.selectedArr = [...allIds];
+      const allISlugs = this.userCart.map(item => item.slug);
+      this.selectedArr = [...allISlugs];
     }
   }
   
@@ -126,7 +126,7 @@ export class ShoppingCartComponent implements OnInit {
     const items = this.cartService.getCart();
     const orderData = {
       ...this.orderForm.value,
-      items: items.map(item => ({ product_id: item.id, qty: item.count }))
+      items: items.map(item => ({ product_id: item.slug, qty: item.count }))
     };
     
     this.ordersService.postOrder$(orderData).subscribe({

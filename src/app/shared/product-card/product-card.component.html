@@ -1,4 +1,4 @@
-<div class="container" [routerLink]="'/main/product/' + productItem.id">
+<div class="container" [routerLink]="'/main/product/' + productItem.slug">
     <img class="container-img" [src]="(environment.baseUrl + productItem.media[0]) || 'assets/images/no-image2.png'" alt="">
     <span class="container-name">{{ productItem.name }}</span>
 </div>

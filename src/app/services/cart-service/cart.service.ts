@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 
 export interface CartItem {
-  id: number;
+  slug: string;
   count: number;
 }
 
@@ -17,37 +17,37 @@ export class CartService {
 
   cart$ = this.cartSubject.asObservable();
 
-  addToCart(id: number): void {
+  addToCart(slug: string): void {
     const cart = this.getCart();
-    const existingItem = cart.find(item => item.id === id);
+    const existingItem = cart.find(item => item.slug === slug);
 
     if (existingItem) {
       existingItem.count += 1;
     } else {
-      cart.push({ id, count: 1 });
+      cart.push({ slug, count: 1 });
     }
 
     this.saveCart(cart);
     this.cartSubject.next(cart); 
   }
 
-  removeFromCart(id: number | number[]): void {
+  removeFromCart(slug: string | string[]): void {
     const cart = this.getCart();
     
-    if(Array.isArray(id)) {
-      const filteredCart = cart.filter(item => !id.includes(item.id));
+    if(Array.isArray(slug)) {
+      const filteredCart = cart.filter(item => !slug.includes(item.slug));
       this.saveCart(filteredCart);
       this.cartSubject.next(filteredCart);
     } else {
-      const filteredCart = cart.filter(item => item.id !== id);
+      const filteredCart = cart.filter(item => item.slug !== slug);
       this.saveCart(filteredCart);
       this.cartSubject.next(filteredCart);
     }
   }
 
-  updateCount(id: number, count: number): void {
+  updateCount(slug: string, count: number): void {
     const cart = this.getCart();
-    const item = cart.find(item => item.id === id);
+    const item = cart.find(item => item.slug === slug);
     
     if (item) {
       item.count = count;
@@ -61,14 +61,14 @@ export class CartService {
     return cartJson ? JSON.parse(cartJson) : [];
   }
 
-  getItemCount(id: number): number {
-    const item = this.getCart().find(item => item.id === id);
+  getItemCount(slug: string): number {
+    const item = this.getCart().find(item => item.slug === slug);
     return item ? item.count : 0;
   }
 
-  itemIsAdded$(id: number): Observable<boolean> {
+  itemIsAdded$(slug: string): Observable<boolean> {
     return this.cart$.pipe(
-      map(cart => cart.some(item => item.id === id)),
+      map(cart => cart.some(item => item.slug === slug)),
       distinctUntilChanged() 
     );
   }
@@ -78,19 +78,19 @@ export class CartService {
       map(cart => cart.length))
   }
 
-  getItemCount$(id: number): Observable<number> {
+  getItemCount$(slug: string): Observable<number> {
     return this.cart$.pipe(
       map(cart => {
-        const item = cart.find(item => item.id === id);
+        const item = cart.find(item => item.slug === slug);
         return item ? item.count : 0;
       }),
       distinctUntilChanged()
     );
   }
 
-  itemIsAdded(id: number): boolean {
+  itemIsAdded(slug: string): boolean {
     const cart = this.getCart();
-    const item = cart.find(item => item.id === id);
+    const item = cart.find(item => item.slug === slug);
     return !!item;
   }
 

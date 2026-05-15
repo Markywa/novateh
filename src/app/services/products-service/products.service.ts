@@ -13,7 +13,8 @@ export type TProductsContent = {
   group_id: number,
   brand_id: number,
   media: string,
-  available: true
+  available: true,
+  slug: string,
 }
 
 export type TProductCardDetails = {
@@ -35,6 +36,7 @@ export type TProductCardDetails = {
   assortment_html: string;
   seo: any;
   characteristics_html: string;
+  slug: string;
 }
 
 export type TProductMedia = {
@@ -75,7 +77,7 @@ export class ProductsService {
     return this.http.get<TProductsContent[]>(`${environment.baseUrl}/v1/products`, { params: httpParams })
   }
 
-  getProductDetails$(id: number): Observable<TProductCardDetails>{
-    return this.http.get<TProductCardDetails>(`${environment.baseUrl}/v1/products/${id}`)
+  getProductDetails$(slug: string): Observable<TProductCardDetails>{
+    return this.http.get<TProductCardDetails>(`${environment.baseUrl}/v1/products/${slug}`)
   }
 }

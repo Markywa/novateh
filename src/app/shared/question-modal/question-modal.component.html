@@ -36,11 +36,7 @@
         </div>
 
         <div class="form-field">
-            <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="message" #message="ngModel" required minlength="10" maxlength="1000"></textarea>
-            <div class="error-message" *ngIf="message.invalid && message.touched">
-                <span *ngIf="message.errors?.['required']">Сообщение обязательно для заполнения</span>
-                <span *ngIf="message.errors?.['maxlength']">Сообщение не может превышать 1000 символов</span>
-            </div>
+            <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="message" #message="ngModel" maxlength="1000"></textarea>
         </div>
 
         <button type="submit" class="default-button" [disabled]="questionForm.invalid">

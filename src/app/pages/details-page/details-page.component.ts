@@ -79,10 +79,10 @@ export class DetailsPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((paramMap) => {
     this.loading = true;
-      const id = paramMap.get('id');
+      const slug = paramMap.get('id');
       
-      if (id) {
-        this.productService.getProductDetails$(+id).subscribe({
+      if (slug) {
+        this.productService.getProductDetails$(slug).subscribe({
           next: (res) => {
             this.seoService.updateSeo(res.seo);
             
@@ -90,7 +90,7 @@ export class DetailsPageComponent implements OnInit {
 
             this.productEntity = res;
             this.loading = false;
-            this.itemIsAdded$ = this.cartService.itemIsAdded$(res.id);
+            this.itemIsAdded$ = this.cartService.itemIsAdded$(res.slug);
             
             if (res.assortment_html) {
               this.parsedAssortmentHtml = this.parseAssortmentHtml(res.assortment_html);
@@ -278,8 +278,8 @@ private escapeHtml(str: string): string {
     });
   }
 
-  addToCart(id: number): void {
-    this.cartService.addToCart(id);
+  addToCart(slug: string): void {
+    this.cartService.addToCart(slug);
   }
 
   downloadCertificate(cert: any): void {
