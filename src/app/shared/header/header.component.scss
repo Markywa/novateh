@@ -98,6 +98,13 @@
     }
 }
 
+.small{
+    & > svg {
+      width: 44px;
+      height: 44px;
+  }
+}
+
 .menu-btn{
     background-color: transparent;
     border: none;

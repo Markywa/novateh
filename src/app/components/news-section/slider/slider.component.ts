@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
 
 export interface SlideItem {
   imageSrc: string;
@@ -27,6 +28,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   currentIndex: number = 0;
   totalSlides: number = 0;
   private autoPlayTimer: any;
+  private router = inject(Router);  
 
   ngOnInit(): void {
     this.totalSlides = this.slides.length;
@@ -97,9 +99,9 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
 
   onButtonClick(slide: SlideItem): void {
     if (slide.buttonLink) {
-      console.log('Navigate to:', slide.buttonLink);
+      this.router.navigateByUrl('/main' + slide.buttonLink);
     } else {
-      console.log('Button clicked for slide:', slide);
+      console.log('Button clicked for slide:', slide)
     }
   }
 
