@@ -278,7 +278,6 @@ private escapeHtml(str: string): string {
     });
 
     dialogus.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
     });
   }
 

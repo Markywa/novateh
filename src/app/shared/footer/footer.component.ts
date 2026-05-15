@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Feature, Overlay, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -66,13 +66,32 @@ export class FooterComponent implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.initializeMap();
+  }
 
+  currentCoordinates = [0, 0] as [number, number];
+  
+  private updateCoordinatesBasedOnScreenSize() {
+    const lon = this.currentCoordinates[0];
+    const lat = this.currentCoordinates[1];
     
+    let coordinates: [number, number];
+    
+    if (window.innerWidth < 600) {
+      coordinates = [lon, (+lat + 0.01).toString() as unknown as number]; // Смещаем координаты на 0.005 градуса по широте для мобильных устройств
+    } else {
+      coordinates = [lon, lat];
+    }
+    
+    if (this.map && this.map.getView()) {
+      this.map.getView().setCenter(coordinates);
+    }
   }
 
     public initializeMap(): void {
       proj.useGeographic() 
       this.contact$.subscribe((res) => {
+          this.currentCoordinates = [res.longitude, res.latitude];
+
           this.map = new Map({
           target: 'map',
           layers: [
@@ -122,6 +141,8 @@ export class FooterComponent implements AfterViewInit{
           })
         });
         this.map.addLayer(vectorLayer);
+
+        this.updateCoordinatesBasedOnScreenSize();
       })
 
     }

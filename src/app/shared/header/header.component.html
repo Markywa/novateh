@@ -97,6 +97,7 @@
                         <div class="section-header">
                             <span class="section-title">Товары ({{ response.results.products.length }})</span>
                             <a *ngIf="response.results.products.length > 5" 
+                            (click)="closeDropdown()"
                             [routerLink]="['/main/catalog']" 
                             [queryParams]="{ query: searchControl.value }"
                             class="view-all-link">Показать все</a>
@@ -214,6 +215,7 @@
                 <span class="section-title">Товары ({{ response.results.products.length }})</span>
                 <a *ngIf="response.results.products.length > 5" 
                 [routerLink]="['/main/catalog']" 
+                (click)="closeDropdown()"
                 [queryParams]="{ query: searchControl.value }"
                 class="view-all-link">Показать все</a>
             </div>
