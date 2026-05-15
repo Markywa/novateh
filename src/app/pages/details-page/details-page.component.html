@@ -41,7 +41,9 @@
                 <div *ngSwitchCase="'view1'">
                     @if(productEntity.characteristics_html){
                         <!-- <app-table [tableList]="productEntity.attributes"></app-table> -->
-                        <div [innerHTML]="parsedCharacteristicsHtml"></div>
+                        <div class="assortment-section">
+                            <div [innerHTML]="parsedCharacteristicsHtml"></div>
+                        </div>
                     } @else {
                         <div class="certificates-empty">
                             <span>Технические характеристики отсутствуют</span>
