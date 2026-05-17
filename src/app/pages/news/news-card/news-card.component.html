@@ -5,7 +5,7 @@
             <span class="container-entity__textfields-title">
                 {{ newsFields.title }}
             </span>
-            <span class="container-entity__textfields-text" [innerHTML]="newsFields.content | safeHtml">
+            <span class="container-entity__textfields-text" [innerHTML]="newsFields.content | safeHtml:true">
                 <!-- {{ newsFields.content }} -->
             </span>
         </div>
