@@ -77,7 +77,7 @@ export class FooterComponent implements AfterViewInit{
     let coordinates: [number, number];
     
     if (window.innerWidth < 600) {
-      coordinates = [lon, (+lat + 0.01).toString() as unknown as number]; // Смещаем координаты на 0.005 градуса по широте для мобильных устройств
+      coordinates = [lon, (+lat + 0.02).toString() as unknown as number]; // Смещаем координаты на 0.005 градуса по широте для мобильных устройств
     } else {
       coordinates = [lon, lat];
     }

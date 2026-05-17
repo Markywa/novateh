@@ -1,5 +1,10 @@
-<div class="carousel">
-  <div class="carousel-container">
+<div 
+  class="carousel"
+  (touchstart)="onTouchStart($event)"
+  (touchmove)="onTouchMove($event)"
+  (touchend)="onTouchEnd()"
+>
+  <div class="carousel-container" #carouselContainer>
     <div 
       class="carousel-track" 
       [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'"

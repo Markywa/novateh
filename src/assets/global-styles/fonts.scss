@@ -15,6 +15,15 @@ body {
 }
 
 
+
+// Обычный шрифт
+@font-face {
+    font-family: 'Farabee';
+    src: url('../fonts/Farabee\ Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
 // Обычный шрифт
 @font-face {
     font-family: 'RazerF5';

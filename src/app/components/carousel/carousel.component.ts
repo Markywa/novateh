@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { Component, Input, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 
 export interface CarouselItem {
@@ -25,10 +24,17 @@ export class CarouselComponent {
   @Input() autoPlayInterval: number = 3000;
   @Input() showControls: boolean = true;
   @Input() showIndicators: boolean = true;
+  @Input() swipeThreshold: number = 50;
+
+  @ViewChild('carouselContainer') carouselContainer!: ElementRef;
 
   env = environment;
   currentIndex: number = 0;
   private autoPlayTimer: any;
+  
+  touchStartX: number = 0;
+  touchEndX: number = 0;
+  isSwiping: boolean = false;
 
   ngOnInit() {
     if (this.autoPlay && this.items.length > 1) {
@@ -55,6 +61,58 @@ export class CarouselComponent {
   goTo(index: number) {
     this.currentIndex = index;
     this.restartAutoPlay();
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+    this.isSwiping = true;
+    this.stopAutoPlay();
+  }
+
+  onTouchMove(event: TouchEvent) {
+    if (!this.isSwiping) return;
+    this.touchEndX = event.touches[0].clientX;
+    
+    const diff = this.touchEndX - this.touchStartX;
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (track) {
+      const currentTranslate = -this.currentIndex * 100;
+      const dragTranslate = currentTranslate + (diff / this.carouselContainer.nativeElement.offsetWidth) * 100;
+      track.style.transform = `translateX(${dragTranslate}%)`;
+      track.style.transition = 'none';
+    }
+  }
+
+  onTouchEnd() {
+    if (!this.isSwiping) return;
+    
+    const diff = this.touchEndX - this.touchStartX;
+    const threshold = this.swipeThreshold;
+    
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (track) {
+      track.style.transition = 'transform 0.5s ease-in-out';
+    }
+    
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        this.prev();
+      } else {
+        this.next();
+      }
+    } else {
+      if (track) {
+        track.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+      }
+    }
+    
+    this.isSwiping = false;
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+    
+    if (this.autoPlay) {
+      this.startAutoPlay();
+    }
   }
 
   private startAutoPlay() {
