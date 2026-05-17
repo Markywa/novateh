@@ -81,29 +81,35 @@ export class ProducerProductsComponent implements OnInit {
   public loading = true;
   public selectedCategoryId: number | null = null;
   env = environment
+  public error = false; 
 
   ngOnInit(): void {
     this.loading = true;
+    this.error = false;  
       this.route.paramMap.subscribe((paramMap) => {
           const slug = paramMap.get('slug');
           
           if (slug) {
               this.producerService.getBrandsDetailsPage$(slug).subscribe({
                   next: (res) => {
-                    
                     this.breadCrumbsService.setBreadcrumbs([
                       { label: 'Главная', url: '/', isClickable: true },
                       { label: res.brand.name, url: this.router.url, isClickable: true },
                     ]);
                     this.brandEntity = res;
                     this.loading = false;
+                    this.error = false;
                   },
                   error: (err) => {
                       console.error('Ошибка при получении данных:', err);
+                      this.loading = false;
+                      this.error = true; 
                   }
               });
           } else {
               console.warn('Slug не найден в параметрах URL');
+              this.loading = false;
+              this.error = true;  // Также показываем сообщение при отсутствии slug
           }
       });
   }

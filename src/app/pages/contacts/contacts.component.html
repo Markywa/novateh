@@ -12,7 +12,7 @@
                         }
                     </div>
                 } -->
-                    <div [innerHTML]="content.html_first"></div>
+                    <div [innerHTML]="content.html_first | safeHtml"></div>
             </div>
             <div class="container-section">
                 <!-- @for(requisite of information.requisite; track requisite){
@@ -22,7 +22,7 @@
                     </div>
                 } -->
                     
-                <div [innerHTML]="content.html_second"></div>
+                <div [innerHTML]="content.html_second | safeHtml"></div>
             </div>
             <div class="container-form">
                 <span class="container-section__item-title">Напишите нам</span>

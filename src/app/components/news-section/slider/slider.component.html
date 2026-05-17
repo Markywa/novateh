@@ -4,8 +4,14 @@
 
     <!-- Контент слайдера поверх фона -->
     <div class="slider-content" *ngIf="slides.length > 0">
-        <div class="slider-container">
-            <div class="slider-track" [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'">
+        <div class="slider-container"
+             (touchstart)="onTouchStart($event)"
+             (touchmove)="onTouchMove($event)"
+             (touchend)="onTouchEnd()"
+             (mousedown)="onMouseDown($event)">
+            <div class="slider-track" 
+                 [style.transform]="'translateX(calc(-' + (currentIndex * 100) + '% + ' + dragOffset + 'px))'"
+                 [style.transition]="isDragging ? 'none' : 'transform 0.5s ease-in-out'">
                 <div class="slide" *ngFor="let slide of slides; let i = index">
                     <div class="slide-left">
                         <img [src]="environment.baseUrl + slide.imageSrc" [alt]="'Slide ' + (i + 1) + ' image'">

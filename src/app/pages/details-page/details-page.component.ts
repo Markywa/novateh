@@ -16,6 +16,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SeoService } from '../../services/seo/seo.service';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { AgentsService } from '../../services/agents/agents.service';
+import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
 
 interface MediaGalleryItem {
   id: number;
@@ -37,7 +38,8 @@ interface MediaGalleryItem {
     CommonModule,
     CarouselComponent,
     TableComponent,
-    LoaderComponent
+    LoaderComponent,
+    SafeHtmlPipe
   ],
   templateUrl: './details-page.component.html',
   styleUrl: './details-page.component.scss'
@@ -94,7 +96,7 @@ export class DetailsPageComponent implements OnInit {
 
             this.productEntity = res;
             this.loading = false;
-            this.itemIsAdded$ = this.cartService.itemIsAdded$(res.slug);
+            this.itemIsAdded$ = this.cartService.itemIsAdded$(res.id);
             
             if (res.assortment_html) {
               this.parsedAssortmentHtml = this.parseAssortmentHtml(res.assortment_html);
@@ -281,8 +283,8 @@ private escapeHtml(str: string): string {
     });
   }
 
-  addToCart(slug: string): void {
-    this.cartService.addToCart(slug);
+  addToCart(id: number): void {
+    this.cartService.addToCart(id);
   }
 
   downloadCertificate(cert: any): void {

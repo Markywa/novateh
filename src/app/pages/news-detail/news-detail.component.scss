@@ -98,9 +98,12 @@
         display: flex;
         padding: 30px;
         flex-direction: row;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         @media screen and (max-width: 700px) {
             flex-direction: column;
             padding: 0;
+          grid-template-columns: 1fr;
         }
         &-full{
             display: flex;

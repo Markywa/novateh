@@ -75,3 +75,18 @@
         border-color: #FCDA00;
     }
 }
+
+.error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    width: 100%;
+    
+    p {
+        font-size: 18px;
+        color: #666;
+        text-align: center;
+        padding: 20px;
+    }
+}

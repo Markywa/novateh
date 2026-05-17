@@ -149,7 +149,6 @@ export class HeaderComponent {
     })
 
     dialogus.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
     });
   }
   searchControl = new FormControl('');

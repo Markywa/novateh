@@ -2,6 +2,10 @@
 <div class="container">
     @if(loading){
         <app-loader></app-loader>
+    } @else if(error) {
+        <div class="error-message">
+            <p>К сожалению здесь пока пусто</p>
+        </div>
     } @else {
         <div class="container-header">
             <span class="main-title">Товары {{ brandEntity.brand.name }}</span>

@@ -77,7 +77,9 @@ export class ProductsService {
     return this.http.get<TProductsContent[]>(`${environment.baseUrl}/v1/products`, { params: httpParams })
   }
 
-  getProductDetails$(slug: string): Observable<TProductCardDetails>{
+  getProductDetails$(slug: string | number): Observable<TProductCardDetails>{
+    console.log(slug);
+    
     return this.http.get<TProductCardDetails>(`${environment.baseUrl}/v1/products/${slug}`)
   }
 }

@@ -20,11 +20,16 @@
                         <span>{{ productEntity.description }}</span>
                     </div>
                     <div class="container-content__info">
-                        <span>Актуальную цену уточняйте у наших менеджеров</span>
-                        @if(itemIsAdded$ | async){
-                            <span class="default-button">ТОВАР ДОБАВЛЕН В КОРЗИНУ</span>
+                        @if(productEntity.price){
+                            <span class="container-content__info-price">{{ productEntity.price | number:'1.2-2'}} {{ productEntity.currency }}</span>
                         } @else {
-                            <button class="default-button" (click)="addToCart(productEntity.slug)">ДОБАВИТЬ В КОРЗИНУ</button>
+                            <span class="container-content__info-text">Актуальную цену уточняйте у наших менеджеров</span>
+                        }
+                        
+                        @if(itemIsAdded$ | async){
+                            <span class="success-added">ТОВАР ДОБАВЛЕН В КОРЗИНУ</span>
+                        } @else {
+                            <button class="default-button" (click)="addToCart(productEntity.id)">ДОБАВИТЬ В КОРЗИНУ</button>
                         }
                     </div>
                 </div>
@@ -39,10 +44,16 @@
 
             <div class="container-sections" [ngSwitch]="activeView">
                 <div *ngSwitchCase="'view1'">
-                    @if(productEntity.characteristics_html){
-                        <!-- <app-table [tableList]="productEntity.attributes"></app-table> -->
-                        <div class="assortment-section">
-                            <div [innerHTML]="parsedCharacteristicsHtml"></div>
+                    @if(productEntity.characteristics_html || productEntity.attributes && productEntity.attributes.length > 0){
+                        <div class="container-sections__wrap">
+                            @if(productEntity.attributes && productEntity.attributes.length > 0) {
+                                <app-table [tableList]="productEntity.attributes"></app-table>
+                            }
+                            @if(productEntity.characteristics_html) {
+                                <div class="assortment-section">
+                                    <div [innerHTML]="parsedCharacteristicsHtml | safeHtml"></div>
+                                </div>
+                            }
                         </div>
                     } @else {
                         <div class="certificates-empty">
@@ -54,7 +65,7 @@
                     @if(productEntity.assortment_html){
                         <!-- <app-table [tableList]="productEntity.attributes"></app-table> -->
                         <div class="assortment-section">
-                            <div [innerHTML]="parsedAssortmentHtml"></div>
+                            <div [innerHTML]="parsedAssortmentHtml | safeHtml"></div>
                         </div>
                     } @else {
                         <div class="certificates-empty">

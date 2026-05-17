@@ -34,7 +34,7 @@ export class ShoppingCartComponent implements OnInit {
   public isLoading = false;
   public isSubmitting = false;
   public userCart: any[] = [];
-  public selectedArr: string[] = [];
+  public selectedArr: number[] = [];
   public showSuccessMessage = false;
   
   public orderForm: FormGroup;
@@ -48,7 +48,7 @@ export class ShoppingCartComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^[\d\s\-+()]{10,}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
+      address: [''],
       comment: ['']
     });
   }
@@ -69,11 +69,11 @@ export class ShoppingCartComponent implements OnInit {
     }
     
     const requests = items.map(item => 
-      this.productService.getProductDetails$(item.slug).pipe(
+      this.productService.getProductDetails$(item.id).pipe(
         map(product => ({
           ...product,
           count: item.count,
-          cartId: item.slug
+          cartId: item.id
         }))
       )
     );
@@ -126,7 +126,7 @@ export class ShoppingCartComponent implements OnInit {
     const items = this.cartService.getCart();
     const orderData = {
       ...this.orderForm.value,
-      items: items.map(item => ({ product_id: item.slug, qty: item.count }))
+      items: items.map(item => ({ product_id: item.id, qty: item.count }))
     };
     
     this.ordersService.postOrder$(orderData).subscribe({

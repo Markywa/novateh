@@ -13,6 +13,8 @@
     justify-content: center;
     &:hover{
         opacity: 0.9;
+        background-color: #212121;
+        color: #ffffff;
     }
     &:disabled{
         opacity: 0.5;

@@ -34,7 +34,6 @@ export class RequestModalComponent {
 
   onSubmit() {
     // Здесь можно отправить данные на сервер или обработать
-    console.log('Форма отправлена:', this.formData);
     this.dialogRef.close(this.formData);
   }
 

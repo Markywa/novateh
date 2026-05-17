@@ -56,9 +56,9 @@ export class ShoppingCardComponent {
     this.changed.emit(this.value);
   }
 
-  public deleteFromCart(slug: string): void {
+  public deleteFromCart(id: number): void {
     if (this.cartService) {
-      this.cartService.removeFromCart(slug);
+      this.cartService.removeFromCart(id);
     }
     this.updateList.emit();
   }

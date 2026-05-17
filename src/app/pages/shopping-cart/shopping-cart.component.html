@@ -85,11 +85,10 @@
                     <input 
                         class="container-request__input" 
                         placeholder="Адрес" 
-                        formControlName="address"
-                        [class.invalid]="orderForm.get('address')?.invalid && orderForm.get('address')?.touched">
-                    @if(orderForm.get('address')?.invalid && orderForm.get('address')?.touched){
+                        formControlName="address">
+                    <!-- @if(orderForm.get('address')?.invalid && orderForm.get('address')?.touched){
                         <span class="error-message">Адрес обязателен для заполнения</span>
-                    }
+                    } -->
                 </div>
 
                 <label class="container-request__label">Комментарий к заказу</label>

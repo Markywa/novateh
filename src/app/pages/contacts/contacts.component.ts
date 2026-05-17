@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactsService } from '../../services/contacts/contacts.service';
 import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
 import { AsyncPipe } from '@angular/common';
+import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
 
 @Component({
   selector: 'app-contacts',
@@ -16,7 +17,8 @@ import { AsyncPipe } from '@angular/common';
     BreadCrumbsComponent,
     ReactiveFormsModule,
     FormsModule,
-    AsyncPipe
+    AsyncPipe,
+    SafeHtmlPipe
   ],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.scss'
@@ -36,9 +38,7 @@ ngOnInit(): void {
   ]);
 
   this.contactsService.getContacts$().subscribe({
-    next: (htmlString) => {
-      console.log(htmlString); // сырой HTML как строка
-      
+    next: (htmlString) => {      
       // Варианты обработки HTML:
       
       // 1. Парсинг через DOMParser

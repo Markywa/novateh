@@ -18,9 +18,12 @@
         height: 207px;
     }
     &-name{
+        height: 100%;
+        align-items: center;
+        display: flex;
+        justify-content: center;
         text-align: center;
-        margin: 12px 0 0 0;
-        padding: 0 6px;
+        // padding: 0 6px;
     }
     
     & > span{

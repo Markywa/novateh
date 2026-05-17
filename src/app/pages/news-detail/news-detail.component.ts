@@ -6,6 +6,7 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
 import { environment } from '../../../environments/environment';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
+import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
 
 interface NewsItem {
   id: number;
@@ -20,7 +21,7 @@ interface NewsItem {
 @Component({
   selector: 'app-news-detail',
   standalone: true,
-  imports: [CommonModule, BreadCrumbsComponent, HttpClientModule, RouterLink, LoaderComponent],
+  imports: [CommonModule, BreadCrumbsComponent, HttpClientModule, RouterLink, LoaderComponent, SafeHtmlPipe],
   templateUrl: './news-detail.component.html',
   styleUrl: './news-detail.component.scss'
 })

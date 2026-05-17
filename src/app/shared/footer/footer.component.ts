@@ -114,8 +114,8 @@ export class FooterComponent implements AfterViewInit{
             })
           ],
           interactions: defaultInteractions({
-            dragPan: false, 
-            mouseWheelZoom: false
+            // dragPan: false, 
+            // mouseWheelZoom: false
           }).extend([]) 
         });      
 

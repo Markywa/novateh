@@ -76,8 +76,9 @@
     color: #fff;
     display: flex;
     flex-direction: column;
-    gap: 30px;
     padding-right: 10px;
+    height: 100%;
+    justify-content: space-between;
 }
 
 .slide-right h3 {
@@ -206,4 +207,41 @@
     // .btn-details {
     //     margin: 0 auto;
     // }
+}
+
+// Стили для drag-to-slide функционала
+.slider-container {
+    cursor: grab;
+    user-select: none; // Запрещаем выделение текста при перетаскивании
+    -webkit-tap-highlight-color: transparent; // Убираем подсветку на мобильных устройствах
+    
+    &:active {
+        cursor: grabbing;
+    }
+}
+
+.slider-track {
+    will-change: transform; // Оптимизация производительности
+    
+    // Улучшенная анимация для мобильных устройств
+    @media (max-width: 768px) {
+        transition: transform 0.3s ease-out;
+    }
+}
+
+// Дополнительные стили для лучшего touch-опыта
+.slide {
+    pointer-events: auto; // Сохраняем кликабельность кнопок
+    
+    button, a {
+        position: relative;
+        z-index: 2;
+    }
+}
+
+// Предотвращаем скролл страницы при перетаскивании слайдера
+@media (max-width: 768px) {
+    .slider-container {
+        touch-action: pan-y pinch-zoom; // Разрешаем вертикальный скролл, но горизонтальный обрабатываем сами
+    }
 }
