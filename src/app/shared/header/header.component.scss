@@ -130,6 +130,15 @@
     gap: 15px;
 }
 
+.container-menu__rout-item {
+  transition: all 0.3s ease;
+  &:hover{
+    color: #333333;
+
+  }
+}
+
+
 .menu-btn {
     display: none;
     background: none;

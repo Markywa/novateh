@@ -11,20 +11,25 @@
     border-radius: 6px;
     font-weight: 700;
     justify-content: center;
+    
+    transition: all 0.3s ease;
+    
     &:hover {
-    opacity: 0.9;
-    background-color: #212121;
-    color: #ffffff;
-    svg-icon {
-        svg {
-            fill: #ffffff;
-            
-            path {
+        opacity: 0.9;
+        background-color: #212121;
+        color: #ffffff;
+        
+        svg-icon {
+            svg {
                 fill: #ffffff;
+                
+                path {
+                    fill: #ffffff;
+                }
             }
         }
     }
-}
+    
     &:disabled{
         opacity: 0.5;
         cursor: default;

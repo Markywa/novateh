@@ -78,8 +78,6 @@ export class ProductsService {
   }
 
   getProductDetails$(slug: string | number): Observable<TProductCardDetails>{
-    console.log(slug);
-    
     return this.http.get<TProductCardDetails>(`${environment.baseUrl}/v1/products/${slug}`)
   }
 }

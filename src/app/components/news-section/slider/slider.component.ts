@@ -81,9 +81,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
     } else if (this.totalSlides > 0) {
       this.currentIndex = 0; 
     }
-    this.dragOffset = 0;
-    console.log(this.currentIndex);
-    
+    this.dragOffset = 0;    
     if (this.autoPlay) {
       this.resetAutoPlay();
     }
@@ -159,8 +157,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
     
     const deltaX = this.dragCurrentX - this.dragStartX;
     
-    // Ограничиваем перетаскивание, чтобы не уходить слишком далеко
-    const maxOffset = this.containerWidth * 1; // Максимум 30% от ширины контейнера
+    const maxOffset = this.containerWidth * 1; 
     let newOffset = deltaX;
     newOffset = Math.max(-maxOffset, Math.min(maxOffset, newOffset));
     this.dragOffset = newOffset;
@@ -221,7 +218,6 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
     if (slide.buttonLink) {
       this.router.navigateByUrl('/main' + slide.buttonLink);
     } else {
-      console.log('Button clicked for slide:', slide)
     }
   }
 

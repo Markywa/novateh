@@ -11,8 +11,6 @@ export class OrdersService {
   constructor(private http: HttpClient) { }
 
   public postOrder$(body: any): Observable<any> {
-    console.log(body);
-    // return of();
     
     return this.http.post(`${environment.baseUrl}/v1/public-orders`, body)
   }

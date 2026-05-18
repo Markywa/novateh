@@ -1,28 +1,37 @@
 .container{
     display: flex;
     flex-direction: column;
-    background-color: white;
+    // background-color: white;
     // padding: 10px 10px;
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     align-items: center;
+    height: 395px;
     animation: fadeIn 0.5s ease-in-out forwards;
     height: 260px;
 
     &-img{
+        object-fit: cover;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        max-height: 207px;
+        height: 200px;
+        border-radius: 12px;
+        background-color: white;
+        
+        &:hover {  
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06); 
+        }
     }
+
     &-name{
         height: 100%;
-        align-items: center;
+        // align-items: center;
         display: flex;
         justify-content: center;
         text-align: center;
-        padding: 0 6px;
+        // padding: 0 6px;
+        margin-top: 12px;
     }
     
     & > span{
