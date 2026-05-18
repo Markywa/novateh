@@ -102,9 +102,16 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
 
   // Touch events for mobile
   onTouchStart(event: TouchEvent): void {
+    const target = event.target as HTMLElement;
+    const isButton = target.closest('button') !== null;
+    
+    if (isButton) {
+        return;
+    }
+    
     event.preventDefault();
     this.startDrag(event.touches[0].clientX);
-  }
+  } 
 
   onTouchMove(event: TouchEvent): void {
     if (!this.isDragging) return;
