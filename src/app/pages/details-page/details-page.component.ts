@@ -73,6 +73,12 @@ export class DetailsPageComponent implements OnInit {
   isDragging = false;
   dragStart = { x: 0, y: 0 };
   imageLoaded = false;
+  
+  touchStartDistance: number = 0;
+  initialScale: number = 1;
+  touchStartPosition = { x: 0, y: 0 };
+  initialPosition = { x: 0, y: 0 };
+  isTouching: boolean = false;
 
   activeView: string = 'view1';
 
@@ -361,10 +367,9 @@ private escapeHtml(str: string): string {
     }
   }
 
-  resetZoom(): void {
+  resetZoom(): void {    
     this.scale = 1;
     this.position = { x: 0, y: 0 };
-    this.imageLoaded = false;
   }
 
   zoomIn(): void {
@@ -381,6 +386,12 @@ private escapeHtml(str: string): string {
     }
   }
 
+  private getTouchDistance(touches: TouchList): number {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
   startDragging(event: MouseEvent): void {
     if (this.scale > 1) {
       this.isDragging = true;
@@ -389,8 +400,8 @@ private escapeHtml(str: string): string {
     }
   }
 
-  onDragging(event: MouseEvent): void {
-    if (this.isDragging && this.scale > 1) {
+  onDragging(event: MouseEvent): void {    
+    if (this.isDragging && this.scale > 1) {      
       this.position = {
         x: event.clientX - this.dragStart.x,
         y: event.clientY - this.dragStart.y
@@ -446,4 +457,127 @@ private escapeHtml(str: string): string {
   onImageLoad(): void {
     this.imageLoaded = true;
   }
+
+touchStartX: number = 0;
+touchStartY: number = 0;
+touchEndX: number = 0;
+touchEndY: number = 0;
+isSwiping: boolean = false;
+minSwipeDistance: number = 50; 
+
+
+onTouchStart(event: TouchEvent): void {
+  if (this.previewMedia?.type !== 'image') return;
+  
+  const touches = event.touches;
+  
+  if (touches.length === 1) {
+    this.touchStartX = touches[0].clientX;
+    this.touchStartY = touches[0].clientY;
+  }
+  
+  if (touches.length === 2) {
+    event.preventDefault();
+    this.touchStartDistance = this.getTouchDistance(touches);
+    this.initialScale = this.scale;
+    this.isTouching = true;
+    this.isSwiping = false;
+  } else if (touches.length === 1 && this.scale > 1) {
+    event.preventDefault();
+    this.isDragging = true;
+    this.touchStartPosition = {
+      x: touches[0].clientX - this.position.x,
+      y: touches[0].clientY - this.position.y
+    };
+    this.initialPosition = { ...this.position };
+    this.isSwiping = false;
+  } else if (touches.length === 1 && this.scale === 1) {
+    this.isSwiping = true;
+    this.isDragging = false;
+  }
+}
+
+onTouchMove(event: TouchEvent): void {
+  if (this.previewMedia?.type !== 'image') return;
+  
+  const touches = event.touches;
+  
+  if (touches.length === 2 && this.isTouching) {
+    event.preventDefault();
+    const currentDistance = this.getTouchDistance(touches);
+    const scaleChange = currentDistance / this.touchStartDistance;
+    let newScale = this.initialScale * scaleChange;
+    newScale = Math.min(3, Math.max(1, newScale));
+    
+    if (newScale !== this.scale) {
+      this.scale = newScale;
+      
+      if (this.scale === 1) {
+        this.position = { x: 0, y: 0 };
+        this.isSwiping = true;
+        this.isDragging = false;
+      } else {
+        this.isSwiping = false;
+      }
+    }
+  } else if (touches.length === 1 && this.isDragging && this.scale > 1) {
+    event.preventDefault();
+    this.position = {
+      x: touches[0].clientX - this.touchStartPosition.x,
+      y: touches[0].clientY - this.touchStartPosition.y
+    };
+    
+    const maxX = (this.scale - 1) * 250;
+    const maxY = (this.scale - 1) * 250;
+    this.position.x = Math.min(Math.max(this.position.x, -maxX), maxX);
+    this.position.y = Math.min(Math.max(this.position.y, -maxY), maxY);
+  }
+}
+
+onTouchEnd(event: TouchEvent): void {
+  if (this.scale === 1 && this.isSwiping && !this.isDragging && !this.isTouching) {
+    const touch = event.changedTouches[0];
+    if (touch) {
+      const deltaX = touch.clientX - this.touchStartX;
+      const deltaY = touch.clientY - this.touchStartY;
+      
+      if (Math.abs(deltaX) > this.minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0) {
+          this.prevItem();
+        } else {
+          this.nextItem();
+        }
+      }
+    }
+  }
+  
+  this.isDragging = false;
+  this.isTouching = false;
+  this.isSwiping = false;
+}
+
+onVideoTouchStart(event: TouchEvent): void {
+  this.touchStartX = event.touches[0].clientX;
+  this.touchStartY = event.touches[0].clientY;
+  this.isSwiping = true;
+}
+
+onVideoTouchEnd(event: TouchEvent): void {
+  if (this.isSwiping) {
+    const touch = event.changedTouches[0];
+    if (touch) {
+      const deltaX = touch.clientX - this.touchStartX;
+      const deltaY = touch.clientY - this.touchStartY;
+      
+      if (Math.abs(deltaX) > this.minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0) {
+          this.prevItem();
+        } else {
+          this.nextItem();
+        }
+      }
+    }
+  }
+  this.isSwiping = false;
+}
 }

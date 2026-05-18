@@ -126,7 +126,7 @@
       }
   </div>
 
-  @if(previewVisible && previewMedia) {
+@if(previewVisible && previewMedia) {
     <div class="fullscreen-modal" (click)="closePreview()" (wheel)="onWheel($event)">
         <div class="fullscreen-container" (click)="$event.stopPropagation()">
             
@@ -149,17 +149,55 @@
                 {{ currentIndex + 1 }} / {{ galleryItems.length }}
             </div>
             
+            <!-- Кнопки масштабирования для телефона -->
+            @if(previewMedia.type === 'image') {
+                <div class="zoom-controls">
+                    <button class="zoom-btn" (click)="zoomOut()" aria-label="Уменьшить">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <span class="zoom-level">{{ Math.round(scale * 100) }}%</span>
+                    <button class="zoom-btn" (click)="zoomIn()" aria-label="Увеличить">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <button class="zoom-btn reset-btn" (click)="resetZoom()" aria-label="Сбросить масштаб">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M3 12L6 9M3 12L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+            }
+            
+            <!-- Индикатор свайпа для мобильных -->
+            @if(previewMedia.type === 'image' && scale === 1 && galleryItems.length > 1) {
+                <div class="swipe-hint">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M8 12L12 8L16 12M8 12L12 16L16 12M8 12H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Листайте влево/вправо</span>
+                </div>
+            }
+            
             <div class="modal-content">
                 @if(previewMedia.type === 'video') {
-                    <video 
-                        controls 
-                        autoplay 
-                        class="fullscreen-video"
-                        [src]="environment.baseUrl + previewMedia.url"
-                        [title]="previewMedia.title">
-                        <source [src]="environment.baseUrl + previewMedia.url" [type]="previewMedia.mime_type">
-                        Ваш браузер не поддерживает видео.
-                    </video>
+                    <div 
+                        class="video-container"
+                        (touchstart)="onVideoTouchStart($event)"
+                        (touchend)="onVideoTouchEnd($event)">
+                        <video 
+                            controls 
+                            autoplay 
+                            class="fullscreen-video"
+                            [src]="environment.baseUrl + previewMedia.url"
+                            [title]="previewMedia.title">
+                            <source [src]="environment.baseUrl + previewMedia.url" [type]="previewMedia.mime_type">
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    </div>
                 } @else {
                     <div 
                         class="image-container"
@@ -167,7 +205,10 @@
                         (mousedown)="startDragging($event)"
                         (mousemove)="onDragging($event)"
                         (mouseup)="stopDragging()"
-                        (mouseleave)="stopDragging()">
+                        (mouseleave)="stopDragging()"
+                        (touchstart)="onTouchStart($event)"
+                        (touchmove)="onTouchMove($event)"
+                        (touchend)="onTouchEnd($event)">
                         
                         @if(!imageLoaded) {
                             <div class="image-loader">
@@ -183,7 +224,8 @@
                             [style.cursor]="scale > 1 ? 'grab' : 'default'"
                             [class.loaded]="imageLoaded"
                             (load)="onImageLoad()"
-                            loading="eager">
+                            loading="eager"
+                            draggable="false">
                     </div>
                     
                     @if(scale > 1) {

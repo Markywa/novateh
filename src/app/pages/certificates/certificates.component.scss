@@ -24,6 +24,10 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s, box-shadow 0.2s;
+    @media screen and (max-width: 700px) {
+      flex-direction: column;;
+      gap: 20px;
+    }
 
     &:hover {
       transform: translateY(-2px);
