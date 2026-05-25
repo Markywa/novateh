@@ -1,0 +1,80 @@
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  left: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #FCDA00;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  
+  svg {
+    color: #333333;
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover {
+    background-color: #e5c500;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    
+    svg {
+      transform: translateY(-2px);
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  // Для мобильных устройств
+  @media (max-width: 768px) {
+    bottom: 20px;
+    left: 40px;
+    width: 44px;
+    height: 44px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  // Для очень маленьких экранов
+  @media (max-width: 480px) {
+    bottom: 15px;
+    left: 25px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+// Анимация при появлении
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-to-top.visible {
+  animation: fadeInUp 0.3s ease-out;
+}

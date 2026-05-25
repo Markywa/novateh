@@ -35,6 +35,53 @@ export class HeaderComponent {
 
   public contactPhone$ = this.contactsSerbice.getContacts$().pipe(map((contacts: any) => contacts.phone))
 
+  private lastScrollTop = 0;
+    isHeaderVisible = true;
+    isHeaderHidden = false;   
+
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (currentScroll > this.lastScrollTop && currentScroll > 10) {
+            this.isHeaderVisible = false;
+            this.isHeaderHidden = true;
+        } 
+        else if (currentScroll < this.lastScrollTop) {
+            this.isHeaderVisible = true;
+            this.isHeaderHidden = false;
+        }
+        
+        this.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    }
+
+      private lastScrollY = 0;
+    private lastTouchY = 0;
+    
+    @HostListener('touchstart', ['$event'])
+    onTouchStart(event: TouchEvent) {
+        this.lastTouchY = event.touches[0].clientY;
+        this.lastScrollY = window.scrollY;
+    }
+    
+    @HostListener('touchmove', ['$event'])
+    onTouchMove(event: TouchEvent) {
+        const currentTouchY = event.touches[0].clientY;
+        const currentScrollY = window.scrollY;
+        const deltaY = currentTouchY - this.lastTouchY;
+        const scrollDelta = currentScrollY - this.lastScrollY;
+        
+        if (deltaY < -10 && scrollDelta > 10) {
+            this.isHeaderHidden = true;
+        } else if (deltaY > 10 && scrollDelta < -10) {
+            this.isHeaderHidden = false;
+        }
+        
+        this.lastTouchY = currentTouchY;
+        this.lastScrollY = currentScrollY;
+    }
+
+
   public linkArr: {name: string, link: string}[] = [
     {
       name: 'О КОМПАНИИ',
@@ -112,8 +159,12 @@ export class HeaderComponent {
   }
 
   toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
-    document.body.style.overflow = this.isMenuOpen ? 'hidden' : '';
+    this.isHeaderVisible = false;
+    this.isHeaderHidden = false;
+    setTimeout(() => {
+      this.isMenuOpen = !this.isMenuOpen;
+      document.body.style.overflow = this.isMenuOpen ? 'hidden' : '';
+    }, 0)
   }
 
   closeMenu(): void {

@@ -1,6 +1,13 @@
-<div class="container">
+<div class="container" 
+    [ngClass]="{'header-hidden': isHeaderHidden, 'header-visible': isHeaderVisible, '': !isHeaderHidden && !isHeaderVisible}"
+    >
     <div class="container__wrap">
         <div class="container-menu">
+            
+            <a routerLink="../main/welcome" *ngIf="(isMobile$ | async)">
+                <svg-icon class="small-logo" src="assets\images\logo.svg"></svg-icon>
+            </a>
+
             <a [href]="'tel:' + (contactPhone$ | async)" class="phone-link">
                 <span class="phone-number">
                     {{ contactPhone$ | async }}
@@ -16,15 +23,15 @@
             <button (click)="sendQuestionModal()" class="default-button">
                 ЗАДАТЬ ВОПРОС
             </button>
-            
+<!--             
             <button class="menu-btn" (click)="toggleMenu()">
                 <svg-icon src="assets/images/menu.svg"></svg-icon>
-            </button>
+            </button> -->
         </div>
 
         <div *ngIf="isMenuOpen" class="mobile-menu__overlay" (click)="closeMenu()"></div>
         
-        <div class="mobile-menu" [class.active]="isMenuOpen">
+        <div class="mobile-menu" [class.active]="isMenuOpen" [class.mobile-menu__hidden]="isHeaderVisible || isHeaderHidden">
             <div class="mobile-menu__content">
                 <button class="mobile-menu__close" (click)="closeMenu()">
                     <svg-icon class="small" src="assets/images/close.svg"></svg-icon>
@@ -44,8 +51,9 @@
                 </button>
             </div>
         </div>
+
         <div class="container-menu">
-            <a routerLink="../main/welcome">
+            <a routerLink="../main/welcome" *ngIf="!(isMobile$ | async)">
                 <svg-icon src="assets\images\logo.svg"></svg-icon>
             </a>
             <button class="default-button" routerLink="catalog">
@@ -156,7 +164,7 @@
                     </div>
                 </div>
             
-            <div class="container-menu__rout-shopping">
+            <div class="container-menu__rout-shopping" *ngIf="!(isMobile$ | async)">
                 <a class="container-menu__rout-item container-menu__rout-shopping" 
                     [ngClass]="{
                         'active': isActiveCart$ | async,
@@ -170,26 +178,29 @@
                 </a>
             </div>
         </div>
-        <div class="container-search container-search__mobile" *ngIf="isMobile$ | async">
-    <input
-        type="text"
-        [formControl]="searchControl"
-        placeholder="ПОИСК"
-        class="container-search__input"
-        (focus)="showDropdown = true"
-        autocomplete="off"
-        />
-            <div class="search-icons">
-            <svg *ngIf="isLoading" class="spinner" viewBox="0 0 50 50">
-                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
-            </svg>
-            <svg *ngIf="searchControl.value && !isLoading" 
-                (click)="clearSearch()" 
-                class="clear-icon" 
-                viewBox="0 0 24 24">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
+    <div class="container-search container-search__mobile" *ngIf="isMobile$ | async">
+        <div class="container-search__mobile-wrap">
+            <input
+            type="text"
+            [formControl]="searchControl"
+            placeholder="ПОИСК"
+            class="container-search__input"
+            (focus)="showDropdown = true"
+            autocomplete="off"
+            />
+                <div class="search-icons">
+                <svg *ngIf="isLoading" class="spinner" viewBox="0 0 50 50">
+                    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+                </svg>
+                <svg *ngIf="searchControl.value && !isLoading" 
+                    (click)="clearSearch()" 
+                    class="clear-icon" 
+                    viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
             </div>
+        </div>
+    
 
         <div *ngIf="showDropdown && (searchResults$ | async) as response" 
             class="search-dropdown"
@@ -271,6 +282,24 @@
             <span class="hint">Попробуйте изменить запрос</span>
             </div>
         </div>
+        
+            <div class="container-menu__rout-shopping">
+                <a class="container-menu__rout-item container-menu__rout-shopping" 
+                    [ngClass]="{
+                        'active': isActiveCart$ | async,
+                        'passive': (isActiveCart$ | async) === false
+                        }"
+                    routerLink="shopping-cart">
+                    <div class="container-menu__rout-shopping-counter">
+                        <span>{{ cartService.itemsCounter$() | async }}</span>
+                    </div>
+                    <svg-icon src="assets/images/shopping.svg"></svg-icon>
+                </a>
+            </div>
+
+            <button class="menu-btn" (click)="toggleMenu()">
+                <svg-icon src="assets/images/menu.svg"></svg-icon>
+            </button>
         </div>
 </div>  
 </div>
