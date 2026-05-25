@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -11,7 +11,7 @@ import { CartService } from '../../services/cart-service/cart.service';
 import { ProductsService } from '../../services/products-service/products.service';
 import { OrdersService } from '../../services/orders/orders.service';
 import { Meta, Title } from '@angular/platform-browser';
-import { RecaptchaModule } from 'ng-recaptcha';
+import { RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -29,6 +29,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
   styleUrl: './shopping-cart.component.scss'
 })
 export class ShoppingCartComponent implements OnInit {
+  @ViewChild('captchaRef') captchaRef!: RecaptchaComponent;
   private cartService = inject(CartService);
   private productService = inject(ProductsService);
   private ordersService = inject(OrdersService);
@@ -162,6 +163,7 @@ export class ShoppingCartComponent implements OnInit {
         this.selectedArr = [];
         
         this.orderForm.reset();
+        this.captchaRef.reset();
         
         setTimeout(() => {
           this.closeSuccessMessage();
