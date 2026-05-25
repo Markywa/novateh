@@ -99,17 +99,18 @@
                     rows="4" 
                     placeholder="Если у вас есть пожелания или вопросы, можете указать их в этом поле и наш менеджер обязательно вам ответит"
                     class="container-request__textarea"></textarea>
+                    
+                <re-captcha 
+                    siteKey="6LdcdfssAAAAAB9mF997GKHi3RxIrU0bhoBnLbOM"
+                    (resolved)="onCaptchaResolved($event)">
+                </re-captcha>
             </div>
 
-            <re-captcha 
-                siteKey="6LdcdfssAAAAAB9mF997GKHi3RxIrU0bhoBnLbOM"
-                (resolved)="onCaptchaResolved($event)">
-            </re-captcha>
             
             <button 
                 type="submit"
                 class="button button--primary button--full" 
-                [disabled]="userCart.length === 0 || orderForm.invalid || isSubmitting">
+                [disabled]="userCart.length === 0 || orderForm.invalid || isSubmitting || !captchaToken">
                 Оформить заявку
             </button>
         </form>

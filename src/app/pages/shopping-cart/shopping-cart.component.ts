@@ -135,9 +135,8 @@ export class ShoppingCartComponent implements OnInit {
   
   sendForm(): void {
     if (!this.captchaToken) return;
-    
+
     if (this.orderForm.invalid || this.userCart.length === 0) {
-      // Отмечаем все поля как touched для показа ошибок
       Object.keys(this.orderForm.controls).forEach(key => {
         const control = this.orderForm.get(key);
         control?.markAsTouched();
