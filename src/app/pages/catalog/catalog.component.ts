@@ -16,6 +16,7 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { environment } from '../../../environments/environment';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 export interface TSearchResult {
   navigation: {
@@ -74,6 +75,19 @@ export class CatalogComponent implements OnInit, OnDestroy {
   public isSearchMode = false;
   public searchLoading = false;
   public searchQuery = '';
+
+  constructor(private title: Title, private meta: Meta) {
+      this.title.setTitle('Каталог теплоизоляционных материалов | Новатех');
+      this.meta.addTags([
+        { name: 'description', content: 'Полный каталог теплоизоляции от производителя Новатех. Минеральная вата, базальтовый утеплитель, пенопласт, экструдированный пенополистирол (XPS), напыляемая теплоизоляция. Технические характеристики, цены, сертификаты. Подберите утеплитель для любых задач.' },
+        { name: 'keywords', content: 'каталог теплоизоляции, виды утеплителей, минеральная вата купить, пенополистирол цена, XPS утеплитель, базальтовая вата характеристики' },
+        { property: 'og:title', content: 'Каталог теплоизоляционных материалов - Новатех' },
+        { property: 'og:description', content: 'Широкий выбор теплоизоляции от производителя. Характеристики, цены, сертификаты.' },
+        { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
+        { property: 'og:url', content: 'https://nvt24.ru/lambda/catalog' },
+        { property: 'og:type', content: 'website' },
+      ]);
+    }
 
   ngOnInit(): void {
     this.querySubscription = this.route.queryParams.subscribe(params => {

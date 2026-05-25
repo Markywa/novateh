@@ -33,27 +33,27 @@ export class FooterComponent implements AfterViewInit{
   public linkArr: {name: string, link: string}[] = [
     {
       name: 'ГЛАВНАЯ',
-      link: '/main/welcome'
+      link: '/lambda/welcome'
     },
     {
       name: 'КАТАЛОГ',
-      link: '/main/catalog'
+      link: '/lambda/catalog'
     },
     {
       name: 'О КОМПАНИИ',
-      link: '/main/about'
+      link: '/lambda/about'
     },
     {
       name: 'СЕРТИФИКАТЫ',
-      link: '/main/certificates'
+      link: '/lambda/certificates'
     },
     {
       name: 'НОВОСТИ',
-      link: '/main/news'
+      link: '/lambda/news'
     },
     {
       name: 'КОНТАКТЫ',
-      link: '/main/contacts'
+      link: '/lambda/contacts'
     },
   ]
 

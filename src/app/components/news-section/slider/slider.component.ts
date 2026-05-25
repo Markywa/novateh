@@ -223,7 +223,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
 
   onButtonClick(slide: SlideItem): void {
     if (slide.buttonLink) {
-      this.router.navigateByUrl('/main' + slide.buttonLink);
+      this.router.navigateByUrl('/lambda' + slide.buttonLink);
     } else {
     }
   }

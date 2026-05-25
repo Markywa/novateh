@@ -8,6 +8,7 @@ import { ContactsService } from '../../services/contacts/contacts.service';
 import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
 import { AsyncPipe } from '@angular/common';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contacts',
@@ -30,12 +31,26 @@ export class ContactsComponent implements OnInit {
   private breadCrumbsService = inject(BreadCrumbsService);
 
   public htmlContent$ =  this.htmlContentsService.getHtmlContent$();
+  
+  constructor(private title: Title, private meta: Meta) {
+      this.title.setTitle('Контакты | Новатех - Производство теплоизоляции');
+      this.meta.addTags([
+        { name: 'description', content: 'Свяжитесь с компанией Новатех. Наши контакты: телефон отдела продаж, email для заказов, адрес производства. Получите консультацию по выбору теплоизоляции, рассчитайте стоимость заказа, узнайте условия доставки по России.' },
+        { name: 'keywords', content: 'контакты теплоизоляция, телефон утеплитель, адрес производителя, связаться с новатех, консультация теплоизоляция' },
+        { property: 'og:title', content: 'Контакты - Новатех' },
+        { property: 'og:description', content: 'Свяжитесь с нами для консультации, заказа и доставки теплоизоляции по всей России.' },
+        { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
+        { property: 'og:url', content: 'https://nvt24.ru/lambda/contacts' },
+        { property: 'og:type', content: 'website' },
+      ]);
+    }
 
 ngOnInit(): void {
   this.breadCrumbsService.setBreadcrumbs([
     { label: 'Главная', url: '/', isClickable: true },
     { label: 'Контакты', url: '', isClickable: false },
   ]);
+  
 
   this.contactsService.getContacts$().subscribe({
     next: (htmlString) => {      

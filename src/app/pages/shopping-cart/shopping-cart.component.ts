@@ -10,6 +10,7 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
 import { CartService } from '../../services/cart-service/cart.service';
 import { ProductsService } from '../../services/products-service/products.service';
 import { OrdersService } from '../../services/orders/orders.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -43,7 +44,9 @@ export class ShoppingCartComponent implements OnInit {
     return this.userCart.length > 0 && this.selectedArr.length === this.userCart.length;
   }
   
-  constructor() {
+  constructor(
+        private title: Title,
+        private meta: Meta) {
     this.orderForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^[\d\s\-+()]{10,}$/)]],
@@ -51,6 +54,17 @@ export class ShoppingCartComponent implements OnInit {
       address: [''],
       comment: ['']
     });
+
+    this.title.setTitle('Корзина | Оформление заказа теплоизоляции');
+    this.meta.addTags([
+      { name: 'description', content: 'Оформление заказа на теплоизоляционные материалы в компании Новатех. Рассчитайте стоимость, выберите способ доставки, укажите контактные данные. Быстрое и удобное оформление заказа с доставкой по всей России.' },
+      { name: 'keywords', content: 'корзина, оформление заказа, купить утеплитель, заказ теплоизоляции, доставка теплоизоляции' },
+      { property: 'og:title', content: 'Корзина и оформление заказа - Новатех' },
+      { property: 'og:description', content: 'Оформление заказа на теплоизоляционные материалы с доставкой по России.' },
+      { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
+      { property: 'og:url', content: 'https://nvt24.ru/lambda/shopping-cart' },
+      { property: 'og:type', content: 'website' },
+    ]);
   }
   
   ngOnInit(): void {

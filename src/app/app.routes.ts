@@ -15,11 +15,11 @@ import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'main/welcome',
+    redirectTo: 'lambda/welcome',
     pathMatch: 'full'
   },
   {
-    path: 'main',
+    path: 'lambda',
     component: MainPageComponent,
     data: { breadcrumb: 'Главная' },
     children: [

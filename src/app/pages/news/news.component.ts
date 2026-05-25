@@ -8,6 +8,7 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { Router } from '@angular/router';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-news',
@@ -29,6 +30,19 @@ export class NewsComponent implements OnInit {
   private router = inject(Router);
   public newsList: NewsFields[] = [];
   public loading = false;
+
+  constructor(private title: Title, private meta: Meta) {
+      this.title.setTitle('Новости компании Новатех | Акции и события');
+    this.meta.addTags([
+       { name: 'description', content: 'Актуальные новости производителя теплоизоляции Новатех. Акции и скидки на утеплители, новинки продукции, участие в выставках, полезные статьи об утеплении зданий. Будьте в курсе всех событий!' },
+      { name: 'keywords', content: 'новости теплоизоляции, акции утеплитель, события компании, скидки на теплоизоляцию, новинки продукции' },
+      { property: 'og:title', content: 'Новости и акции - Новатех' },
+      { property: 'og:description', content: 'Актуальные новости, акции и скидки на теплоизоляционные материалы.' },
+      { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
+      { property: 'og:url', content: 'https://nvt24.ru/lambda/shopping-cart' },
+      { property: 'og:type', content: 'website' },
+    ]);
+  }
 
   ngOnInit(): void {
     this.breadCrumbsService.setBreadcrumbs([
