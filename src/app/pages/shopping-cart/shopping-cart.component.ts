@@ -11,6 +11,7 @@ import { CartService } from '../../services/cart-service/cart.service';
 import { ProductsService } from '../../services/products-service/products.service';
 import { OrdersService } from '../../services/orders/orders.service';
 import { Meta, Title } from '@angular/platform-browser';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -22,6 +23,7 @@ import { Meta, Title } from '@angular/platform-browser';
     ShoppingCardComponent,
     AngularSvgIconModule,
     BreadCrumbsComponent,
+    RecaptchaModule,
   ],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.scss'
@@ -69,6 +71,12 @@ export class ShoppingCartComponent implements OnInit {
   
   ngOnInit(): void {
     this.getUserCart();
+  }
+
+  captchaToken: string | null = '';
+
+  onCaptchaResolved(token: string | null) {
+    this.captchaToken = token;
   }
   
   getUserCart(): void {
@@ -126,6 +134,8 @@ export class ShoppingCartComponent implements OnInit {
   }
   
   sendForm(): void {
+    if (!this.captchaToken) return;
+    
     if (this.orderForm.invalid || this.userCart.length === 0) {
       // Отмечаем все поля как touched для показа ошибок
       Object.keys(this.orderForm.controls).forEach(key => {

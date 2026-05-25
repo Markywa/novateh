@@ -100,6 +100,11 @@
                     placeholder="Если у вас есть пожелания или вопросы, можете указать их в этом поле и наш менеджер обязательно вам ответит"
                     class="container-request__textarea"></textarea>
             </div>
+
+            <re-captcha 
+                siteKey="6LdcdfssAAAAAB9mF997GKHi3RxIrU0bhoBnLbOM"
+                (resolved)="onCaptchaResolved($event)">
+            </re-captcha>
             
             <button 
                 type="submit"
