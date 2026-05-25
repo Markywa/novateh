@@ -7,6 +7,7 @@ import { ProductLineComponent } from '../../components/product-line/product-line
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-group-page',
@@ -27,7 +28,9 @@ export class GroupPageComponent implements OnInit {
     private router = inject(Router);
     private breadCrumbsService = inject(BreadCrumbsService);
     public groupEntity!: TGroupsPageContent;
-    public loading = true;
+    public loading = true;  
+    
+    constructor(private title: Title, private meta: Meta) {}
   
     ngOnInit(): void {
       this.loading = true;
@@ -38,6 +41,36 @@ export class GroupPageComponent implements OnInit {
               this.groupsService.getGroupDetailsPage$(slug).subscribe({
                   next: (res) => {
                     this.groupEntity = res;
+                    if (res.category.seo.title) {
+                      this.title.setTitle('Новатех - ' + res.category.seo.title);
+                    } else {
+                      this.title.setTitle('Новатех - Продукция: ' + res.category.name);
+                    }
+                    
+                    if (res.category.seo.description) {
+                      this.meta.updateTag({ name: 'description', content: res.category.seo.description });
+                    }
+                    
+                    if (res.category.seo.keywords) {
+                      this.meta.updateTag({ name: 'keywords', content: res.category.seo.keywords });
+                    }
+                    
+                    if (res.category.seo.robots) {
+                      this.meta.updateTag({ name: 'robots', content: res.category.seo.robots });
+                    }
+                    
+                    if (res.category.seo.og_title) {
+                      this.meta.updateTag({ property: 'og:title', content: res.category.seo.og_title });
+                    }
+                    
+                    if (res.category.seo.og_description) {
+                      this.meta.updateTag({ property: 'og:description', content: res.category.seo.og_description });
+                    }
+                    
+                    if (res.category.seo.og_image) {
+                      this.meta.updateTag({ property: 'og:image', content: res.category.seo.og_image });
+                    }
+                    
                     this.loading = false;
 
                     this.breadCrumbsService.setBreadcrumbs([

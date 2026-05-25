@@ -58,6 +58,7 @@ import { environment } from '../../../environments/environment.development';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-producer-products',
@@ -81,7 +82,19 @@ export class ProducerProductsComponent implements OnInit {
   public loading = true;
   public selectedCategoryId: number | null = null;
   env = environment
-  public error = false; 
+  public error = false;     
+  
+  constructor(private title: Title, private meta: Meta) {
+        this.meta.addTags([
+          { name: 'description', content: 'Полный каталог теплоизоляции от производителя Новатех. Минеральная вата, базальтовый утеплитель, пенопласт, экструдированный пенополистирол (XPS), напыляемая теплоизоляция. Технические характеристики, цены, сертификаты. Подберите утеплитель для любых задач.' },
+          { name: 'keywords', content: 'каталог теплоизоляции, виды утеплителей, минеральная вата купить, пенополистирол цена, XPS утеплитель, базальтовая вата характеристики' },
+          { property: 'og:title', content: 'Каталог теплоизоляционных материалов - Новатех' },
+          { property: 'og:description', content: 'Широкий выбор теплоизоляции от производителя. Характеристики, цены, сертификаты.' },
+          { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
+          { property: 'og:url', content: 'https://nvt24.ru/lambda/catalog' },
+          { property: 'og:type', content: 'website' },
+        ]);
+      }
 
   ngOnInit(): void {
     this.loading = true;
@@ -97,6 +110,8 @@ export class ProducerProductsComponent implements OnInit {
                       { label: res.brand.name, url: this.router.url, isClickable: true },
                     ]);
                     this.brandEntity = res;
+                    
+                    this.title.setTitle('Новатех - Товары бренда ' + res.brand.name);
                     this.loading = false;
                     this.error = false;
                   },

@@ -10,7 +10,8 @@ export type TGroupsContent = {
     name: string,
     slug: string,
     description: string,
-    media: string
+    media: string,
+    seo: any
   }
 
 export type TGroupsPageContent = {
