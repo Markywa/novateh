@@ -49,6 +49,7 @@
                     <input 
                         class="container-request__input" 
                         placeholder="Имя" 
+                        type="text" 
                         formControlName="name"
                         [class.invalid]="orderForm.get('name')?.invalid && orderForm.get('name')?.touched">
                     @if(orderForm.get('name')?.invalid && orderForm.get('name')?.touched){
@@ -85,6 +86,7 @@
                     <input 
                         class="container-request__input" 
                         placeholder="Адрес" 
+                        type="text" 
                         formControlName="address">
                     <!-- @if(orderForm.get('address')?.invalid && orderForm.get('address')?.touched){
                         <span class="error-message">Адрес обязателен для заполнения</span>

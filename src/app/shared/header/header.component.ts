@@ -193,10 +193,10 @@ export class HeaderComponent {
     }
   }
 
-  sendQuestionModal(): void {
+  sendQuestionModal(mobile?: boolean): void {
     const dialogus = this.dialog.open(QuestionModalComponent, {
-      height: '445px',
-      width: '550px',
+      height: mobile ? 'auto' : '445px',
+      width: mobile ? 'auto' : '550px',
     })
 
     dialogus.afterClosed().subscribe(result => {

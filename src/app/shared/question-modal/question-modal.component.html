@@ -11,7 +11,7 @@
 
     <form #questionForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="form-field">
-            <input placeholder="Имя" [(ngModel)]="formData.name" name="name" #name="ngModel" required minlength="2" maxlength="50">
+            <input placeholder="Имя" type="text" [(ngModel)]="formData.name" name="name" #name="ngModel" required minlength="2" maxlength="50">
             <div class="error-message" *ngIf="name.invalid && name.touched">
                 <span *ngIf="name.errors?.['required']">Имя обязательно для заполнения</span>
                 <span *ngIf="name.errors?.['minlength']">Имя должно содержать минимум 2 символа</span>
