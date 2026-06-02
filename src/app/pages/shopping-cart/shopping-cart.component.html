@@ -99,7 +99,23 @@
                     rows="4" 
                     placeholder="Если у вас есть пожелания или вопросы, можете указать их в этом поле и наш менеджер обязательно вам ответит"
                     class="container-request__textarea"></textarea>
-                    
+                
+                    <div class="form-field checkbox-field">
+                        <label class="checkbox-label">
+                            <input type="checkbox" 
+                                formControlName="consent"
+                                name="consent" 
+                                required>
+                            <span class="checkbox-text">
+                                Я даю согласие на обработку персональных данных в соответствии с 
+                                <a href="/privacy-policy" target="_blank">Политикой конфиденциальности</a>
+                            </span>
+                        </label>
+                        <div class="error-message" *ngIf="orderForm.get('consent')?.invalid && orderForm.get('consent')?.touched">
+                            <span>Необходимо подтвердить согласие на обработку персональных данных</span>
+                        </div>
+                    </div>
+
                 <re-captcha 
                     siteKey="6LdcdfssAAAAAB9mF997GKHi3RxIrU0bhoBnLbOM"
                     (resolved)="onCaptchaResolved($event)">

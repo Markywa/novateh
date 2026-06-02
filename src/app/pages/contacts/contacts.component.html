@@ -34,14 +34,32 @@
                     <input placeholder="E-mail" [(ngModel)]="formData.email" name="Емаил" required>
 
                     <textarea rows="4" placeholder="Введите сообщение" [(ngModel)]="formData.message" name="Текст" required></textarea>
-
-                    <button type="submit" class="default-button">
+                    
+                    <div class="form-field checkbox-field">
+                            <label class="checkbox-label">
+                                <input type="checkbox" 
+                                    [(ngModel)]="formData.consent" 
+                                    name="consent" 
+                                    #consent="ngModel" 
+                                    required>
+                                <span class="checkbox-text">
+                                    Я даю согласие на обработку персональных данных в соответствии с 
+                                    <a href="/privacy-policy" target="_blank">Политикой конфиденциальности</a>
+                                </span>
+                            </label>
+                            <div class="error-message" *ngIf="consent.invalid && consent.touched">
+                                <span>Необходимо подтвердить согласие на обработку персональных данных</span>
+                            </div>
+                        </div>
+                    
+                        <button type="submit" class="default-button" [disabled]="!formData.consent">
                         ОТПРАВИТЬ
                     </button>
 
                     <span class="container-form__description">Нажимая на кнопку, вы подтверждаете своё согласие
                         на обработку персональных данных и ознакомление с
-                        политикой конфиденциальности</span>
+                        <a href="/privacy-policy" target="_blank">политикой конфиденциальности</a>
+                    </span>
                 </form>
             </div>
         </div>

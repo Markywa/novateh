@@ -23,7 +23,8 @@ export class QuestionModalComponent {
     name: '',
     phone: '',
     email: '',
-    message: ''
+    message: '',
+    consent: false  // ← добавить эту строку
   };
 
   constructor(

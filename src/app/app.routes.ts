@@ -11,6 +11,8 @@ import { GroupPageComponent } from './pages/group-page/group-page.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart.component';
 import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
+import { PersonalDataComponent } from './pages/personal-data/personal-data.component';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
   {
@@ -82,7 +84,17 @@ export const routes: Routes = [
         path: 'group/:slug',
         component: GroupPageComponent,
         data: { breadcrumb: 'Группа' }
-      }
+      },
+      {
+        path: 'personal-data',
+        component: PersonalDataComponent,
+        data: { breadcrumb: 'Персональные данные' }
+      },
+      {
+        path: 'privacy-policy',
+        component: PrivacyPolicyComponent,
+        data: { breadcrumb: 'Политика конфиденциальности' }
+      },
     ]
   },
 

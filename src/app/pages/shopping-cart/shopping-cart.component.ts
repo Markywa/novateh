@@ -55,7 +55,8 @@ export class ShoppingCartComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^[\d\s\-+()]{10,}$/)]],
       email: ['', [Validators.required, Validators.email]],
       address: [''],
-      comment: ['']
+      comment: [''],
+      consent: ['', [Validators.required]]
     });
 
     this.title.setTitle('Корзина | Оформление заказа теплоизоляции');

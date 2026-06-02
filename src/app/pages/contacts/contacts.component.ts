@@ -145,7 +145,8 @@ ngOnInit(): void {
       name: '',
       phone: '',
       email: '',
-      message: ''
+      message: '',
+      consent: false
     };
   
   
@@ -158,7 +159,8 @@ ngOnInit(): void {
             name: '',
             phone: '',
             email: '',
-            message: ''
+            message: '',
+            consent: false
           };
 
           setTimeout(() => {

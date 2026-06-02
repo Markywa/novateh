@@ -119,3 +119,23 @@
         fill: #333333;
     }
   }
+
+  .docs{
+    width: 1140px;
+    display: flex;
+    align-items: flex-end;
+    background-color: white;
+    margin: 0 auto;
+    flex-direction: column;
+    & > a{
+        color: #B5B5B5;
+        font-weight: 600;
+        text-decoration: none;
+        margin: 8px 0;
+        width: fit-content;
+    }
+    @media screen and (max-width: 1140px) {
+        width: 100%;
+        padding: 0 16px;
+    }
+  }
