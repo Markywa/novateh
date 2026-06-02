@@ -6,7 +6,7 @@ import { RequestService } from '../../services/request/request.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactsService } from '../../services/contacts/contacts.service';
 import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -19,7 +19,8 @@ import { Meta, Title } from '@angular/platform-browser';
     ReactiveFormsModule,
     FormsModule,
     AsyncPipe,
-    SafeHtmlPipe
+    SafeHtmlPipe,
+    CommonModule
   ],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.scss'
