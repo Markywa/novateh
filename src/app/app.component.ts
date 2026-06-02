@@ -2,12 +2,14 @@ import { Component, inject, HostListener } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { BreadCrumbsService } from './services/bread-crumbs/bread-crumbs.service';
+import { CookieConsentComponent } from './shared/cookies/cookies.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     RouterOutlet,
+    CookieConsentComponent
   ],
   providers: [BreadCrumbsService],
   templateUrl: './app.component.html',
