@@ -93,7 +93,7 @@ export const routes: Routes = [
       {
         path: 'privacy-policy',
         component: PrivacyPolicyComponent,
-        data: { breadcrumb: 'Политика конфиденциальности' }
+        data: { breadcrumb: 'Политика в отношении обработки персональных данных и конфиденциальности' }
       },
     ]
   },
