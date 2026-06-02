@@ -40,7 +40,7 @@ export class ContactsComponent implements OnInit {
         { property: 'og:title', content: 'Контакты - Новатех' },
         { property: 'og:description', content: 'Свяжитесь с нами для консультации, заказа и доставки теплоизоляции по всей России.' },
         { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-        { property: 'og:url', content: 'https://nvt24.ru/lambda/contacts' },
+        { property: 'og:url', content: 'https://nvt24.ru/contacts' },
         { property: 'og:type', content: 'website' },
       ]);
     }

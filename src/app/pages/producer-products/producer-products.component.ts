@@ -91,7 +91,7 @@ export class ProducerProductsComponent implements OnInit {
           { property: 'og:title', content: 'Каталог теплоизоляционных материалов - Новатех' },
           { property: 'og:description', content: 'Широкий выбор теплоизоляции от производителя. Характеристики, цены, сертификаты.' },
           { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-          { property: 'og:url', content: 'https://nvt24.ru/lambda/catalog' },
+          { property: 'og:url', content: 'https://nvt24.ru/catalog' },
           { property: 'og:type', content: 'website' },
         ]);
       }

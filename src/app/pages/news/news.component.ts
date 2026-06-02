@@ -39,7 +39,7 @@ export class NewsComponent implements OnInit {
       { property: 'og:title', content: 'Новости и акции - Новатех' },
       { property: 'og:description', content: 'Актуальные новости, акции и скидки на теплоизоляционные материалы.' },
       { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-      { property: 'og:url', content: 'https://nvt24.ru/lambda/shopping-cart' },
+      { property: 'og:url', content: 'https://nvt24.ru/shopping-cart' },
       { property: 'og:type', content: 'website' },
     ]);
   }

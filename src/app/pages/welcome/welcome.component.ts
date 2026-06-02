@@ -50,7 +50,7 @@ export class WelcomeComponent {
         { property: 'og:title', content: 'Новатех - Производство и продажа теплоизоляции' },
         { property: 'og:description', content: 'Качественная теплоизоляция от производителя. Доставка по России. Консультация специалистов.' },
         { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-        { property: 'og:url', content: 'https://nvt24.ru/lambda/welcome' },
+        { property: 'og:url', content: 'https://nvt24.ru/welcome' },
         { property: 'og:type', content: 'website' },
       ]);
     }

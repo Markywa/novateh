@@ -47,7 +47,7 @@ export class CertificatesComponent implements OnInit {
         { property: 'og:title', content: 'Сертификаты и лицензии - Новатех' },
         { property: 'og:description', content: 'Сертификаты качества на теплоизоляционные материалы. Соответствие ГОСТ и международным стандартам.' },
         { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-        { property: 'og:url', content: 'https://nvt24.ru/lambda/certificates' },
+        { property: 'og:url', content: 'https://nvt24.ru/certificates' },
         { property: 'og:type', content: 'website' },
       ]);
     }

@@ -25,7 +25,7 @@ export class AboutComponent {
       { property: 'og:title', content: 'О компании Новатех - Производитель теплоизоляции' },
       { property: 'og:description', content: 'Современное производство теплоизоляционных материалов. Высший контроль качества.'},
       { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-      { property: 'og:url', content: 'https://nvt24.ru/lambda/shopping-cart' },
+      { property: 'og:url', content: 'https://nvt24.ru/shopping-cart' },
       { property: 'og:type', content: 'website' },
     ]);
   }

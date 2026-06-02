@@ -65,7 +65,7 @@ export class ShoppingCartComponent implements OnInit {
       { property: 'og:title', content: 'Корзина и оформление заказа - Новатех' },
       { property: 'og:description', content: 'Оформление заказа на теплоизоляционные материалы с доставкой по России.' },
       { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-      { property: 'og:url', content: 'https://nvt24.ru/lambda/shopping-cart' },
+      { property: 'og:url', content: 'https://nvt24.ru/shopping-cart' },
       { property: 'og:type', content: 'website' },
     ]);
   }
