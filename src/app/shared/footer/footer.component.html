@@ -3,7 +3,7 @@
         id="map" class="map">
     </div>
     <div class="container-popup" *ngIf="contact$ | async as contact">
-        <h2>НАШИ КОНТАКТЫ</h2>
+        <h2 class="container-popup__title">НАШИ КОНТАКТЫ</h2>
         <div class="container-popup__item">
             <span>Адрес</span>
             <span>{{ contact.address }}</span>

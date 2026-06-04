@@ -14,7 +14,7 @@
     
     <div class="news-meta">
       <span class="publish-date">
-        📅 {{ formatDate(newsItem.published_at) }}
+        phone-number{{ formatDate(newsItem.published_at) }}
       </span>
       <span *ngIf="newsItem.is_published" class="published-badge">
         Опубликовано

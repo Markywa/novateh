@@ -45,10 +45,10 @@
         flex-direction: column;
         gap: 12px;
         background-color: rgba(255,255,255,0.85);
-        top: 10%;
+        top: 5%;
         font-weight: 500;
         right: 18%;
-        padding: 32px;
+        padding: 16px;
         line-height: 22px;
         &__item{
             display: flex;
@@ -56,6 +56,9 @@
             & > span:first-child{
                 color: #B5B5B5;
             }
+        }
+        &__title{
+            margin: 0;
         }
         @media screen and (max-width: 600px) {
             left: 0;
@@ -67,8 +70,11 @@
 
 .map{
     width: 100%;
-    height: 600px;
+    height: 450px;
     overflow: hidden;
+    @media screen and (max-width: 600px) {
+        height: 550px;
+    }
 }
 
 @media screen and (max-width: 680px) {
@@ -87,14 +93,19 @@
 }
 
   .phone-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 8px 16px;
     border-radius: 6px;
     transition: all 0.2s ease;
     text-decoration: none;
     cursor: pointer;
+    color: black;
+
+    @media screen and (max-width: 700px) {
+      padding: 0;
+    }
     
     &:hover {
         background: #FCDA00;
@@ -104,13 +115,12 @@
     .phone-number {
         font-family: 'Farabee';
         font-size: 18px;
-        font-weight: 600;
+        font-weight: 500;
         color: #0f172a;
         letter-spacing: 0.3px;
         transition: color 0.2s ease;
     }
   }
-
 
   svg-icon{
     & > svg{

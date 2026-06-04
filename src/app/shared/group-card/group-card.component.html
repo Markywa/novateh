@@ -1,6 +1,12 @@
-<div class="container" [routerLink]="'/group/' + groupItem.slug">
+<!-- <div class="container" [routerLink]="'/group/' + groupItem.slug">
     <div class="container-img">
         <img class="container-img scale" [src]="(environment.baseUrl + groupItem.media) || 'assets/images/no-image2.png'" alt="">
     </div>
     <span class="container-name">{{ groupItem.name }}</span>
-</div>
+</div> -->
+
+
+<button [routerLink]="'/group/' + groupItem.slug"
+    class="category-btn">
+    {{ groupItem.name }}
+</button>
