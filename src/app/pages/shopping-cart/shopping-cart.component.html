@@ -115,13 +115,14 @@
                             <span>Необходимо подтвердить согласие на обработку персональных данных</span>
                         </div>
                     </div>
-
-                <re-captcha 
-                    size="compact"
-                    siteKey="6LdcdfssAAAAAB9mF997GKHi3RxIrU0bhoBnLbOM"
-                    (resolved)="onCaptchaResolved($event)">
-                    #captchaRef
-                </re-captcha>
+                <div class="captcha">
+                    <re-captcha 
+                        size="normal"
+                        siteKey="6LdcdfssAAAAAB9mF997GKHi3RxIrU0bhoBnLbOM"
+                        (resolved)="onCaptchaResolved($event)">
+                        #captchaRef
+                    </re-captcha>
+                </div>
             </div>
 
             

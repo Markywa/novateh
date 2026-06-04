@@ -525,3 +525,10 @@ $transition-base: all 0.3s ease;
     margin-top: 6px;
     margin-left: 26px;
 }
+
+.captcha {
+    @media screen and (max-width: 480px) {
+        transform: scale(0.85);
+        transform-origin: top left;
+    }
+}
