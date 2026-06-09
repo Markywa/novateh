@@ -50,9 +50,8 @@ export class QuestionModalComponent {
     const nameValid = this.formData.name && this.formData.name.trim().length >= 2 && this.formData.name.trim().length <= 50;
     const phoneValid = /^\+?[0-9]{10,15}$/.test(this.formData.phone);
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email);
-    const messageValid = this.formData.message && this.formData.message.trim().length >= 10 && this.formData.message.trim().length <= 1000;
     
-    return (nameValid && phoneValid && emailValid && messageValid) as boolean;
+    return (nameValid && phoneValid && emailValid) as boolean;
   }
 
   onClose() {
