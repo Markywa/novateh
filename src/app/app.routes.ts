@@ -76,7 +76,7 @@ export const routes: Routes = [
         data: { breadcrumb: 'Товар' }
       },
       {
-        path: 'producer/:slug',
+        path: 'brand/:slug',
         component: ProducerProductsComponent,
         data: { breadcrumb: 'Производитель' }
       },

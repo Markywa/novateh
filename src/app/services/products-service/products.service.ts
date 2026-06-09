@@ -37,6 +37,7 @@ export type TProductCardDetails = {
   seo: any;
   characteristics_html: string;
   slug: string;
+  breadcrumbs: Record<string, any>[];
 }
 
 export type TProductMedia = {

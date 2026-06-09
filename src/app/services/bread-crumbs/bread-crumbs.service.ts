@@ -5,6 +5,7 @@ export interface Breadcrumb {
   label: string;
   url: string;
   isClickable: boolean;
+  title?: string;
   data?: any;
   icon?: string;
 }

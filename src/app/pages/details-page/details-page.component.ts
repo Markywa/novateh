@@ -63,6 +63,7 @@ export class DetailsPageComponent implements OnInit {
   
   public parsedAssortmentHtml: SafeHtml = '';
   public parsedCharacteristicsHtml: SafeHtml = '';
+  public breadScrumbs: any[] = [];
   
   previewVisible = false;
   previewMedia: MediaGalleryItem | null = null;
@@ -98,6 +99,8 @@ export class DetailsPageComponent implements OnInit {
           next: (res) => {
             this.seoService.updateSeo(res.seo);
             
+            this.breadScrumbs = res.breadcrumbs || [];
+
             this.breadCrumbsService.pushBreadcrumb(res.name, '', false)
 
             this.productEntity = res;
