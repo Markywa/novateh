@@ -11,6 +11,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ContactsService } from '../../services/contacts/contacts.service';
+import { NavigationService } from '../../services/navigation/navigation.service';
 
 @Component({
   selector: 'app-header',
@@ -29,6 +30,7 @@ import { ContactsService } from '../../services/contacts/contacts.service';
 export class HeaderComponent {
   private router = inject(Router);
   public cartService = inject(CartService); 
+  private navigationService = inject(NavigationService);
   private http = inject(HttpClient)
   environment = environment;
   private contactsSerbice = inject(ContactsService);
@@ -190,6 +192,27 @@ export class HeaderComponent {
   onResize(event: any): void {
     if (event.target.innerWidth > 700 && this.isMenuOpen) {
       this.closeMenu();
+    }
+  }
+
+   handleCartNavigation() {
+    const currentUrl = this.router.url;
+    const isInCart = currentUrl.includes('shopping-cart');
+    console.log('Current URL:', currentUrl);
+    
+    if (isInCart) {
+      const previousUrl = this.navigationService.getPreviousUrl();
+      console.log(previousUrl);
+      
+      if (previousUrl && previousUrl !== '/shopping-cart') {
+        this.router.navigate([previousUrl]);
+        this.navigationService.clearPreviousUrl();
+      } else {
+        this.router.navigate(['/']);
+      }
+    } else {
+      this.navigationService.clearPreviousUrl();
+      this.router.navigate(['shopping-cart']);
     }
   }
 

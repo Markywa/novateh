@@ -9,7 +9,7 @@
     } @else {
         <div class="container-header">
             <span class="main-title">Товары {{ brandEntity.brand.name }}</span>
-            <img class="container-header__img" [src]="env.baseUrl + brandEntity.brand.media || 'assets/images/no-image2.png'"/>
+            <img class="container-header__img" [src]="brandEntity.brand.media ? env.baseUrl + brandEntity.brand.media : 'assets/images/no-image2.png'"/>
         </div>
         
         <div class="category-buttons">
@@ -20,12 +20,14 @@
                 Вся продукция
             </button>
             @for(category of brandEntity.categories; track category.id){
-                <button 
-                    class="category-btn"
-                    [class.active]="selectedCategoryId === category.id"
-                    (click)="filterByCategory(category.id)">
-                    {{ category.name }}
-                </button>
+                @if(category.name) {
+                    <button 
+                        class="category-btn"
+                        [class.active]="selectedCategoryId === category.id"
+                        (click)="filterByCategory(category.id)">
+                        {{ category.name }}
+                    </button>
+                }
             }
         </div>
 

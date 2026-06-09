@@ -165,12 +165,13 @@
                 </div>
             
             <div class="container-menu__rout-shopping" *ngIf="!(isMobile$ | async)">
+
                 <a class="container-menu__rout-item container-menu__rout-shopping" 
                     [ngClass]="{
                         'active': isActiveCart$ | async,
                         'passive': (isActiveCart$ | async) === false
-                        }"
-                    routerLink="shopping-cart">
+                    }"
+                    (click)="handleCartNavigation(); $event.preventDefault()">
                     <div class="container-menu__rout-shopping-counter">
                         <span>{{ cartService.itemsCounter$() | async }}</span>
                     </div>
@@ -284,17 +285,17 @@
         </div>
         
             <div class="container-menu__rout-shopping">
-                <a class="container-menu__rout-item container-menu__rout-shopping" 
-                    [ngClass]="{
-                        'active': isActiveCart$ | async,
-                        'passive': (isActiveCart$ | async) === false
-                        }"
-                    routerLink="shopping-cart">
-                    <div class="container-menu__rout-shopping-counter">
-                        <span>{{ cartService.itemsCounter$() | async }}</span>
-                    </div>
-                    <svg-icon src="assets/images/shopping.svg"></svg-icon>
-                </a>
+            <a class="container-menu__rout-item container-menu__rout-shopping" 
+                [ngClass]="{
+                    'active': isActiveCart$ | async,
+                    'passive': (isActiveCart$ | async) === false
+                }"
+                (click)="handleCartNavigation(); $event.preventDefault()">
+                <div class="container-menu__rout-shopping-counter">
+                    <span>{{ cartService.itemsCounter$() | async }}</span>
+                </div>
+                <svg-icon src="assets/images/shopping.svg"></svg-icon>
+            </a>
             </div>
 
             <button class="menu-btn" (click)="toggleMenu()">
