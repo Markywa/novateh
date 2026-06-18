@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, HostListener, ElementRef, ViewChild } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
-
+import { BrowserModule } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 export interface CarouselItem {
   id: number;
   image: string;

@@ -29,7 +29,7 @@
         <div class="container-popup__item">
             <span>Другие карты</span>
             <a target="_blank" [attr.href]="contact.gis_link || 'https://2gis.ru/krasnoyarsk/geo/985798073650244?m=92.863206%2C56.011852%2F16'">Мы на 2ГИС</a>
-            <a target="_blank" [attr.href]="contact.Yandex_link || 'https://yandex.ru/maps/62/krasnoyarsk/house/prospekt_mira_94/bUsYfgFiQUYHQFtsfXxwcHtrYg==/?ll=92.862831%2C56.011787&z=17.05'">Мы на Яндекс.картах</a>
+            <a target="_blank" [attr.href]="contact.yandex_link || 'https://yandex.ru/maps/62/krasnoyarsk/house/prospekt_mira_94/bUsYfgFiQUYHQFtsfXxwcHtrYg==/?ll=92.862831%2C56.011787&z=17.05'">Мы на Яндекс.картах</a>
         </div>
     </div>
     <div class="container-menu" *ngIf="contact$ | async as contact">

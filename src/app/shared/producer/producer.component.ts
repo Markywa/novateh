@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { TBrandsContent } from '../../services/brands-service/brands.service';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { CommonModule } from "../../../../node_modules/@angular/common";
 
 @Component({

@@ -54,7 +54,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { BrandsService, TBrandDetailsContent } from '../../services/brands-service/brands.service';
 import { ProductLineComponent } from '../../components/product-line/product-line.component';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';

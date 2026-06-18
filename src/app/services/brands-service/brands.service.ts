@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TGroupsContent } from '../groups-service/groups.service';
 import { TProductsContent } from '../products-service/products.service';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 export type TBrandsContent = {
     id: number,
