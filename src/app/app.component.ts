@@ -4,6 +4,12 @@ import { filter } from 'rxjs';
 import { BreadCrumbsService } from './services/bread-crumbs/bread-crumbs.service';
 import { CookieConsentComponent } from './shared/cookies/cookies.component';
 
+declare global {
+  interface Window {
+    ym?: (counterId: number, method: string, ...args: unknown[]) => void;
+  }
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -18,17 +24,27 @@ import { CookieConsentComponent } from './shared/cookies/cookies.component';
 export class AppComponent {
   title = 'novateh';
   private router = inject(Router);
+  private lastTrackedUrl = this.getCurrentUrl();
   
   isScrollVisible = false;
   private scrollThreshold = 0.3; 
   
   ngOnInit(): void {
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
       window.scrollTo(0, 0);
       this.isScrollVisible = false; 
+
+      if (event.urlAfterRedirects !== this.lastTrackedUrl) {
+        window.ym?.(110137975, 'hit', event.urlAfterRedirects);
+        this.lastTrackedUrl = event.urlAfterRedirects;
+      }
     });
+  }
+
+  private getCurrentUrl(): string {
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
   }
   
   @HostListener('window:scroll', [])
