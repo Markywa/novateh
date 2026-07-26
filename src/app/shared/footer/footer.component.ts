@@ -1,17 +1,6 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { AfterViewInit, Component, HostListener, inject } from '@angular/core';
+import { AsyncPipe, CommonModule, isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, inject, PLATFORM_ID, OnDestroy, ElementRef, ViewChild, signal, afterRender } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Feature, Overlay, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import * as proj  from 'ol/proj'
-import { XYZ } from 'ol/source';
-import { defaults as defaultInteractions } from 'ol/interaction';
-import { Point } from 'ol/geom';
-import Style from 'ol/style/Style';
-import Icon from 'ol/style/Icon';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import Map from 'ol/Map';
 import { ContactsService } from '../../services/contacts/contacts.service';
 
 const DEFAULT_COORDINATES = [92.86090366, 55.98028477];
@@ -28,122 +17,232 @@ const DEFAULT_COORDINATES = [92.86090366, 55.98028477];
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
-export class FooterComponent implements AfterViewInit{
+export class FooterComponent implements OnDestroy {
+  @ViewChild('mapContainer') mapContainer!: ElementRef;
+  
   private contactService = inject(ContactsService);
+  private platformId = inject(PLATFORM_ID);
+  
+  private mapInstance: any = null;
+  private vectorLayerInstance: any = null;
+  private markerFeature: any = null;
+  private isMapInitialized = false;
+  private resizeHandler: (() => void) | null = null;
+  
+  public isBrowser = signal(false);
+  public mapReady = signal(false);
+  public currentCoordinates = signal<[number, number]>([0, 0]);
+
   public linkArr: {name: string, link: string}[] = [
-    {
-      name: 'ГЛАВНАЯ',
-      link: '/welcome'
-    },
-    {
-      name: 'КАТАЛОГ',
-      link: '/catalog'
-    },
-    {
-      name: 'О КОМПАНИИ',
-      link: '/about'
-    },
-    {
-      name: 'СЕРТИФИКАТЫ',
-      link: '/certificates'
-    },
-    {
-      name: 'НОВОСТИ',
-      link: '/news'
-    },
-    {
-      name: 'КОНТАКТЫ',
-      link: '/contacts'
-    },
-  ]
+    { name: 'ГЛАВНАЯ', link: '/welcome' },
+    { name: 'КАТАЛОГ', link: '/catalog' },
+    { name: 'О КОМПАНИИ', link: '/about' },
+    { name: 'СЕРТИФИКАТЫ', link: '/certificates' },
+    { name: 'НОВОСТИ', link: '/news' },
+    { name: 'КОНТАКТЫ', link: '/contacts' },
+  ];
 
-  public map = new Map();
   public zoomLevel: number = 13;
-  public maxZoomLevel: number = 18;
-  public minZoomLevel: number = 14;
-
   contact$ = this.contactService.getContacts$();
 
-  ngAfterViewInit(): void {
-    this.initializeMap();
+  constructor() {
+    this.isBrowser.set(isPlatformBrowser(this.platformId));
+    
+    // Используем afterRender для инициализации на клиенте
+    afterRender(() => {
+      if (this.isBrowser() && !this.isMapInitialized) {
+        this.initMap();
+      }
+    });
   }
 
-  currentCoordinates = [0, 0] as [number, number];
-  
-  private updateCoordinatesBasedOnScreenSize() {
-    const lon = this.currentCoordinates[0];
-    const lat = this.currentCoordinates[1];
-    
-    let coordinates: [number, number];
-    
-    if (window.innerWidth < 600) {
-      coordinates = [lon, (+lat + 0.02).toString() as unknown as number]; // Смещаем координаты на 0.005 градуса по широте для мобильных устройств
-    } else {
-      coordinates = [lon, lat];
-    }
-    
-    if (this.map && this.map.getView()) {
-      this.map.getView().setCenter(coordinates);
-    }
-  }
+  private async initMap(): Promise<void> {
+    try {
+      // Проверяем, что контейнер существует
+      const container = this.mapContainer?.nativeElement;
+      if (!container) {
+        console.error('Map container not found');
+        return;
+      }
 
-    public initializeMap(): void {
-      proj.useGeographic() 
+      // Подписка на контакты
       this.contact$.subscribe((res) => {
-          this.currentCoordinates = [res.longitude, res.latitude];
+        if (res && res.longitude && res.latitude) {
+          this.currentCoordinates.set([res.longitude, res.latitude]);
+          
+          if (!this.isMapInitialized) {
+            this.createMap(res);
+          } else {
+            this.updateMapPosition([res.longitude, res.latitude]);
+          }
+        }
+      });
 
-          this.map = new Map({
-          target: 'map',
-          layers: [
-            new TileLayer({
-              source: new XYZ({
-                url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
-              })
-            })
-          ],
-          view: new View({
-            center: res.longitude ? [res.longitude, res.latitude] : DEFAULT_COORDINATES,
-            zoom: this.zoomLevel
-          }),
-          controls: [],
-          overlays: [
-            new Overlay({
-              element: document.getElementById('popup') as HTMLElement, // Ссылка на DOM-элемент для попапа
-              positioning: 'bottom-center', // Позиционирование попапа
-              stopEvent: false // Позволяет событиям проходить через попап
-            })
-          ],
-          interactions: defaultInteractions({
-            // dragPan: false, 
-            // mouseWheelZoom: false
-          }).extend([]) 
-        });      
-
-        const marker = new Feature({
-          geometry: new Point([res.longitude, res.latitude])  // Координаты маркера
-        });
-    
-        // Опционально: устанавливаем стиль маркера
-        const markerStyle = new Style({
-          image: new Icon({
-            anchor: [0.5, 1],
-            src: 'assets/images/marker.svg',  // Путь к иконке маркера
-            width: 50,
-            height: 50
-          })
-        });
-        marker.setStyle(markerStyle);
-    
-        // Создаем векторный слой и добавляем маркер на карту
-        const vectorLayer = new VectorLayer({
-          source: new VectorSource({
-            features: [marker]
-          })
-        });
-        this.map.addLayer(vectorLayer);
-
-        this.updateCoordinatesBasedOnScreenSize();
-      })
-
+    } catch (error) {
+      console.error('Error initializing map:', error);
     }
+  }
+
+  private async createMap(contactData: any): Promise<void> {
+    try {
+      const container = this.mapContainer?.nativeElement;
+      if (!container) return;
+
+      // Динамический импорт OpenLayers
+      const ol = await import('ol');
+      const View = (await import('ol/View')).default;
+      const TileLayer = (await import('ol/layer/Tile')).default;
+      const XYZ = (await import('ol/source/XYZ')).default;
+      const VectorLayer = (await import('ol/layer/Vector')).default;
+      const VectorSource = (await import('ol/source/Vector')).default;
+      const Feature = (await import('ol/Feature')).default;
+      const Point = (await import('ol/geom/Point')).default;
+      const Style = (await import('ol/style/Style')).default;
+      const Icon = (await import('ol/style/Icon')).default;
+      const Overlay = (await import('ol/Overlay')).default;
+      const proj = await import('ol/proj');
+
+      // Используем географические координаты
+      if (proj && typeof proj.useGeographic === 'function') {
+        proj.useGeographic();
+      }
+
+      const coordinates: any[] = contactData.longitude && contactData.latitude 
+        ? [contactData.longitude, contactData.latitude] 
+        : DEFAULT_COORDINATES;
+
+      // Создаем элемент для попапа
+      let popupElement = document.getElementById('popup');
+      if (!popupElement) {
+        popupElement = document.createElement('div');
+        popupElement.id = 'popup';
+        popupElement.style.display = 'none';
+        document.body.appendChild(popupElement);
+      }
+
+      // Создаем карту
+      const map = new ol.Map({
+        target: container,
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+            })
+          })
+        ],
+        view: new View({
+          center: coordinates,
+          zoom: this.zoomLevel
+        }),
+        controls: [],
+        overlays: [
+          new Overlay({
+            element: popupElement,
+            positioning: 'bottom-center',
+            stopEvent: false
+          })
+        ]
+      });
+
+      // Создаем маркер
+      const marker = new Feature({
+        geometry: new Point(coordinates)
+      });
+
+      const markerStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: 'assets/images/marker.svg',
+          width: 50,
+          height: 50
+        })
+      });
+      marker.setStyle(markerStyle);
+
+      // Создаем векторный слой
+      const vectorLayer = new VectorLayer({
+        source: new VectorSource({
+          features: [marker]
+        })
+      });
+
+      map.addLayer(vectorLayer);
+
+      // Сохраняем ссылки
+      this.mapInstance = map;
+      this.vectorLayerInstance = vectorLayer;
+      this.markerFeature = marker;
+      this.isMapInitialized = true;
+      this.mapReady.set(true);
+
+      // Обновляем позицию с учетом размера экрана
+      setTimeout(() => {
+        this.updateMapPosition(coordinates);
+      }, 200);
+
+      // Обработчик изменения размера окна
+      this.resizeHandler = () => {
+        const coords = this.currentCoordinates();
+        if (coords[0] !== 0 && coords[1] !== 0) {
+          this.updateMapPosition(coords);
+        }
+      };
+      window.addEventListener('resize', this.resizeHandler);
+
+    } catch (error) {
+      console.error('Error creating map:', error);
+    }
+  }
+
+  private updateMapPosition(coordinates: any[]): void {
+    if (!this.mapInstance) return;
+
+    try {
+      const view = this.mapInstance.getView();
+      if (!view) return;
+
+      let adjustedCoords = [...coordinates] as [number, number];
+      
+      // Корректировка для мобильных устройств
+      if (window.innerWidth < 600) {
+        adjustedCoords = [coordinates[0], coordinates[1] + 0.02];
+      }
+
+      view.setCenter(adjustedCoords);
+      
+      // Обновляем позицию маркера
+      if (this.markerFeature) {
+        const geometry = this.markerFeature.getGeometry();
+        if (geometry && typeof geometry.setCoordinates === 'function') {
+          geometry.setCoordinates(adjustedCoords);
+        }
+      }
+
+      this.currentCoordinates.set(adjustedCoords);
+    } catch (error) {
+      console.error('Error updating map position:', error);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.mapInstance) {
+      try {
+        this.mapInstance.dispose();
+      } catch (error) {
+        console.error('Error disposing map:', error);
+      }
+    }
+
+    if(this.isBrowser()){
+      const popup = document.getElementById('popup');
+      if (popup) {
+        popup.remove();
+      }
+
+      if (this.resizeHandler) {
+        window.removeEventListener('resize', this.resizeHandler);
+      }
+    }
+
+  }
 }

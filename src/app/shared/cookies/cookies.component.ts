@@ -1,6 +1,6 @@
 // cookie-consent.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-cookie-consent',
@@ -146,8 +146,10 @@ import { CommonModule } from '@angular/common';
 export class CookieConsentComponent implements OnInit {
   showBanner = false;
   private readonly COOKIE_KEY = 'cookie_consent_status';
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return; 
     // Проверяем, было ли уже принято/отклонено согласие
     const consent = localStorage.getItem(this.COOKIE_KEY);
     if (!consent) {

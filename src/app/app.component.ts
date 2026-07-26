@@ -1,8 +1,9 @@
-import { Component, inject, HostListener } from '@angular/core';
+import { Component, inject, HostListener, PLATFORM_ID, Inject } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { BreadCrumbsService } from './services/bread-crumbs/bread-crumbs.service';
 import { CookieConsentComponent } from './shared/cookies/cookies.component';
+import { isPlatformBrowser } from '@angular/common';
 
 declare global {
   interface Window {
@@ -25,6 +26,7 @@ export class AppComponent {
   title = 'novateh';
   private router = inject(Router);
   private lastTrackedUrl = this.getCurrentUrl();
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
   
   isScrollVisible = false;
   private scrollThreshold = 0.3; 
@@ -33,6 +35,7 @@ export class AppComponent {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
+      if (!isPlatformBrowser(this.platformId)) return;
       window.scrollTo(0, 0);
       this.isScrollVisible = false; 
 
@@ -44,6 +47,7 @@ export class AppComponent {
   }
 
   private getCurrentUrl(): string {
+    if (!isPlatformBrowser(this.platformId)) return '';
     return `${window.location.pathname}${window.location.search}${window.location.hash}`;
   }
   

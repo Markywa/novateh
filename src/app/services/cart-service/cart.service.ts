@@ -1,5 +1,6 @@
 // cart.service.ts
-import { Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 
@@ -14,6 +15,7 @@ export interface CartItem {
 export class CartService {
   private readonly STORAGE_KEY = 'cart';
   private cartSubject = new BehaviorSubject<CartItem[]>(this.getCart());
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   cart$ = this.cartSubject.asObservable();
 
@@ -57,6 +59,7 @@ export class CartService {
   }
 
   getCart(): CartItem[] {
+    if (!isPlatformBrowser(this.platformId)) return [];
     const cartJson = localStorage.getItem(this.STORAGE_KEY);
     return cartJson ? JSON.parse(cartJson) : [];
   }

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, HostListener, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterLink } from '@angular/router';
@@ -103,11 +103,20 @@ export class HeaderComponent {
     },
   ]
 
-  isMobile$ = fromEvent(window, 'resize').pipe(
-    throttleTime(100), 
-    map(() => window.innerWidth < 680),
-    startWith(this.checkIsMobile()) 
-  );
+  private createMobileObservable(): Observable<boolean> {
+      // Проверка на сервер
+      if (!isPlatformBrowser(this.platformId)) {
+        return of(false); // Возвращаем false на сервере
+      }
+
+      // На клиенте создаем полноценный Observable
+      return fromEvent(window, 'resize').pipe(
+        throttleTime(100),
+        map(() => window.innerWidth < 680),
+        startWith(this.checkIsMobile()),
+        shareReplay(1) // Кешируем последнее значение
+      );
+    }
 
   isMobile = false;
 
@@ -231,8 +240,11 @@ export class HeaderComponent {
   isLoading = false;
   
   private destroy$ = new Subject<void>();
+  public isMobile$;
   
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef, @Inject(PLATFORM_ID) private platformId: Object) {
+    this.isMobile$ = this.createMobileObservable();
+
     this.searchResults$ = this.searchControl.valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged(),
