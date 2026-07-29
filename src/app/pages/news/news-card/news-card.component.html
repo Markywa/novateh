@@ -11,7 +11,7 @@
         </div>
         <div class="container-entity__meta">
             <span>{{ convertDate(newsFields.published_at) }}</span>
-            <button [routerLink]="'/news/' + newsFields.slug">подробнее</button>
+            <a [routerLink]="['/news', newsFields.slug]">подробнее</a>
         </div>
     </div>
 </div>

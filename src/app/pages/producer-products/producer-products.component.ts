@@ -59,6 +59,7 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo/seo.service';
 
 @Component({
   selector: 'app-producer-products',
@@ -78,6 +79,7 @@ export class ProducerProductsComponent implements OnInit {
   private producerService = inject(BrandsService);
   private breadCrumbsService = inject(BreadCrumbsService);
   private router = inject(Router);
+  private seoService = inject(SeoService);
   public brandEntity!: TBrandDetailsContent;
   public loading = true;
   public selectedCategoryId: number | null = null;
@@ -112,6 +114,7 @@ export class ProducerProductsComponent implements OnInit {
                     this.brandEntity = res;
                     
                     this.title.setTitle('Новатех - Товары бренда ' + res.brand.name);
+                    this.seoService.setCanonicalUrl(`/brand/${res.brand.slug}`);
                     this.loading = false;
                     this.error = false;
                   },

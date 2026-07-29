@@ -49,7 +49,6 @@ ngOnInit(): void {
     { label: 'Контакты', url: '', isClickable: false },
   ]);
   
-
 }
   public information = {
     address: [

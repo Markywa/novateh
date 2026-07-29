@@ -43,6 +43,8 @@ export class HeaderComponent {
 
     @HostListener('window:scroll', [])
     onWindowScroll() {
+        if (!isPlatformBrowser(this.platformId)) return;
+
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
         
         if (currentScroll > this.lastScrollTop && currentScroll > 10) {
@@ -62,12 +64,16 @@ export class HeaderComponent {
     
     @HostListener('touchstart', ['$event'])
     onTouchStart(event: TouchEvent) {
+        if (!isPlatformBrowser(this.platformId)) return;
+
         this.lastTouchY = event.touches[0].clientY;
         this.lastScrollY = window.scrollY;
     }
     
     @HostListener('touchmove', ['$event'])
     onTouchMove(event: TouchEvent) {
+        if (!isPlatformBrowser(this.platformId)) return;
+
         const currentTouchY = event.touches[0].clientY;
         const currentScrollY = window.scrollY;
         const deltaY = currentTouchY - this.lastTouchY;
@@ -121,6 +127,7 @@ export class HeaderComponent {
   isMobile = false;
 
   private checkIsMobile(): boolean {
+    if (!isPlatformBrowser(this.platformId)) return false;
     return window.innerWidth < 680;
   }
 
@@ -170,6 +177,8 @@ export class HeaderComponent {
   }
 
   toggleMenu(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.isHeaderVisible = false;
     this.isHeaderHidden = false;
     setTimeout(() => {
@@ -179,12 +188,15 @@ export class HeaderComponent {
   }
 
   closeMenu(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.isMenuOpen = false;
     document.body.style.overflow = '';
   }
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (!this.isMenuOpen) return;
     
     const target = event.target as HTMLElement;
@@ -199,6 +211,8 @@ export class HeaderComponent {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (event.target.innerWidth > 700 && this.isMenuOpen) {
       this.closeMenu();
     }

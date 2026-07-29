@@ -17,6 +17,7 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
 import { environment } from '../../../environments/environment';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo/seo.service';
 
 export interface TSearchResult {
   navigation: {
@@ -60,6 +61,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private breadCrumbsService = inject(BreadCrumbsService);
+  private seoService = inject(SeoService);
   
   private querySubscription?: Subscription;
   private searchSubscription?: Subscription;
@@ -87,6 +89,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
         { property: 'og:url', content: 'https://nvt24.ru/catalog' },
         { property: 'og:type', content: 'website' },
       ]);
+      this.seoService.setCanonicalUrl('/catalog');
     }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, HostListener } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -39,6 +39,8 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   startTime: number = 0;
   containerWidth: number = 0;
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
   ngOnInit(): void {
     this.totalSlides = this.slides.length;
   }
@@ -53,6 +55,8 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.autoPlay && this.totalSlides > 1) {
       this.startAutoPlay();
     }
@@ -61,6 +65,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
 
   @HostListener('window:resize')
   onResize(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.updateContainerWidth();
   }
 
@@ -201,11 +206,18 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private updateContainerWidth(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.containerWidth = 0;
+      return;
+    }
+
     const container = document.querySelector('.slider-container');
     this.containerWidth = container ? container.clientWidth : window.innerWidth;
   }
 
   private startAutoPlay(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.autoPlayTimer) {
       clearInterval(this.autoPlayTimer);
     }
@@ -221,11 +233,22 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  onButtonClick(slide: SlideItem): void {
-    if (slide.buttonLink) {
-      this.router.navigateByUrl('' + slide.buttonLink);
-    } else {
+  slideHref(slide: SlideItem): string | null {
+    const link = (slide.buttonLink || '').trim();
+    if (!link) return null;
+    if (/^(https?:)?\/\//i.test(link) || link.startsWith('mailto:') || link.startsWith('tel:')) {
+      return link;
     }
+    return link.startsWith('/') ? link : `/${link}`;
+  }
+
+  onButtonClick(event: MouseEvent, slide: SlideItem): void {
+    const href = this.slideHref(slide);
+    if (!href || /^(https?:)?\/\//i.test(href) || href.startsWith('mailto:') || href.startsWith('tel:')) {
+      return;
+    }
+    event.preventDefault();
+    this.router.navigateByUrl(href);
   }
 
   ngOnDestroy(): void {

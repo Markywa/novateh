@@ -8,6 +8,7 @@ import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.com
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo/seo.service';
 
 @Component({
   selector: 'app-group-page',
@@ -27,6 +28,7 @@ export class GroupPageComponent implements OnInit {
     private groupsService = inject(GroupsService);
     private router = inject(Router);
     private breadCrumbsService = inject(BreadCrumbsService);
+    private seoService = inject(SeoService);
     public groupEntity!: TGroupsPageContent;
     public loading = true;  
     
@@ -69,6 +71,10 @@ export class GroupPageComponent implements OnInit {
                     
                     if (res.category.seo.og_image) {
                       this.meta.updateTag({ property: 'og:image', content: res.category.seo.og_image });
+                    }
+
+                    if (res.category.seo.canonical_url) {
+                      this.seoService.setCanonicalUrl(res.category.seo.canonical_url);
                     }
                     
                     this.loading = false;

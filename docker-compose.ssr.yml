@@ -1,0 +1,12 @@
+services:
+  frontend-ssr:
+    build: .
+    container_name: novateh_frontend_ssr
+    restart: unless-stopped
+    environment:
+      PORT: "4000"
+      SSR_API_ORIGIN: "https://nvt24.ru"
+    extra_hosts:
+      - "nvt24.ru:host-gateway"
+    ports:
+      - "127.0.0.1:3001:4000"

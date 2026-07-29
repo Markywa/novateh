@@ -20,9 +20,9 @@
                         <h3>{{ slide.title }}</h3>
                         <p>{{ slide.description }}</p>
                         <div class="slide-wrap">
-                            <button class="default-button margin" (click)="onButtonClick(slide)">
+                            <a class="default-button margin" [attr.href]="slideHref(slide)" (click)="onButtonClick($event, slide)">
                                 {{ slide.buttonText || 'Подробнее' }}
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

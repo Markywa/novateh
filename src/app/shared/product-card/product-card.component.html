@@ -1,6 +1,6 @@
-<div class="container" [routerLink]="'/product/' + productItem.slug">
+<a class="container" [routerLink]="['/product', productItem.slug]">
     <div class="container-img white">
         <img [ngClass]="{'small': !productItem.media}" class="container-img" [src]="productItem.media ? (environment.baseUrl + productItem.media[0]) : 'assets/images/no-image2.png'" alt="">
     </div>
     <span class="container-name">{{ productItem.name }}</span>
-</div>
+</a>

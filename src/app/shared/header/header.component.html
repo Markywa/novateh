@@ -56,10 +56,10 @@
             <a routerLink="welcome" *ngIf="!(isMobile$ | async)">
                 <svg-icon src="assets\images\logo.svg"></svg-icon>
             </a>
-            <button class="default-button" routerLink="catalog">
+            <a class="default-button" routerLink="catalog">
                 <svg-icon src="assets/images/catalog.svg"></svg-icon>
                 <span>КАТАЛОГ</span>
-            </button>
+            </a>
             <div class="container-search" *ngIf="!(isMobile$ | async)">
                  <input
                     type="text"
