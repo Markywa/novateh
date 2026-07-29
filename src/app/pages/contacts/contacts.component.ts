@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { LayoutPageComponent } from '../layout-page/layout-page.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
@@ -6,7 +6,7 @@ import { RequestService } from '../../services/request/request.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactsService } from '../../services/contacts/contacts.service';
 import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, isPlatformBrowser } from '@angular/common';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -30,6 +30,7 @@ export class ContactsComponent implements OnInit {
   private contactsService = inject(ContactsService);
   private htmlContentsService = inject(HtmlContentsService);
   private breadCrumbsService = inject(BreadCrumbsService);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   public htmlContent$ =  this.htmlContentsService.getHtmlContent$();
   
@@ -55,6 +56,8 @@ ngOnInit(): void {
 
   this.contactsService.getContacts$().subscribe({
     next: (htmlString) => {      
+      if (!this.isBrowser || typeof htmlString !== 'string') return;
+
       // Варианты обработки HTML:
       
       // 1. Парсинг через DOMParser

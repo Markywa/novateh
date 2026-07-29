@@ -53,6 +53,8 @@ export class AppComponent {
   
   @HostListener('window:scroll', [])
   onWindowScroll() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = document.documentElement.clientHeight;
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -65,6 +67,8 @@ export class AppComponent {
   }
   
   scrollToTop(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth'

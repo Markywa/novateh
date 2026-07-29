@@ -10,6 +10,6 @@ export class ContactsService {
   constructor(private http: HttpClient) { }
 
   getContacts$(): Observable<any> {
-    return this.http.get('v1/contacts');
+    return this.http.get('/v1/contacts');
   }
 }

@@ -6,7 +6,7 @@
 </div> -->
 
 
-<button [routerLink]="'/group/' + groupItem.slug"
+<a [routerLink]="['/group', groupItem.slug]"
     class="category-btn">
     {{ groupItem.name }}
-</button>
+</a>

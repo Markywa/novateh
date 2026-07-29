@@ -57,9 +57,16 @@ export class SeoService {
     
     link.setAttribute('href', url);
   }
+
+  setCanonicalUrl(path: string): void {
+    this.updateCanonicalUrl(this.getAbsoluteUrl(path));
+  }
   
   private getAbsoluteUrl(path: string): string {
     const origin = this.document.location.origin;
-    return path.startsWith('https') ? path : `${origin}${path}`;
+    if (/^https?:\/\//i.test(path)) {
+      return path;
+    }
+    return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
   }
 }

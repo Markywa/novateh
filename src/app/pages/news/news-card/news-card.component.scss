@@ -40,13 +40,14 @@
             justify-content: space-between;
             color: #B5B5B5;
             font-size: 14px;
-            & > button{
+            & > a{
                 border: none;
                 background-color: transparent;
                 cursor: pointer;
                 color: #B5B5B5;
                 font-size: 14px;
                 font-weight: 600;
+                text-decoration: none;
             }
         }
         @media screen and (max-width: 640px) {

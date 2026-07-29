@@ -30,11 +30,12 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/ol/ol.css",
               "src/styles.scss"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "prerender": true,
+            "prerender": false,
             "ssr": {
               "entry": "server.ts"
             }
@@ -101,6 +102,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/ol/ol.css",
               "src/styles.scss"
             ],
             "scripts": []

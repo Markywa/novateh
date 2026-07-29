@@ -2,6 +2,7 @@ import { AsyncPipe, CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, inject, PLATFORM_ID, OnDestroy, ElementRef, ViewChild, signal, afterRender } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ContactsService } from '../../services/contacts/contacts.service';
+import { Subscription } from 'rxjs';
 
 const DEFAULT_COORDINATES = [92.86090366, 55.98028477];
 
@@ -26,8 +27,11 @@ export class FooterComponent implements OnDestroy {
   private mapInstance: any = null;
   private vectorLayerInstance: any = null;
   private markerFeature: any = null;
+  private fromLonLat: ((coordinate: any[]) => any[]) | null = null;
   private isMapInitialized = false;
+  private isMapStarting = false;
   private resizeHandler: (() => void) | null = null;
+  private contactSubscription?: Subscription;
   
   public isBrowser = signal(false);
   public mapReady = signal(false);
@@ -57,28 +61,40 @@ export class FooterComponent implements OnDestroy {
   }
 
   private async initMap(): Promise<void> {
+    if (this.isMapStarting || this.isMapInitialized) return;
+
     try {
       // Проверяем, что контейнер существует
       const container = this.mapContainer?.nativeElement;
       if (!container) {
-        console.error('Map container not found');
+        console.warn('Map container not found');
         return;
       }
 
+      this.isMapStarting = true;
+
       // Подписка на контакты
-      this.contact$.subscribe((res) => {
+      this.contactSubscription = this.contact$.subscribe({
+        next: (res) => {
         if (res && res.longitude && res.latitude) {
-          this.currentCoordinates.set([res.longitude, res.latitude]);
+          const coordinates: [number, number] = [Number(res.longitude), Number(res.latitude)];
+          this.currentCoordinates.set(coordinates);
           
           if (!this.isMapInitialized) {
-            this.createMap(res);
+            this.createMap({ ...res, longitude: coordinates[0], latitude: coordinates[1] });
           } else {
-            this.updateMapPosition([res.longitude, res.latitude]);
+            this.updateMapPosition(coordinates);
           }
+        }
+        },
+        error: (error) => {
+          this.isMapStarting = false;
+          console.error('Error loading contacts for map:', error);
         }
       });
 
     } catch (error) {
+      this.isMapStarting = false;
       console.error('Error initializing map:', error);
     }
   }
@@ -92,7 +108,7 @@ export class FooterComponent implements OnDestroy {
       const ol = await import('ol');
       const View = (await import('ol/View')).default;
       const TileLayer = (await import('ol/layer/Tile')).default;
-      const XYZ = (await import('ol/source/XYZ')).default;
+      const OSM = (await import('ol/source/OSM')).default;
       const VectorLayer = (await import('ol/layer/Vector')).default;
       const VectorSource = (await import('ol/source/Vector')).default;
       const Feature = (await import('ol/Feature')).default;
@@ -101,15 +117,12 @@ export class FooterComponent implements OnDestroy {
       const Icon = (await import('ol/style/Icon')).default;
       const Overlay = (await import('ol/Overlay')).default;
       const proj = await import('ol/proj');
-
-      // Используем географические координаты
-      if (proj && typeof proj.useGeographic === 'function') {
-        proj.useGeographic();
-      }
+      this.fromLonLat = proj.fromLonLat;
 
       const coordinates: any[] = contactData.longitude && contactData.latitude 
         ? [contactData.longitude, contactData.latitude] 
         : DEFAULT_COORDINATES;
+      const projectedCoordinates = this.projectCoordinates(coordinates);
 
       // Создаем элемент для попапа
       let popupElement = document.getElementById('popup');
@@ -125,13 +138,11 @@ export class FooterComponent implements OnDestroy {
         target: container,
         layers: [
           new TileLayer({
-            source: new XYZ({
-              url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
-            })
+            source: new OSM({ crossOrigin: 'anonymous' })
           })
         ],
         view: new View({
-          center: coordinates,
+          center: projectedCoordinates,
           zoom: this.zoomLevel
         }),
         controls: [],
@@ -146,7 +157,7 @@ export class FooterComponent implements OnDestroy {
 
       // Создаем маркер
       const marker = new Feature({
-        geometry: new Point(coordinates)
+        geometry: new Point(projectedCoordinates)
       });
 
       const markerStyle = new Style({
@@ -173,10 +184,13 @@ export class FooterComponent implements OnDestroy {
       this.vectorLayerInstance = vectorLayer;
       this.markerFeature = marker;
       this.isMapInitialized = true;
+      this.isMapStarting = false;
       this.mapReady.set(true);
 
       // Обновляем позицию с учетом размера экрана
       setTimeout(() => {
+        map.updateSize();
+        map.renderSync();
         this.updateMapPosition(coordinates);
       }, 200);
 
@@ -190,6 +204,7 @@ export class FooterComponent implements OnDestroy {
       window.addEventListener('resize', this.resizeHandler);
 
     } catch (error) {
+      this.isMapStarting = false;
       console.error('Error creating map:', error);
     }
   }
@@ -208,13 +223,13 @@ export class FooterComponent implements OnDestroy {
         adjustedCoords = [coordinates[0], coordinates[1] + 0.02];
       }
 
-      view.setCenter(adjustedCoords);
+      view.setCenter(this.projectCoordinates(adjustedCoords));
       
       // Обновляем позицию маркера
       if (this.markerFeature) {
         const geometry = this.markerFeature.getGeometry();
         if (geometry && typeof geometry.setCoordinates === 'function') {
-          geometry.setCoordinates(adjustedCoords);
+          geometry.setCoordinates(this.projectCoordinates(adjustedCoords));
         }
       }
 
@@ -222,6 +237,10 @@ export class FooterComponent implements OnDestroy {
     } catch (error) {
       console.error('Error updating map position:', error);
     }
+  }
+
+  private projectCoordinates(coordinates: any[]): any[] {
+    return this.fromLonLat ? this.fromLonLat(coordinates) : coordinates;
   }
 
   ngOnDestroy(): void {
@@ -232,6 +251,8 @@ export class FooterComponent implements OnDestroy {
         console.error('Error disposing map:', error);
       }
     }
+
+    this.contactSubscription?.unsubscribe();
 
     if(this.isBrowser()){
       const popup = document.getElementById('popup');

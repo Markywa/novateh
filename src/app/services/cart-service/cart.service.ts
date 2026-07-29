@@ -14,8 +14,11 @@ export interface CartItem {
 })
 export class CartService {
   private readonly STORAGE_KEY = 'cart';
-  private cartSubject = new BehaviorSubject<CartItem[]>(this.getCart());
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  private cartSubject = new BehaviorSubject<CartItem[]>([]);
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.cartSubject.next(this.getCart());
+  }
 
   cart$ = this.cartSubject.asObservable();
 
@@ -98,11 +101,17 @@ export class CartService {
   }
 
   clearCart(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.cartSubject.next([]);
+      return;
+    }
+
     localStorage.removeItem(this.STORAGE_KEY);
     this.cartSubject.next([]);
   }
 
   private saveCart(cart: CartItem[]): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(cart));
   }
 }

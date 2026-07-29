@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, HostListener } from '@angular/core';
+import { Component, inject, OnInit, HostListener, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService, TProductCardDetails } from '../../services/products-service/products.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatDialog } from '@angular/material/dialog';
 import { RequestModalComponent } from '../../shared/request-modal/request-modal.component';
 import { CartService } from '../../services/cart-service/cart.service';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { CarouselComponent, CarouselItem } from '../../components/carousel/carousel.component';
@@ -55,6 +55,7 @@ export class DetailsPageComponent implements OnInit {
   private seoService = inject(SeoService);
   private breadCrumbsService = inject(BreadCrumbsService);
   private agentService = inject(AgentsService);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   
   carouselItems: CarouselItem[] = [];
   galleryItems: MediaGalleryItem[] = [];
@@ -139,6 +140,10 @@ export class DetailsPageComponent implements OnInit {
   }
 
 private parseAssortmentHtml(html: string): SafeHtml {
+  if (!this.isBrowser) {
+    return this.sanitizer.bypassSecurityTrustHtml(html || '');
+  }
+
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = html;
   
@@ -329,6 +334,8 @@ private escapeHtml(str: string): string {
   }
 
   openMediaPreview(mediaItem: MediaGalleryItem, index: number): void {
+    if (!this.isBrowser) return;
+
     this.previewMedia = mediaItem;
     this.currentIndex = index;
     this.previewVisible = true;
@@ -343,6 +350,8 @@ private escapeHtml(str: string): string {
   }
 
   closePreview(): void {
+    if (!this.isBrowser) return;
+
     this.previewVisible = false;
     this.previewMedia = null;
     this.resetZoom();

@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
-import { Component, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 export interface CarouselItem {
   id: number;
   image: string;
@@ -36,7 +36,11 @@ export class CarouselComponent {
   touchEndX: number = 0;
   isSwiping: boolean = false;
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.autoPlay && this.items.length > 1) {
       this.startAutoPlay();
     }
@@ -70,6 +74,7 @@ export class CarouselComponent {
   }
 
   onTouchMove(event: TouchEvent) {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (!this.isSwiping) return;
     this.touchEndX = event.touches[0].clientX;
     
@@ -116,6 +121,8 @@ export class CarouselComponent {
   }
 
   private startAutoPlay() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.stopAutoPlay();
     this.autoPlayTimer = setInterval(() => {
       this.next();
