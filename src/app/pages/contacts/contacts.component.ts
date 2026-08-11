@@ -4,7 +4,6 @@ import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.ser
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { RequestService } from '../../services/request/request.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ContactsService } from '../../services/contacts/contacts.service';
 import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
@@ -26,8 +25,6 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './contacts.component.scss'
 })
 export class ContactsComponent implements OnInit {
-  private breadCrumbs = inject(BreadCrumbsService);
-  private contactsService = inject(ContactsService);
   private htmlContentsService = inject(HtmlContentsService);
   private breadCrumbsService = inject(BreadCrumbsService);
 
@@ -53,29 +50,6 @@ ngOnInit(): void {
   ]);
   
 
-  this.contactsService.getContacts$().subscribe({
-    next: (htmlString) => {      
-      // Варианты обработки HTML:
-      
-      // 1. Парсинг через DOMParser
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlString, 'text/html');
-      const contacts = doc.querySelectorAll('.contact-item');
-      
-      // 2. Создание временного элемента
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = htmlString;
-      const contactsData = tempDiv.querySelectorAll('.contact');
-      
-      // 3. Извлечение данных через регулярные выражения
-      const pattern = /<div class="contact-name">(.*?)<\/div>/g;
-      const matches = [...htmlString.matchAll(pattern)];
-      
-    },
-    error: (error) => {
-      console.error('Error loading HTML:', error);
-    }
-  });
 }
   public information = {
     address: [
