@@ -53,6 +53,7 @@ export interface TSearchResult {
   styleUrl: './catalog.component.scss'
 })
 export class CatalogComponent implements OnInit, OnDestroy {
+  private readonly catalogPageSize = 24;
   private brandsService = inject(BrandsService);
   private groupsService = inject(GroupsService);
   private productsService = inject(ProductsService);
@@ -72,11 +73,19 @@ export class CatalogComponent implements OnInit, OnDestroy {
   public brandsList: TBrandsContent[] = [];
   public groupsList: TGroupsContent[] = [];
   public popularProductList: TProductsContent[] = [];
+  public catalogPage = 1;
+  public catalogPages = 1;
+  public catalogTotal = 0;
+  public catalogLoadingMore = false;
   public newsList: NewsFields[] = [];
   
   public isSearchMode = false;
   public searchLoading = false;
   public searchQuery = '';
+
+  public get hasMoreCatalogProducts(): boolean {
+    return !this.isSearchMode && this.catalogPage < this.catalogPages;
+  }
 
   constructor(private title: Title, private meta: Meta) {
       this.title.setTitle('Каталог теплоизоляционных материалов | Новатех');
@@ -173,16 +182,8 @@ export class CatalogComponent implements OnInit, OnDestroy {
     });
 
     this.popularProductLoading = true;
-    this.productsService.getProductsList$().subscribe({
-      next: (response) => {
-        this.popularProductLoading = false;
-        this.popularProductList = response;
-      },
-      error: () => {
-        this.popularProductLoading = false;
-        this.popularProductList = [];
-      }
-    });
+    this.catalogPage = 1;
+    this.loadCatalogProducts(1, false);
 
     this.newsService.getNewsList$(true).subscribe({
       next: (response) => {
@@ -190,6 +191,36 @@ export class CatalogComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.newsList = [];
+      }
+    });
+  }
+
+  public loadMoreCatalogProducts(): void {
+    if (this.catalogLoadingMore || !this.hasMoreCatalogProducts) return;
+
+    this.loadCatalogProducts(this.catalogPage + 1, true);
+  }
+
+  private loadCatalogProducts(page: number, append: boolean): void {
+    this.catalogLoadingMore = append;
+    this.productsService.getCatalogPage$(page, this.catalogPageSize).subscribe({
+      next: (response) => {
+        this.popularProductLoading = false;
+        this.catalogLoadingMore = false;
+        this.catalogPage = response.pagination.page;
+        this.catalogPages = response.pagination.pages;
+        this.catalogTotal = response.pagination.count;
+        this.popularProductList = append
+          ? [...this.popularProductList, ...response.results]
+          : response.results;
+      },
+      error: () => {
+        this.popularProductLoading = false;
+        this.catalogLoadingMore = false;
+        if (!append) {
+          this.popularProductList = [];
+          this.catalogTotal = 0;
+        }
       }
     });
   }

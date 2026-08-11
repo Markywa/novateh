@@ -1,5 +1,5 @@
 <div class="container">
-    @for(item of productList; track productList){
+    @for(item of productList; track item.id){
         <app-product-card [productItem]="item"></app-product-card>
     }
 </div>

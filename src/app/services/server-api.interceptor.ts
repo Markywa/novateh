@@ -7,12 +7,9 @@ const DEFAULT_SSR_API_ORIGIN = 'https://nvt24.ru';
 
 export const serverApiInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
+  const isServer = isPlatformServer(platformId);
 
-  if (!isPlatformServer(platformId)) {
-    return next(req);
-  }
-
-  if (isSvgAssetRequest(req.url)) {
+  if (isServer && isSvgAssetRequest(req.url)) {
     return of(new HttpResponse({
       status: 200,
       body: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
@@ -25,10 +22,12 @@ export const serverApiInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const apiOrigin = (process.env['SSR_API_ORIGIN'] || DEFAULT_SSR_API_ORIGIN).replace(/\/$/, '');
+  const apiOrigin = isServer
+    ? process.env['SSR_API_ORIGIN'] || DEFAULT_SSR_API_ORIGIN
+    : globalThis.location?.origin || DEFAULT_SSR_API_ORIGIN;
 
   return next(req.clone({
-    url: `${apiOrigin}${apiPath}`,
+    url: `${apiOrigin.replace(/\/$/, '')}${apiPath}`,
   }));
 };
 

@@ -64,6 +64,18 @@
                 <div class="empty-state">Товары не найдены</div>
             } @else {
                 <app-product-line [productList]="popularProductList"></app-product-line>
+                @if(hasMoreCatalogProducts) {
+                    <div class="catalog-pagination">
+                        <span>Показано {{ popularProductList.length }} из {{ catalogTotal }}</span>
+                        <button
+                            type="button"
+                            class="default-button"
+                            [disabled]="catalogLoadingMore"
+                            (click)="loadMoreCatalogProducts()">
+                            {{ catalogLoadingMore ? 'ЗАГРУЗКА...' : 'ПОКАЗАТЬ ЕЩЁ' }}
+                        </button>
+                    </div>
+                }
             }
         </div>
         

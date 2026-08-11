@@ -59,6 +59,16 @@ export type TProductAttributes = {
   value: number
 }
 
+export type TCatalogProductsPage = {
+  pagination: {
+    count: number;
+    page: number;
+    page_size: number;
+    pages: number;
+  };
+  results: TProductsContent[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -76,6 +86,16 @@ export class ProductsService {
     }
 
     return this.http.get<TProductsContent[]>(`${environment.baseUrl}/v1/products`, { params: httpParams })
+  }
+
+  getCatalogPage$(page: number, pageSize: number): Observable<TCatalogProductsPage> {
+    return this.http.post<TCatalogProductsPage>(`${environment.baseUrl}/v1/catalog/results`, {
+      context: {},
+      filters: {},
+      page,
+      page_size: pageSize,
+      sort: 'name_asc'
+    });
   }
 
   getProductDetails$(slug: string | number): Observable<TProductCardDetails>{

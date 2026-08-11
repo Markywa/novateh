@@ -14,11 +14,15 @@ export function app(): express.Express {
 
   const commonEngine = new CommonEngine();
 
+  server.disable('x-powered-by');
+  server.set('trust proxy', 1);
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
+  server.get('/healthz', (_req, res) => {
+    res.type('text/plain').send('ok');
+  });
+
   // Serve static files from /browser
   server.get('*.*', express.static(browserDistFolder, {
     maxAge: '1y'
