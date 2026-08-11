@@ -123,9 +123,9 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
       const proj = await import('ol/proj');
       this.fromLonLat = proj.fromLonLat;
 
-      const coordinates: any[] = contactData.longitude && contactData.latitude 
+      const coordinates: [number, number] = contactData.longitude && contactData.latitude
         ? [contactData.longitude, contactData.latitude] 
-        : DEFAULT_COORDINATES;
+        : [...DEFAULT_COORDINATES];
       const projectedCoordinates = this.projectCoordinates(coordinates);
 
       // Создаем элемент для попапа
@@ -213,29 +213,35 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private updateMapPosition(coordinates: any[]): void {
+  private updateMapPosition(coordinates: [number, number]): void {
     if (!this.mapInstance) return;
 
     try {
+      this.mapInstance.updateSize();
       const view = this.mapInstance.getView();
       if (!view) return;
 
-      let adjustedCoords = [...coordinates] as [number, number];
-      
-      // Корректировка для мобильных устройств
-      if (window.innerWidth < 600) {
-        adjustedCoords = [coordinates[0], coordinates[1] + 0.02];
-      }
+      const projectedCoordinates = this.projectCoordinates(coordinates);
 
-      view.setCenter(this.projectCoordinates(adjustedCoords));
-      
-      // Обновляем позицию маркера
+      // Keep the feature at its real coordinates; only move the viewport so
+      // the mobile contacts card does not cover the marker.
       if (this.markerFeature) {
         const geometry = this.markerFeature.getGeometry();
         if (geometry && typeof geometry.setCoordinates === 'function') {
-          geometry.setCoordinates(this.projectCoordinates(adjustedCoords));
+          geometry.setCoordinates(projectedCoordinates);
         }
       }
+
+      const mapSize = this.mapInstance.getSize();
+      if (!mapSize) {
+        view.setCenter(projectedCoordinates);
+        return;
+      }
+
+      const markerPixel: [number, number] = mapSize[0] < 600
+        ? [mapSize[0] / 2, mapSize[1] * 0.75]
+        : [mapSize[0] / 2, mapSize[1] / 2];
+      view.centerOn(projectedCoordinates, mapSize, markerPixel);
     } catch (error) {
       console.error('Error updating map position:', error);
     }
