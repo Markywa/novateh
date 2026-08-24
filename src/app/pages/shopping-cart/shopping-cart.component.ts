@@ -12,6 +12,7 @@ import { ProductsService } from '../../services/products-service/products.servic
 import { OrdersService } from '../../services/orders/orders.service';
 import { Meta, Title } from '@angular/platform-browser';
 import { RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
+import { AnalyticsService } from '../../services/analytics/analytics.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -34,6 +35,7 @@ export class ShoppingCartComponent implements OnInit {
   private productService = inject(ProductsService);
   private ordersService = inject(OrdersService);
   private fb = inject(FormBuilder);
+  private analytics = inject(AnalyticsService);
   
   public isLoading = false;
   public isSubmitting = false;
@@ -73,6 +75,7 @@ export class ShoppingCartComponent implements OnInit {
   
   ngOnInit(): void {
     this.getUserCart();
+    this.analytics.reachGoal('ym-begin-checkout');
   }
 
   captchaToken: string | null = '';
@@ -155,7 +158,12 @@ export class ShoppingCartComponent implements OnInit {
     };
     
     this.ordersService.postOrder$(orderData).subscribe({
-      next: () => {
+      next: (order) => {
+        this.analytics.reachGoal('ym-submit-leadform', {
+          form: 'order_request',
+          order_id: String(order?.id || ''),
+          items_count: items.reduce((total, item) => total + item.count, 0),
+        });
         this.showSuccessMessage = true;
         
         this.cartService.clearCart();

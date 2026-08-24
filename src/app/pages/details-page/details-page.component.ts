@@ -17,6 +17,7 @@ import { SeoService } from '../../services/seo/seo.service';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { AgentsService } from '../../services/agents/agents.service';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
+import { AnalyticsService } from '../../services/analytics/analytics.service';
 
 interface MediaGalleryItem {
   id: number;
@@ -55,6 +56,7 @@ export class DetailsPageComponent implements OnInit {
   private seoService = inject(SeoService);
   private breadCrumbsService = inject(BreadCrumbsService);
   private agentService = inject(AgentsService);
+  private analytics = inject(AnalyticsService);
   private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   
   carouselItems: CarouselItem[] = [];
@@ -285,6 +287,10 @@ private escapeHtml(str: string): string {
   public itemIsAdded$!: Observable<boolean>;
 
   openSendRequestModal(): void {
+    this.analytics.reachGoal('ym-open-leadform', {
+      form: 'product_request',
+      product_id: String(this.productEntity.id),
+    });
     const dialogus = this.dialog.open(RequestModalComponent, {
       height: '405px',
       width: '550px',
@@ -299,6 +305,11 @@ private escapeHtml(str: string): string {
 
   addToCart(id: number): void {
     this.cartService.addToCart(id);
+    this.analytics.trackAddToCart({
+      id,
+      name: this.productEntity.name,
+      price: this.productEntity.price,
+    });
   }
 
   downloadCertificate(cert: any): void {

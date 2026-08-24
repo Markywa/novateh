@@ -1,6 +1,7 @@
 // cookie-consent.component.ts
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AnalyticsService } from '../../services/analytics/analytics.service';
 
 @Component({
   selector: 'app-cookie-consent',
@@ -145,13 +146,15 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 export class CookieConsentComponent implements OnInit {
   showBanner = false;
-  private readonly COOKIE_KEY = 'cookie_consent_status';
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private analytics: AnalyticsService,
+  ) {}
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return; 
     // Проверяем, было ли уже принято/отклонено согласие
-    const consent = localStorage.getItem(this.COOKIE_KEY);
+    const consent = this.analytics.getStoredConsent();
     if (!consent) {
       // Если согласия нет — показываем баннер с небольшой задержкой (для плавности)
       setTimeout(() => {
@@ -165,19 +168,14 @@ export class CookieConsentComponent implements OnInit {
   }
 
   acceptCookies(): void {
-    localStorage.setItem(this.COOKIE_KEY, 'accepted');
+    this.analytics.acceptCookies();
     this.showBanner = false;
-    // Здесь вы можете включить аналитику, загрузить сторонние скрипты и т.д.
-    console.log('Cookies accepted. Можно загружать аналитику и другие куки.');
-    // Дополнительно: событие для других сервисов
     this.dispatchConsentEvent(true);
   }
 
   declineCookies(): void {
-    localStorage.setItem(this.COOKIE_KEY, 'declined');
+    this.analytics.declineCookies();
     this.showBanner = false;
-    // Отключаем всю необязательную аналитику, куки третьих лиц
-    console.log('Cookies declined. Необязательные куки отключены.');
     this.dispatchConsentEvent(false);
   }
 

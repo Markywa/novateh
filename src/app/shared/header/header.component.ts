@@ -10,6 +10,7 @@ import { CartService } from '../../services/cart-service/cart.service';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { AnalyticsService } from '../../services/analytics/analytics.service';
 import { ContactsService } from '../../services/contacts/contacts.service';
 import { NavigationService } from '../../services/navigation/navigation.service';
 
@@ -159,6 +160,7 @@ export class HeaderComponent {
   ]
 
   private dialog = inject(MatDialog);
+  private analytics = inject(AnalyticsService);
   isMenuOpen = false;
 
   public isActiveCart$ = this.router.events.pipe(
@@ -240,6 +242,7 @@ export class HeaderComponent {
   }
 
   sendQuestionModal(mobile?: boolean): void {
+    this.analytics.reachGoal('ym-open-leadform', { form: 'question' });
     const dialogus = this.dialog.open(QuestionModalComponent, {
       height: mobile ? 'auto' : '540px',
       width: mobile ? 'auto' : '550px',

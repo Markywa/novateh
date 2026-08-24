@@ -1,15 +1,10 @@
-import { Component, inject, HostListener, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, inject, HostListener, PLATFORM_ID, Inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { BreadCrumbsService } from './services/bread-crumbs/bread-crumbs.service';
 import { CookieConsentComponent } from './shared/cookies/cookies.component';
 import { isPlatformBrowser } from '@angular/common';
-
-declare global {
-  interface Window {
-    ym?: (counterId: number, method: string, ...args: unknown[]) => void;
-  }
-}
+import { AnalyticsService } from './services/analytics/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -22,16 +17,17 @@ declare global {
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'novateh';
   private router = inject(Router);
-  private lastTrackedUrl = this.getCurrentUrl();
+  private analytics = inject(AnalyticsService);
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
   
   isScrollVisible = false;
   private scrollThreshold = 0.3; 
   
   ngOnInit(): void {
+    this.analytics.initializeFromStoredConsent();
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
@@ -39,16 +35,8 @@ export class AppComponent {
       window.scrollTo(0, 0);
       this.isScrollVisible = false; 
 
-      if (event.urlAfterRedirects !== this.lastTrackedUrl) {
-        window.ym?.(110137975, 'hit', event.urlAfterRedirects);
-        this.lastTrackedUrl = event.urlAfterRedirects;
-      }
+      this.analytics.trackPageView(event.urlAfterRedirects);
     });
-  }
-
-  private getCurrentUrl(): string {
-    if (!isPlatformBrowser(this.platformId)) return '';
-    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
   }
   
   @HostListener('window:scroll', [])

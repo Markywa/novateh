@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RequestService } from '../../services/request/request.service';
+import { AnalyticsService } from '../../services/analytics/analytics.service';
 
 @Component({
   selector: 'app-question-modal',
@@ -18,6 +19,7 @@ import { RequestService } from '../../services/request/request.service';
 })
 export class QuestionModalComponent {
   private requestService = inject(RequestService);
+  private analytics = inject(AnalyticsService);
 
   public formData = {
     name: '',
@@ -36,6 +38,7 @@ export class QuestionModalComponent {
     if (this.validateForm()) {
       this.requestService.sendRequest(this.formData).subscribe({
         complete: () => {
+          this.analytics.reachGoal('ym-submit-leadform', { form: 'question' });
           this.dialogRef.close(this.formData);
         },
         error: (error) => {
