@@ -3,6 +3,7 @@ import { AfterViewInit, Component, inject, PLATFORM_ID, OnDestroy, ElementRef, V
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ContactsService } from '../../services/contacts/contacts.service';
 import { shareReplay, Subscription } from 'rxjs';
+import type ImageTile from 'ol/ImageTile';
 
 const DEFAULT_COORDINATES: [number, number] = [92.86090366, 55.98028477];
 
@@ -32,10 +33,13 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
   private isMapStarting = false;
   private resizeHandler: (() => void) | null = null;
   private contactSubscription?: Subscription;
+  private destroyed = false;
+  private layoutTimer?: ReturnType<typeof setTimeout>;
   
   public isBrowser = signal(false);
   public mapReady = signal(false);
-  public currentCoordinates = signal<[number, number]>([0, 0]);
+  public mapUnavailable = signal(false);
+  public currentCoordinates = signal<[number, number]>([...DEFAULT_COORDINATES]);
 
   public linkArr: {name: string, link: string}[] = [
     { name: 'ГЛАВНАЯ', link: '/welcome' },
@@ -74,10 +78,11 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
       this.isMapStarting = true;
       this.contactSubscription = this.contact$.subscribe({
         next: (res) => {
-          const longitude = Number(res?.longitude);
-          const latitude = Number(res?.latitude);
+          const longitude = res?.longitude == null || res.longitude === '' ? NaN : Number(res.longitude);
+          const latitude = res?.latitude == null || res.latitude === '' ? NaN : Number(res.latitude);
           const coordinates: [number, number] =
-            Number.isFinite(longitude) && Number.isFinite(latitude)
+            Number.isFinite(longitude) && Math.abs(longitude) <= 180
+              && Number.isFinite(latitude) && Math.abs(latitude) <= 90
               ? [longitude, latitude]
               : [...DEFAULT_COORDINATES];
 
@@ -91,12 +96,14 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
         },
         error: (error) => {
           this.isMapStarting = false;
+          this.mapUnavailable.set(true);
           console.error('Error loading contacts for map:', error);
         }
       });
 
     } catch (error) {
       this.isMapStarting = false;
+      this.mapUnavailable.set(true);
       console.error('Error initializing map:', error);
     }
   }
@@ -113,6 +120,7 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
       const View = (await import('ol/View')).default;
       const TileLayer = (await import('ol/layer/Tile')).default;
       const OSM = (await import('ol/source/OSM')).default;
+      const Attribution = (await import('ol/control/Attribution')).default;
       const VectorLayer = (await import('ol/layer/Vector')).default;
       const VectorSource = (await import('ol/source/Vector')).default;
       const Feature = (await import('ol/Feature')).default;
@@ -121,12 +129,30 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
       const Icon = (await import('ol/style/Icon')).default;
       const Overlay = (await import('ol/Overlay')).default;
       const proj = await import('ol/proj');
+      if (this.destroyed) return;
       this.fromLonLat = proj.fromLonLat;
 
-      const coordinates: [number, number] = contactData.longitude && contactData.latitude
-        ? [contactData.longitude, contactData.latitude] 
-        : [...DEFAULT_COORDINATES];
+      const coordinates: [number, number] = [contactData.longitude, contactData.latitude];
       const projectedCoordinates = this.projectCoordinates(coordinates);
+
+      let loadedTiles = 0;
+      const tileSource = new OSM({
+        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        crossOrigin: 'anonymous',
+        tileLoadFunction: (tile, src) => {
+          const image = (tile as ImageTile).getImage() as HTMLImageElement;
+          // OSM requires a Referer; send the site origin without the page path.
+          image.referrerPolicy = 'strict-origin-when-cross-origin';
+          image.src = src;
+        },
+      });
+      tileSource.on('tileloadend', () => {
+        loadedTiles++;
+        this.mapUnavailable.set(false);
+      });
+      tileSource.on('tileloaderror', () => {
+        if (loadedTiles === 0) this.mapUnavailable.set(true);
+      });
 
       // Создаем элемент для попапа
       let popupElement = document.getElementById('popup');
@@ -142,14 +168,14 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
         target: container,
         layers: [
           new TileLayer({
-            source: new OSM({ crossOrigin: 'anonymous' })
+            source: tileSource
           })
         ],
         view: new View({
           center: projectedCoordinates,
           zoom: this.zoomLevel
         }),
-        controls: [],
+        controls: [new Attribution({ collapsible: false })],
         overlays: [
           new Overlay({
             element: popupElement,
@@ -192,7 +218,7 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
       this.mapReady.set(true);
 
       // Обновляем позицию с учетом размера экрана
-      setTimeout(() => {
+      this.layoutTimer = setTimeout(() => {
         map.updateSize();
         map.renderSync();
         this.updateMapPosition(coordinates);
@@ -209,6 +235,7 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
 
     } catch (error) {
       this.isMapStarting = false;
+      this.mapUnavailable.set(true);
       console.error('Error creating map:', error);
     }
   }
@@ -252,6 +279,8 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
+    clearTimeout(this.layoutTimer);
     if (this.mapInstance) {
       try {
         this.mapInstance.dispose();

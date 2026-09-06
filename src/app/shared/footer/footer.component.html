@@ -3,6 +3,13 @@
         #mapContainer
         id="map" class="map">
     </div>
+    <div class="map-fallback" *ngIf="mapUnavailable()" role="status">
+        <span>Не удалось загрузить карту.</span>
+        <a target="_blank" rel="noopener noreferrer"
+           [href]="'https://www.openstreetmap.org/?mlat=' + currentCoordinates()[1] + '&mlon=' + currentCoordinates()[0] + '#map=16/' + currentCoordinates()[1] + '/' + currentCoordinates()[0]">
+            Открыть адрес на карте
+        </a>
+    </div>
     <div class="container-popup" *ngIf="contact$ | async as contact">
         <h2 class="container-popup__title">НАШИ КОНТАКТЫ</h2>
         <div class="container-popup__item">
