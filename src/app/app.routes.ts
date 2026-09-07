@@ -13,13 +13,9 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart.compo
 import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 import { PersonalDataComponent } from './pages/personal-data/personal-data.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'welcome',
-    pathMatch: 'full'
-  },
   {
     path: '',
     component: MainPageComponent,
@@ -27,7 +23,7 @@ export const routes: Routes = [
     children: [
         {
             path: '',
-            redirectTo: 'welcome',
+            component: WelcomeComponent,
             pathMatch: 'full'
         },
       {
@@ -62,8 +58,8 @@ export const routes: Routes = [
       },
       {
         path: 'welcome',
-        component: WelcomeComponent,
-        data: { breadcrumb: 'Добро пожаловать' }
+        redirectTo: '',
+        pathMatch: 'full'
       },
       {
         path: 'shopping-cart',
@@ -95,15 +91,8 @@ export const routes: Routes = [
         component: PrivacyPolicyComponent,
         data: { breadcrumb: 'Политика в отношении обработки персональных данных и конфиденциальности' }
       },
+      { path: '**', component: NotFoundComponent },
     ]
   },
 
-    {
-        path: '**',
-        redirectTo: 'page-not-found',
-    },
-    {
-        path: 'page-not-found',
-        component: MainPageComponent,
-    }
 ];

@@ -1,3 +1,4 @@
+import { SeoService } from '../../services/seo/seo.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { LayoutPageComponent } from '../layout-page/layout-page.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
@@ -7,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HtmlContentsService } from '../../services/html-contents/html-contents.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
-import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contacts',
@@ -25,22 +25,14 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './contacts.component.scss'
 })
 export class ContactsComponent implements OnInit {
+  private seoService = inject(SeoService);
   private htmlContentsService = inject(HtmlContentsService);
   private breadCrumbsService = inject(BreadCrumbsService);
 
   public htmlContent$ =  this.htmlContentsService.getHtmlContent$();
   
-  constructor(private title: Title, private meta: Meta) {
-      this.title.setTitle('Контакты | Новатех - Производство теплоизоляции');
-      this.meta.addTags([
-        { name: 'description', content: 'Свяжитесь с компанией Новатех. Наши контакты: телефон отдела продаж, email для заказов, адрес производства. Получите консультацию по выбору теплоизоляции, рассчитайте стоимость заказа, узнайте условия доставки по России.' },
-        { name: 'keywords', content: 'контакты теплоизоляция, телефон утеплитель, адрес производителя, связаться с новатех, консультация теплоизоляция' },
-        { property: 'og:title', content: 'Контакты - Новатех' },
-        { property: 'og:description', content: 'Свяжитесь с нами для консультации, заказа и доставки теплоизоляции по всей России.' },
-        { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-        { property: 'og:url', content: 'https://nvt24.ru/contacts' },
-        { property: 'og:type', content: 'website' },
-      ]);
+  constructor() {
+      this.seoService.staticPage('/contacts');
     }
 
 ngOnInit(): void {

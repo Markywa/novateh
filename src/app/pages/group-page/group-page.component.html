@@ -2,9 +2,12 @@
 <div class="container">
     @if(loading){
             <app-loader></app-loader>
-    } @else {
+    } @else if(errorTitle) {
+        <h1 class="main-title">{{ errorTitle }}</h1>
+        <p>Перейдите в <a href="/catalog">каталог товаров</a> или попробуйте позже.</p>
+    } @else if(groupEntity) {
         <div class="container-categories">
-            <span class="main-title">{{ groupEntity.category.name }}</span>
+            <h1 class="main-title">{{ groupEntity.category.seo.h1 || groupEntity.category.name }}</h1>
             <app-product-line [productList]="groupEntity.products"></app-product-line>
         </div>
     }

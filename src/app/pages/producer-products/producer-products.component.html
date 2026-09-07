@@ -4,11 +4,12 @@
         <app-loader></app-loader>
     } @else if(error) {
         <div class="error-message">
-            <p>К сожалению здесь пока пусто</p>
+            <h1 class="main-title">{{ errorTitle }}</h1>
+            <p>Перейдите в <a href="/catalog">каталог товаров</a> или попробуйте позже.</p>
         </div>
     } @else {
         <div class="container-header">
-            <span class="main-title">Товары {{ brandEntity.brand.name }}</span>
+            <h1 class="main-title">Товары {{ brandEntity.brand.name }}</h1>
             <img class="container-header__img" [src]="brandEntity.brand.media ? env.baseUrl + brandEntity.brand.media : 'assets/images/no-image2.png'"/>
         </div>
         

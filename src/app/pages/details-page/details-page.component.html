@@ -2,9 +2,12 @@
 <div class="container">
     @if(loading){
             <app-loader></app-loader>
-    } @else {
+    } @else if(errorTitle) {
+        <h1 class="main-title">{{ errorTitle }}</h1>
+        <p>Перейдите в <a href="/catalog">каталог товаров</a> или попробуйте позже.</p>
+    } @else if(productEntity) {
         <div class="container-fade">
-            <span class="main-title">{{ productEntity.name }}</span>
+            <h1 class="main-title">{{ productEntity.seo.h1 || productEntity.name }}</h1>
             <div class="container-content">
                 <div class="container-content__img">
                     <app-carousel 

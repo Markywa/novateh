@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Breadcrumb, BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -8,13 +8,14 @@ import { Subscription } from 'rxjs';
   selector: 'app-bread-crumbs',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule, RouterLink
   ],
   templateUrl: './bread-crumbs.component.html',
   styleUrl: './bread-crumbs.component.scss'
 })
 export class BreadCrumbsComponent implements OnInit, OnDestroy {
   @Input() set breadcrumbsData(breadcrumbs: Breadcrumb[] | null) {
+    this.hasInput = !!breadcrumbs?.length;
     if (breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0) {
       this.breadcrumbs = this.processBreadcrumbs(breadcrumbs);
       if (this.subscription) {
@@ -27,6 +28,7 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
   }
 
   breadcrumbs: Breadcrumb[] = [];
+  private hasInput = false;
   private subscription: Subscription | null = null;
 
   constructor(
@@ -35,7 +37,7 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (!this.subscription) {
+    if (!this.hasInput && !this.subscription) {
       this.subscribeToService();
     }
   }

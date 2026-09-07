@@ -1,4 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupsService, TGroupsPageContent } from '../../services/groups-service/groups.service';
 import { CommonModule } from '@angular/common';
@@ -7,7 +9,6 @@ import { ProductLineComponent } from '../../components/product-line/product-line
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
-import { Meta, Title } from '@angular/platform-browser';
 import { SeoService } from '../../services/seo/seo.service';
 
 @Component({
@@ -24,59 +25,36 @@ import { SeoService } from '../../services/seo/seo.service';
   styleUrl: './group-page.component.scss'
 })
 export class GroupPageComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+  private detailRequest?: Subscription;
     private route = inject(ActivatedRoute);
     private groupsService = inject(GroupsService);
     private router = inject(Router);
     private breadCrumbsService = inject(BreadCrumbsService);
     private seoService = inject(SeoService);
     public groupEntity!: TGroupsPageContent;
-    public loading = true;  
+    public loading = true;
+    public errorTitle = '';
     
-    constructor(private title: Title, private meta: Meta) {}
   
     ngOnInit(): void {
       this.loading = true;
-      this.route.paramMap.subscribe((paramMap) => {
+      this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
+          this.detailRequest?.unsubscribe();
+          this.loading = true;
+          this.errorTitle = '';
           const slug = paramMap.get('slug');
           
           if (slug) {
-              this.groupsService.getGroupDetailsPage$(slug).subscribe({
+              this.detailRequest = this.groupsService.getGroupDetailsPage$(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                   next: (res) => {
                     this.groupEntity = res;
-                    if (res.category.seo.title) {
-                      this.title.setTitle('Новатех - ' + res.category.seo.title);
-                    } else {
-                      this.title.setTitle('Новатех - Продукция: ' + res.category.name);
-                    }
-                    
-                    if (res.category.seo.description) {
-                      this.meta.updateTag({ name: 'description', content: res.category.seo.description });
-                    }
-                    
-                    if (res.category.seo.keywords) {
-                      this.meta.updateTag({ name: 'keywords', content: res.category.seo.keywords });
-                    }
-                    
-                    if (res.category.seo.robots) {
-                      this.meta.updateTag({ name: 'robots', content: res.category.seo.robots });
-                    }
-                    
-                    if (res.category.seo.og_title) {
-                      this.meta.updateTag({ property: 'og:title', content: res.category.seo.og_title });
-                    }
-                    
-                    if (res.category.seo.og_description) {
-                      this.meta.updateTag({ property: 'og:description', content: res.category.seo.og_description });
-                    }
-                    
-                    if (res.category.seo.og_image) {
-                      this.meta.updateTag({ property: 'og:image', content: res.category.seo.og_image });
-                    }
+                    this.seoService.updateSeo(res.category.seo);
+                    this.seoService.breadcrumbs([
+                      { title: 'Каталог', url: '/catalog' },
+                      { title: res.category.name, url: null },
+                    ], '/group/' + res.category.slug);
 
-                    if (res.category.seo.canonical_url) {
-                      this.seoService.setCanonicalUrl(res.category.seo.canonical_url);
-                    }
-                    
                     this.loading = false;
 
                     this.breadCrumbsService.setBreadcrumbs([
@@ -85,7 +63,8 @@ export class GroupPageComponent implements OnInit {
                     ]);
                   },
                   error: (err) => {
-                      console.error('Ошибка при получении данных:', err);
+                      this.errorTitle = this.seoService.pageError(err.status);
+                      this.loading = false;
                   }
               });
           } else {

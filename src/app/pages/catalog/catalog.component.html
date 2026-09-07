@@ -1,5 +1,6 @@
 <app-bread-crumbs></app-bread-crumbs>
 <div class="container">
+    <h1 class="main-title">{{ isSearchMode ? 'Поиск по каталогу' : 'Каталог материалов' }}</h1>
     
     @if(isSearchMode && searchQuery) {
         <div class="search-header">

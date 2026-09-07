@@ -1,9 +1,10 @@
+import { SeoService } from '../../services/seo/seo.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { LayoutPageComponent } from '../layout-page/layout-page.component';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { CertsService } from '../../services/certs/certs.service';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, Meta, SafeResourceUrl, Title } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SafeUrlPipe } from './safe-url/safe-url.pipe';
 import { environment } from '../../../environments/environment';
 import { LoaderComponent } from '../../shared/loader/loader.component';
@@ -35,21 +36,13 @@ interface Certificate {
   styleUrl: './certificates.component.scss'
 })
 export class CertificatesComponent implements OnInit {
+  private seoService = inject(SeoService);
   private certsService = inject(CertsService);
   private sanitizer = inject(DomSanitizer);
   private breadCrumbsService = inject(BreadCrumbsService);
 
-  constructor(private title: Title, private meta: Meta) {
-      this.title.setTitle('Сертификаты и лицензии | Новатех');
-      this.meta.addTags([
-        { name: 'description', content: 'Сертификаты качества на всю продукцию Новатех. Наши теплоизоляционные материалы соответствуют ГОСТ и международным стандартам. Лицензии, разрешительная документация, протоколы испытаний. Мы гарантируем качество каждого изделия.' },
-        { name: 'keywords', content: 'сертификаты теплоизоляции, лицензии, ГОСТ утеплитель, качество теплоизоляции, сертификат соответствия' },
-        { property: 'og:title', content: 'Сертификаты и лицензии - Новатех' },
-        { property: 'og:description', content: 'Сертификаты качества на теплоизоляционные материалы. Соответствие ГОСТ и международным стандартам.' },
-        { property: 'og:image', content: 'assets/images/web-app-manifest-192x192.png' },
-        { property: 'og:url', content: 'https://nvt24.ru/certificates' },
-        { property: 'og:type', content: 'website' },
-      ]);
+  constructor() {
+      this.seoService.staticPage('/certificates');
     }
 
   certificates: Certificate[] = [];

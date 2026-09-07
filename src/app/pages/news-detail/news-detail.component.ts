@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
+import { SeoService } from '../../services/seo/seo.service';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
@@ -26,6 +29,9 @@ interface NewsItem {
   styleUrl: './news-detail.component.scss'
 })
 export class NewsDetailComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private destroyRef = inject(DestroyRef);
+  private detailRequest?: Subscription;
   newsItem: NewsItem | null = null;
   loading: boolean = true;
   error: string | null = null;
@@ -39,7 +45,7 @@ export class NewsDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.newsSlug = params['id']; 
       if (this.newsSlug) {
         this.fetchNewsData();
@@ -51,21 +57,33 @@ export class NewsDetailComponent implements OnInit {
   }
 
   fetchNewsData(): void {
+    this.detailRequest?.unsubscribe();
+    this.newsItem = null;
     this.loading = true;
     this.error = null;
     
-    const apiUrl = `${environment.baseUrl}/v1/news`;
+    const apiUrl = `${environment.baseUrl}/v1/news?only_published=true`;
     
-    this.http.get<NewsItem>(apiUrl).subscribe({
+    this.detailRequest = this.http.get<NewsItem[]>(apiUrl).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: any) => {
-        this.newsItem = data.find((item: any) => item.slug === this.newsSlug);
+        this.newsItem = data.find((item: NewsItem) => item.slug === this.newsSlug) || null;
+        if (!this.newsItem) {
+          this.error = this.seoService.pageError(404);
+          this.loading = false;
+          return;
+        }
+        this.seoService.updateSeo({
+          title: this.newsItem.title + ' | Новатех',
+          description: this.newsItem.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200),
+          canonical_url: '/news/' + this.newsItem.slug, og_image: this.newsItem.media,
+        }, 'article');
         
         this.breadCrumbsService.pushBreadcrumb(this.newsItem?.title || '', '', false);
         this.loading = false;
       },
       error: (err) => {
         console.error('Ошибка при загрузке новости:', err);
-        this.error = 'Не удалось загрузить новость. Пожалуйста, попробуйте позже.';
+        this.error = this.seoService.pageError(err.status);
         this.loading = false;
       }
     });

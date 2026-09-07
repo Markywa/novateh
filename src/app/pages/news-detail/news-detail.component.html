@@ -5,7 +5,7 @@
 
   <div *ngIf="error && !loading" class="error-state">
     <div class="error-icon">⚠️</div>
-    <p>{{ error }}</p>
+    <h1 class="main-title">{{ error }}</h1>
     <button (click)="fetchNewsData()" class="retry-btn">Попробовать снова</button>
   </div>
 

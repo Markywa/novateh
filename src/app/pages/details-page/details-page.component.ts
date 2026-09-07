@@ -1,12 +1,13 @@
-import { Component, inject, OnInit, HostListener, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, HostListener, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService, TProductCardDetails } from '../../services/products-service/products.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatDialog } from '@angular/material/dialog';
 import { RequestModalComponent } from '../../shared/request-modal/request-modal.component';
 import { CartService } from '../../services/cart-service/cart.service';
-import { AsyncPipe, CommonModule, isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
+import { AsyncPipe, CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { Observable, Subscription } from 'rxjs';
 import { BreadCrumbsComponent } from '../../shared/bread-crumbs/bread-crumbs.component';
 import { CarouselComponent, CarouselItem } from '../../components/carousel/carousel.component';
 import { TableComponent } from '../../components/table/table.component';
@@ -46,6 +47,10 @@ interface MediaGalleryItem {
   styleUrl: './details-page.component.scss'
 })
 export class DetailsPageComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+  private document = inject(DOCUMENT);
+  private detailRequest?: Subscription;
+  public errorTitle = '';
   private route = inject(ActivatedRoute);
   private productService = inject(ProductsService);
   public productEntity!: TProductCardDetails;
@@ -93,14 +98,18 @@ export class DetailsPageComponent implements OnInit {
   public agentList$ = this.agentService.getAgentsList$();
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((paramMap) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
+    this.detailRequest?.unsubscribe();
+    this.errorTitle = '';
+    this.parsedAssortmentHtml = this.parsedCharacteristicsHtml = '';
+    this.carouselItems = [];
     this.loading = true;
       const slug = paramMap.get('id');
       
       if (slug) {
-        this.productService.getProductDetails$(slug).subscribe({
+        this.detailRequest = this.productService.getProductDetails$(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (res) => {
-            this.seoService.updateSeo(res.seo);
+            this.seoService.product(res);
             
             this.breadScrumbs = res.breadcrumbs || [];
 
@@ -131,7 +140,7 @@ export class DetailsPageComponent implements OnInit {
             this.initGallery(res);
           },
           error: (err) => {
-            console.error('Ошибка при получении данных:', err);
+            this.errorTitle = this.seoService.pageError(err.status);
             this.loading = false;
           }
         });
@@ -143,7 +152,13 @@ export class DetailsPageComponent implements OnInit {
 
 private parseAssortmentHtml(html: string): SafeHtml {
   if (!this.isBrowser) {
-    return this.sanitizer.bypassSecurityTrustHtml(html || '');
+    const fragment = this.document.createElement('div');
+    fragment.innerHTML = html || '';
+    // Imported presentation HTML must not declare a second, incomplete Product.
+    fragment.querySelectorAll('[itemscope], [itemtype], [itemprop], [itemid], [itemref]').forEach(element => {
+      ['itemscope', 'itemtype', 'itemprop', 'itemid', 'itemref'].forEach(name => element.removeAttribute(name));
+    });
+    return this.sanitizer.bypassSecurityTrustHtml(fragment.innerHTML);
   }
 
   const tempDiv = document.createElement('div');
