@@ -861,6 +861,12 @@
   }
 }
 
+.container-sections {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
 .assortment-section {
     background: white;
     border-radius: 8px;

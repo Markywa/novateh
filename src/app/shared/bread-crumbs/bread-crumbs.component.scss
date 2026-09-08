@@ -4,6 +4,8 @@
     }
     .breadcrumb-list {
       display: flex;
+      flex-wrap: wrap;
+      row-gap: 6px;
       list-style: none;
       padding: 0;
       margin: 0;
@@ -11,6 +13,12 @@
     .breadcrumb-item {
       display: flex;
       align-items: center;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .breadcrumb-link, .breadcrumb-text {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .breadcrumb-link {
       color: #333333;
