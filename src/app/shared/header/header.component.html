@@ -4,7 +4,7 @@
     <div class="container__wrap">
         <div class="container-menu">
             
-            <a routerLink="welcome" *ngIf="(isMobile$ | async)">
+            <a routerLink="/" *ngIf="(isMobile$ | async)">
                 <svg-icon class="small-logo" src="assets\images\logo.svg"></svg-icon>
             </a>
 
@@ -53,7 +53,7 @@
         </div>
 
         <div class="container-menu">
-            <a routerLink="welcome" *ngIf="!(isMobile$ | async)">
+            <a routerLink="/" *ngIf="!(isMobile$ | async)">
                 <svg-icon src="assets\images\logo.svg"></svg-icon>
             </a>
             <a class="default-button" routerLink="catalog">

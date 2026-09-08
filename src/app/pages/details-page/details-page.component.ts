@@ -133,6 +133,7 @@ export class DetailsPageComponent implements OnInit {
                 this.carouselItems.push({
                   id: item.id,
                   image: item.url,
+                  alt: item.alt_text || res.name,
                 });
               });
             }

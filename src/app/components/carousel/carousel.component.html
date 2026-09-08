@@ -13,7 +13,7 @@
         class="carousel-slide" 
         *ngFor="let item of items"
       >
-        <img [src]="env.baseUrl + item.image" [alt]="item.title" class="slide-image">
+        <img [src]="env.baseUrl + item.image" [alt]="item.alt || item.title || ''" class="slide-image">
         <div class="slide-content" *ngIf="item.title || item.description">
           <h3 *ngIf="item.title">{{ item.title }}</h3>
           <p *ngIf="item.description">{{ item.description }}</p>

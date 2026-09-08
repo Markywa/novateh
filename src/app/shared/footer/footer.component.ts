@@ -42,7 +42,7 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
   public currentCoordinates = signal<[number, number]>([...DEFAULT_COORDINATES]);
 
   public linkArr: {name: string, link: string}[] = [
-    { name: 'ГЛАВНАЯ', link: '/welcome' },
+    { name: 'ГЛАВНАЯ', link: '/' },
     { name: 'КАТАЛОГ', link: '/catalog' },
     { name: 'О КОМПАНИИ', link: '/about' },
     { name: 'СЕРТИФИКАТЫ', link: '/certificates' },

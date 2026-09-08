@@ -5,6 +5,7 @@ import { Component, Input, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@a
 export interface CarouselItem {
   id: number;
   image: string;
+  alt?: string;
   title?: string;
   description?: string;
 }

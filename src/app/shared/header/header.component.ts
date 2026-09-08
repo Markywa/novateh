@@ -135,7 +135,7 @@ export class HeaderComponent {
   public mobileArr: {name: string, link: string}[] = [
     {
       name: 'ГЛАВНАЯ',
-      link: '/welcome'
+      link: '/'
     },
     {
       name: 'КАТАЛОГ',

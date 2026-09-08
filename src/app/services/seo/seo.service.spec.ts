@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { SeoService } from './seo.service';
+import { CarouselComponent } from '../../components/carousel/carousel.component';
 import { SSR_STATUS } from './ssr-status';
 import { absoluteUrl, breadcrumbData, productData, structuredDataJson } from './structured-data';
 
@@ -18,7 +19,7 @@ describe('Catalog SEO', () => {
   beforeEach(() => {
     status = jasmine.createSpy('status');
     doc = document.implementation.createHTMLDocument('test');
-    TestBed.configureTestingModule({ providers: [
+    TestBed.configureTestingModule({ imports: [CarouselComponent], providers: [
       { provide: DOCUMENT, useValue: doc }, { provide: SSR_STATUS, useValue: status },
     ] });
     seo = TestBed.inject(SeoService);
@@ -93,5 +94,14 @@ describe('Catalog SEO', () => {
   it('never publishes a foreign canonical', () => {
     seo.setCanonicalUrl('https://supplier.invalid/product');
     expect(doc.querySelector('link[rel="canonical"]')!.getAttribute('href')).toBe('https://nvt24.ru/');
+  });
+
+  it('renders descriptive image alt without adding a caption over the photograph', () => {
+    const fixture = TestBed.createComponent(CarouselComponent);
+    fixture.componentInstance.autoPlay = false;
+    fixture.componentInstance.items = [{ id: 1, image: '/photo.jpg', alt: 'K-FLEX ST' }];
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('img').getAttribute('alt')).toBe('K-FLEX ST');
+    expect(fixture.nativeElement.querySelector('h3')).toBeNull();
   });
 });
