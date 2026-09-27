@@ -52,7 +52,7 @@
                             }
                             @if(productEntity.characteristics_html) {
                                 <div class="assortment-section">
-                                    <div [innerHTML]="parsedCharacteristicsHtml | safeHtml"></div>
+                                    <div class="catalog-rich-text" [innerHTML]="parsedCharacteristicsHtml | safeHtml"></div>
                                 </div>
                             }
                         </div>
@@ -66,7 +66,7 @@
                     @if(productEntity.assortment_html){
                         <!-- <app-table [tableList]="productEntity.attributes"></app-table> -->
                         <div class="assortment-section">
-                            <div [innerHTML]="parsedAssortmentHtml | safeHtml"></div>
+                            <div class="catalog-rich-text" [innerHTML]="parsedAssortmentHtml | safeHtml"></div>
                         </div>
                     } @else {
                         <div class="certificates-empty">

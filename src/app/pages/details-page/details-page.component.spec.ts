@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { EMPTY } from 'rxjs';
+import { ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
+import { EMPTY, of, Subject } from 'rxjs';
 import { AgentsService } from '../../services/agents/agents.service';
 import { AnalyticsService } from '../../services/analytics/analytics.service';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
@@ -13,19 +13,25 @@ import { ProductsService, TProductCardDetails } from '../../services/products-se
 import { SeoService } from '../../services/seo/seo.service';
 import { DetailsPageComponent } from './details-page.component';
 
-describe('Product description rendering', () => {
+for (const platform of ['browser', 'server']) {
+describe(`Product content rendering (${platform})`, () => {
   let fixture: ComponentFixture<DetailsPageComponent>;
+  let params: Subject<ParamMap>;
+  let getProduct: jasmine.Spy;
 
   beforeEach(async () => {
+    params = new Subject<ParamMap>();
+    getProduct = jasmine.createSpy('getProduct');
     await TestBed.configureTestingModule({
       imports: [DetailsPageComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: { paramMap: EMPTY } },
-        { provide: ProductsService, useValue: {} },
+        { provide: PLATFORM_ID, useValue: platform },
+        { provide: ActivatedRoute, useValue: { paramMap: params } },
+        { provide: ProductsService, useValue: { getProductDetails$: getProduct } },
         { provide: MatDialog, useValue: {} },
-        { provide: CartService, useValue: {} },
-        { provide: SeoService, useValue: {} },
-        { provide: BreadCrumbsService, useValue: {} },
+        { provide: CartService, useValue: { itemIsAdded$: () => of(false) } },
+        { provide: SeoService, useValue: { product: () => {} } },
+        { provide: BreadCrumbsService, useValue: { pushBreadcrumb: () => {} } },
         { provide: AgentsService, useValue: { getAgentsList$: () => EMPTY } },
         { provide: AnalyticsService, useValue: {} },
       ],
@@ -77,4 +83,45 @@ describe('Product description rendering', () => {
     expect(render('<p>Next product</p>').textContent).toBe('Next product');
     expect(render('').textContent).toBe('');
   });
+
+  function renderTable(html: string, assortment = false): HTMLElement {
+    fixture.detectChanges();
+    getProduct.and.returnValue(of({
+      ...fixture.componentInstance.productEntity,
+      characteristics_html: assortment ? '' : html,
+      assortment_html: assortment ? html : '',
+    }));
+    params.next(convertToParamMap({ id: 'test-product' }));
+    if (assortment) fixture.componentInstance.switchView('view2');
+    fixture.detectChanges();
+    return fixture.nativeElement.querySelector('.catalog-rich-text');
+  }
+
+  for (const assortment of [false, true]) {
+    it(`keeps editor column widths and merged cells in ${assortment ? 'assortment' : 'characteristics'}`, () => {
+      const element = renderTable('<table><caption>Sizes</caption><colgroup><col style="width: 41%;"><col span="2" style="width: 29.5%;"></colgroup><tbody><tr style="height: 24px;"><td rowspan="2" style="background-color: #fffcda;">Size</td><td colspan="2">100</td></tr><tr><td>200</td><td>300</td></tr></tbody><tfoot><tr><td colspan="3">Total</td></tr></tfoot></table>', assortment);
+      expect(element.querySelectorAll('colgroup > col').length).toBe(2);
+      expect((element.querySelector('col') as HTMLElement).style.width).toBe('41%');
+      expect(element.querySelectorAll('col')[1].getAttribute('span')).toBe('2');
+      expect(element.querySelector('td[colspan="2"]')!.textContent).toBe('100');
+      expect(element.querySelector('td[rowspan="2"]')).not.toBeNull();
+      expect((element.querySelector('tr') as HTMLElement).style.height).toBe('24px');
+      expect(element.querySelector('caption')!.textContent).toBe('Sizes');
+      expect(element.querySelector('tfoot')).not.toBeNull();
+    });
+  }
+
+  it('preserves spaces around formatting and blank paragraphs that set row height', () => {
+    const element = renderTable('<table><tbody><tr><td><p>First <strong>bold</strong> last</p><p>&nbsp;</p></td></tr></tbody></table>');
+    expect(element.querySelector('p')!.textContent).toBe('First bold last');
+    expect(element.querySelectorAll('p')[1].textContent).toBe('\u00a0');
+  });
+
+  it('removes scripts, event handlers, duplicate microdata and executable URLs from tables', () => {
+    const element = renderTable('<table itemscope itemtype="https://schema.org/Product"><tbody><tr><td onclick="alert(1)"><script>alert(1)</script><a href="javascript:alert(1)">Link</a></td></tr></tbody></table>');
+    expect(element.querySelector('script, [onclick], [itemscope], [itemtype]')).toBeNull();
+    expect(element.textContent).not.toContain('alert(1)');
+    expect(element.querySelector('a')!.getAttribute('href')).not.toBe('javascript:alert(1)');
+  });
 });
+}

@@ -62,6 +62,26 @@ table{
     }
 }
 
+// Match TinyMCE's compact table defaults without changing app-table widgets.
+// Global scope is intentional: innerHTML descendants have no Angular style attributes.
+.catalog-rich-text {
+  table {
+    text-align: left;
+
+    :is(thead, tbody, tfoot) > tr > :is(td, th) {
+      text-align: inherit;
+    }
+
+    &:not([cellpadding]) :is(td, th) {
+      padding: 2px 8px;
+      line-height: 1.2;
+    }
+
+    :is(td, th) > p:first-child { margin-top: 0; }
+    :is(td, th) > p:last-child { margin-bottom: 0; }
+  }
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"],

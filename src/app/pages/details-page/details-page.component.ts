@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, HostListener, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { Component, inject, OnInit, HostListener, PLATFORM_ID, DestroyRef, SecurityContext } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService, TProductCardDetails } from '../../services/products-service/products.service';
@@ -152,18 +152,9 @@ export class DetailsPageComponent implements OnInit {
   }
 
 private parseAssortmentHtml(html: string): SafeHtml {
-  if (!this.isBrowser) {
-    const fragment = this.document.createElement('div');
-    fragment.innerHTML = html || '';
-    // Imported presentation HTML must not declare a second, incomplete Product.
-    fragment.querySelectorAll('[itemscope], [itemtype], [itemprop], [itemid], [itemref]').forEach(element => {
-      ['itemscope', 'itemtype', 'itemprop', 'itemid', 'itemref'].forEach(name => element.removeAttribute(name));
-    });
-    return this.sanitizer.bypassSecurityTrustHtml(fragment.innerHTML);
-  }
-
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = html;
+  // Keep editor table structure identical in SSR and browser rendering.
+  const tempDiv = this.document.createElement('div');
+  tempDiv.innerHTML = html || '';
   
   if (!tempDiv.hasChildNodes()) {
     return this.sanitizer.bypassSecurityTrustHtml('');
@@ -174,48 +165,39 @@ private parseAssortmentHtml(html: string): SafeHtml {
   return this.sanitizer.bypassSecurityTrustHtml(result);
 }
 
-private parseNodeWithStyles(node: Node, level: number = 0): string {
-  if (node.nodeType === Node.TEXT_NODE) {
-    const text = node.textContent?.trim();
+private parseNodeWithStyles(node: Node): string {
+  if (node.nodeType === 3) {
+    const text = node.textContent;
     if (!text) return '';
     return this.escapeHtml(text);
   }
   
-  if (node.nodeType === Node.ELEMENT_NODE) {
+  if (node.nodeType === 1) {
     const element = node as HTMLElement;
     const tagName = element.tagName.toLowerCase();
     
     const allowedTags = [
       'div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'thead', 'tbody',
-      'strong', 'b', 'em', 'i', 'u', 's', 'a', 'img', 'br',
+      'ul', 'ol', 'li', 'table', 'caption', 'colgroup', 'col', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
+      'strong', 'b', 'em', 'i', 'u', 's', 'a', 'img', 'br', 'hr',
       'section', 'article', 'header', 'footer', 'main'
     ];
     
+    if (['script', 'style', 'iframe', 'object', 'embed', 'template'].includes(tagName)) return '';
+
     if (!allowedTags.includes(tagName)) {
       let innerHtml = '';
       for (let i = 0; i < element.childNodes.length; i++) {
-        innerHtml += this.parseNodeWithStyles(element.childNodes[i], level + 1);
+        innerHtml += this.parseNodeWithStyles(element.childNodes[i]);
       }
       return innerHtml;
     }
     
     const attributes = this.getAllAttributes(element);
     
-    if (tagName === 'img') {
-      const src = element.getAttribute('src') || '';
-      const alt = element.getAttribute('alt') || '';
-      return `<img src="${this.escapeHtml(src)}" alt="${this.escapeHtml(alt)}" ${attributes}>`;
-    }
-    
-    if (tagName === 'a') {
-      const href = element.getAttribute('href') || '';
-      return `<a href="${this.escapeHtml(href)}" ${attributes}>${this.parseChildren(element)}</a>`;
-    }
-    
     const childrenHtml = this.parseChildren(element);
     
-    if (!childrenHtml && ['br', 'hr', 'img'].includes(tagName)) {
+    if (['br', 'hr', 'img', 'col'].includes(tagName)) {
       return `<${tagName} ${attributes}>`;
     }
     
@@ -243,12 +225,15 @@ private getAllAttributes(element: HTMLElement): string {
     
     const allowedAttrs = [
       'style', 'class', 'id', 'href', 'src', 'alt', 'title',
-      'width', 'height', 'align', 'valign', 'colspan', 'rowspan',
+      'width', 'height', 'align', 'valign', 'colspan', 'rowspan', 'span', 'scope',
       'border', 'cellpadding', 'cellspacing', 'bgcolor'
     ];
     
     if (allowedAttrs.includes(attrName) && attrValue) {
-      const escapedValue = this.escapeHtml(attrValue);
+      const value = ['href', 'src'].includes(attrName)
+        ? this.sanitizer.sanitize(SecurityContext.URL, attrValue) || ''
+        : attrValue;
+      const escapedValue = this.escapeHtml(value);
       attributes.push(`${attrName}="${escapedValue}"`);
     }
   }
