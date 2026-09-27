@@ -19,9 +19,7 @@
                     </app-carousel>
                 </div>
                 <div class="container-content__wrap">
-                    <div class="container-content__desc">
-                        <span>{{ productEntity.description }}</span>
-                    </div>
+                    <div class="container-content__desc" [innerHTML]="productEntity.description"></div>
                     <div class="container-content__info">
                         @if(productEntity.price){
                             <span class="container-content__info-price">{{ productEntity.price | number:'1.2-2'}} {{ productEntity.currency }}</span>

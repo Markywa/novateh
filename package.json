@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:seo": "ng test --configuration=seo --watch=false --browsers=ChromeHeadless --include=src/app/services/seo/**/*.spec.ts",
+    "test:product-description": "ng test --configuration=seo --watch=false --browsers=ChromeHeadless --include=src/app/pages/details-page/details-page.component.spec.ts",
     "test:seo:ssr": "node scripts/seo-smoke.mjs",
     "serve:ssr:novateh": "node dist/novateh/server/server.mjs"
   },
