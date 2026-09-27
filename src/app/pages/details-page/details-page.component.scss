@@ -47,19 +47,16 @@
         grid-template-columns: 1fr 2fr;
         gap: 32px;
         &__img{
+            // Keep the photo panel at carousel height, independent of the description.
+            align-self: start;
+            min-width: 0;
             background-color: white;
             border-radius: 6px;
-            // height: 400px;
-            // padding: 32px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             &-block{
                 width: 389px;
                 height: 420px;
                 object-fit: contain;
-            }
-            @media screen and (max-width: 840px) {
-              height: 100%
-
             }
         }
         &__desc{
@@ -102,7 +99,7 @@
             // }
         }
         @media screen and (max-width: 840px) {
-            grid-template-rows: 1fr auto auto;
+            grid-template-rows: auto auto;
             grid-template-columns: 1fr;
         }
     }

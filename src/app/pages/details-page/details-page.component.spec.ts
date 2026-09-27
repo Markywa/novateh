@@ -12,6 +12,7 @@ import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
 import { ProductsService, TProductCardDetails } from '../../services/products-service/products.service';
 import { SeoService } from '../../services/seo/seo.service';
 import { DetailsPageComponent } from './details-page.component';
+import { CarouselComponent } from '../../components/carousel/carousel.component';
 
 for (const platform of ['browser', 'server']) {
 describe(`Product content rendering (${platform})`, () => {
@@ -37,7 +38,7 @@ describe(`Product content rendering (${platform})`, () => {
       ],
     }).overrideComponent(DetailsPageComponent, {
       // Exercise the actual product template without unrelated child services.
-      set: { imports: [CommonModule, SafeHtmlPipe], schemas: [NO_ERRORS_SCHEMA] },
+      set: { imports: [CommonModule, SafeHtmlPipe, CarouselComponent], schemas: [NO_ERRORS_SCHEMA] },
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsPageComponent);
@@ -82,6 +83,18 @@ describe(`Product content rendering (${platform})`, () => {
     render('<p>Previous product</p>');
     expect(render('<p>Next product</p>').textContent).toBe('Next product');
     expect(render('').textContent).toBe('');
+  });
+
+  it('keeps the photo panel at carousel height when the description grows', () => {
+    render('<p>Short description</p>');
+    const photo: HTMLElement = fixture.nativeElement.querySelector('.container-content__img');
+    const carousel: HTMLElement = photo.querySelector('.carousel')!;
+    const initialHeight = photo.getBoundingClientRect().height;
+    expect(initialHeight).toBeGreaterThan(0);
+    expect(getComputedStyle(photo).alignSelf).toBe('start');
+    render('<p>Long product description</p>'.repeat(40));
+    expect(photo.getBoundingClientRect().height).toBeCloseTo(initialHeight, 0);
+    expect(photo.getBoundingClientRect().height).toBeCloseTo(carousel.getBoundingClientRect().height, 0);
   });
 
   function renderTable(html: string, assortment = false): HTMLElement {
