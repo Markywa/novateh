@@ -97,10 +97,6 @@ export class HeaderComponent {
       link: '/about'
     },
     {
-      name: 'СЕРТИФИКАТЫ',
-      link: '/certificates'
-    },
-    {
       name: 'НОВОСТИ',
       link: '/news'
     },
@@ -144,10 +140,6 @@ export class HeaderComponent {
     {
       name: 'О КОМПАНИИ',
       link: '/about'
-    },
-    {
-      name: 'СЕРТИФИКАТЫ',
-      link: '/certificates'
     },
     {
       name: 'НОВОСТИ',

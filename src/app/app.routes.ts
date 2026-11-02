@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { AboutComponent } from './pages/about/about.component';
 import { NewsComponent } from './pages/news/news.component';
-import { CertificatesComponent } from './pages/certificates/certificates.component';
 import { ContactsComponent } from './pages/contacts/contacts.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { DetailsPageComponent } from './pages/details-page/details-page.component';
@@ -48,9 +47,10 @@ export const routes: Routes = [
       },
       {
         path: 'certificates',
-        component: CertificatesComponent,
-        data: { breadcrumb: 'Сертификаты' }
+        redirectTo: 'catalog',
+        pathMatch: 'full'
       },
+      { path: 'promtehizol', redirectTo: 'brand/promtehizol', pathMatch: 'full' },
       {
         path: 'catalog',
         component: CatalogComponent,

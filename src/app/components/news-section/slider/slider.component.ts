@@ -236,6 +236,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   slideHref(slide: SlideItem): string | null {
     const link = (slide.buttonLink || '').trim();
     if (!link) return null;
+    if (/^\/?promtehizol\/?$/.test(link)) return '/brand/promtehizol';
     if (/^(https?:)?\/\//i.test(link) || link.startsWith('mailto:') || link.startsWith('tel:')) {
       return link;
     }

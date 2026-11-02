@@ -27,6 +27,8 @@ export function app(): express.Express {
   server.get('*', (req, res, next) => {
     let target = req.path.replace(/\/+$/, '') || '/';
     if (target === '/welcome') target = '/';
+    if (target === '/certificates') target = '/catalog';
+    if (target === '/promtehizol') target = '/brand/promtehizol';
     target = target.replace(/^\/products\//, '/product/')
       .replace(/^\/producer\//, '/brand/').replace(/^\/catalog\//, '/group/');
     if (target !== req.path && !target.startsWith('//')) {

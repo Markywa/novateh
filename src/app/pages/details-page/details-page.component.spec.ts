@@ -130,6 +130,22 @@ describe(`Product content rendering (${platform})`, () => {
     expect(element.querySelectorAll('p')[1].textContent).toBe('\u00a0');
   });
 
+  it('keeps small editor images proportionate and aligned without stretching', () => {
+    const element = renderTable('<p style="text-align:right"><img src="/test.png" width="120" height="60" style="width:120px;height:60px;margin-left:auto;display:block" onerror="alert(1)"></p>');
+    const img = element.querySelector('img')!;
+    expect(img.style.width).toBe('120px');
+    expect(img.style.maxWidth).toBe('100%');
+    expect(img.style.height).toBe('auto');
+    expect(img.style.marginLeft).toBe('auto');
+    expect(element.querySelector('p')!.style.textAlign).toBe('right');
+    expect(img.hasAttribute('onerror')).toBeFalse();
+  });
+
+  it('rejects executable CSS and overlay positioning in editor content', () => {
+    const element = renderTable('<p style="position:fixed;background:url(https://evil.invalid/track);width:expression(alert(1));color:red">Safe</p>');
+    expect(element.querySelector('p')!.style.cssText).toBe('color: red;');
+  });
+
   it('removes scripts, event handlers, duplicate microdata and executable URLs from tables', () => {
     const element = renderTable('<table itemscope itemtype="https://schema.org/Product"><tbody><tr><td onclick="alert(1)"><script>alert(1)</script><a href="javascript:alert(1)">Link</a></td></tr></tbody></table>');
     expect(element.querySelector('script, [onclick], [itemscope], [itemtype]')).toBeNull();

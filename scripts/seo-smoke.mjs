@@ -31,7 +31,7 @@ async function page(path, status = 200) {
   return { html, metas, graph };
 }
 
-for (const path of ['/', '/catalog', '/about', '/contacts', '/certificates', '/news', '/personal-data', '/privacy-policy', '/group/' + group, '/brand/' + brand]) {
+for (const path of ['/', '/catalog', '/about', '/contacts', '/news', '/personal-data', '/privacy-policy', '/group/' + group, '/brand/' + brand]) {
   await page(path);
 }
 const detail = await page('/product/' + product);
@@ -40,7 +40,7 @@ assert.equal(detail.graph.filter(node => node['@type'] === 'BreadcrumbList').len
 assert.ok(!/<[^>]*\bitemscope\b/.test(detail.html), 'No duplicate imported microdata in rendered elements');
 assert.match(detail.html, /href="\/catalog"/);
 for (const path of ['/seo-does-not-exist', '/product/seo-does-not-exist', '/group/seo-does-not-exist', '/brand/seo-does-not-exist', '/news/seo-does-not-exist']) await page(path, 404);
-for (const [from, to] of [['/welcome', '/'], ['/welcome/', '/'], ['/catalog/', '/catalog'], ['/products/' + product, '/product/' + product], ['/producer/' + brand, '/brand/' + brand], ['/catalog/' + group, '/group/' + group]]) {
+for (const [from, to] of [['/certificates', '/catalog'], ['/certificates/?source=old', '/catalog?source=old'], ['/promtehizol', '/brand/promtehizol'], ['/welcome', '/'], ['/welcome/', '/'], ['/catalog/', '/catalog'], ['/products/' + product, '/product/' + product], ['/producer/' + brand, '/brand/' + brand], ['/catalog/' + group, '/group/' + group]]) {
   const response = await fetch(origin + from, { redirect: 'manual' });
   assert.equal(response.status, 301, from);
   assert.equal(response.headers.get('location'), to);

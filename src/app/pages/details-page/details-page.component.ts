@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, HostListener, PLATFORM_ID, DestroyRef, SecurityContext } from '@angular/core';
+import { Component, inject, OnInit, HostListener, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService, TProductCardDetails } from '../../services/products-service/products.service';
@@ -18,6 +18,7 @@ import { SeoService } from '../../services/seo/seo.service';
 import { BreadCrumbsService } from '../../services/bread-crumbs/bread-crumbs.service';
 import { AgentsService } from '../../services/agents/agents.service';
 import { SafeHtmlPipe } from '../../services/pipes/safe-html/safe-html.pipe';
+import { cleanRichHtml } from '../../services/pipes/safe-html/rich-html';
 import { AnalyticsService } from '../../services/analytics/analytics.service';
 
 interface MediaGalleryItem {
@@ -151,106 +152,9 @@ export class DetailsPageComponent implements OnInit {
     });
   }
 
-private parseAssortmentHtml(html: string): SafeHtml {
-  // Keep editor table structure identical in SSR and browser rendering.
-  const tempDiv = this.document.createElement('div');
-  tempDiv.innerHTML = html || '';
-  
-  if (!tempDiv.hasChildNodes()) {
-    return this.sanitizer.bypassSecurityTrustHtml('');
+  private parseAssortmentHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(cleanRichHtml(this.document, this.sanitizer, html));
   }
-  
-  const result = this.parseNodeWithStyles(tempDiv);
-  
-  return this.sanitizer.bypassSecurityTrustHtml(result);
-}
-
-private parseNodeWithStyles(node: Node): string {
-  if (node.nodeType === 3) {
-    const text = node.textContent;
-    if (!text) return '';
-    return this.escapeHtml(text);
-  }
-  
-  if (node.nodeType === 1) {
-    const element = node as HTMLElement;
-    const tagName = element.tagName.toLowerCase();
-    
-    const allowedTags = [
-      'div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'ul', 'ol', 'li', 'table', 'caption', 'colgroup', 'col', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
-      'strong', 'b', 'em', 'i', 'u', 's', 'a', 'img', 'br', 'hr',
-      'section', 'article', 'header', 'footer', 'main'
-    ];
-    
-    if (['script', 'style', 'iframe', 'object', 'embed', 'template'].includes(tagName)) return '';
-
-    if (!allowedTags.includes(tagName)) {
-      let innerHtml = '';
-      for (let i = 0; i < element.childNodes.length; i++) {
-        innerHtml += this.parseNodeWithStyles(element.childNodes[i]);
-      }
-      return innerHtml;
-    }
-    
-    const attributes = this.getAllAttributes(element);
-    
-    const childrenHtml = this.parseChildren(element);
-    
-    if (['br', 'hr', 'img', 'col'].includes(tagName)) {
-      return `<${tagName} ${attributes}>`;
-    }
-    
-    return `<${tagName} ${attributes}>${childrenHtml}</${tagName}>`;
-  }
-  
-  return '';
-}
-
-private parseChildren(element: HTMLElement): string {
-  let result = '';
-  for (let i = 0; i < element.childNodes.length; i++) {
-    result += this.parseNodeWithStyles(element.childNodes[i]);
-  }
-  return result;
-}
-
-private getAllAttributes(element: HTMLElement): string {
-  const attributes: string[] = [];
-  
-  for (let i = 0; i < element.attributes.length; i++) {
-    const attr = element.attributes[i];
-    const attrName = attr.name.toLowerCase();
-    const attrValue = attr.value;
-    
-    const allowedAttrs = [
-      'style', 'class', 'id', 'href', 'src', 'alt', 'title',
-      'width', 'height', 'align', 'valign', 'colspan', 'rowspan', 'span', 'scope',
-      'border', 'cellpadding', 'cellspacing', 'bgcolor'
-    ];
-    
-    if (allowedAttrs.includes(attrName) && attrValue) {
-      const value = ['href', 'src'].includes(attrName)
-        ? this.sanitizer.sanitize(SecurityContext.URL, attrValue) || ''
-        : attrValue;
-      const escapedValue = this.escapeHtml(value);
-      attributes.push(`${attrName}="${escapedValue}"`);
-    }
-  }
-  
-  return attributes.join(' ');
-}
-
-
-private escapeHtml(str: string): string {
-  if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
 
   private initGallery(product: TProductCardDetails): void {
     this.galleryItems = [];

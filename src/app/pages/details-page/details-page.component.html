@@ -39,7 +39,7 @@
             <div class="container-switcher">
                 <button class="container-switcher__item" [class.active]="activeView === 'view1'" (click)="switchView('view1')">Технические характеристики</button>
                 <button class="container-switcher__item" [class.active]="activeView === 'view2'" (click)="switchView('view2')">Ассортимент</button>
-                <button class="container-switcher__item" [class.active]="activeView === 'view3'" (click)="switchView('view3')">Сертификаты</button>
+                <button class="container-switcher__item" [class.active]="activeView === 'view3'" (click)="switchView('view3')">Документы</button>
                 <button class="container-switcher__item" [class.active]="activeView === 'view4'" (click)="switchView('view4')">Фото и видео о товаре</button>
             </div>
 
@@ -88,7 +88,7 @@
                             </div>
                         } @else {
                             <div class="certificates-empty">
-                                <span>Сертификаты отсутствуют</span>
+                                <span>Документы отсутствуют</span>
                             </div>
                         }
                     </div>

@@ -45,7 +45,6 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
     { name: 'ГЛАВНАЯ', link: '/' },
     { name: 'КАТАЛОГ', link: '/catalog' },
     { name: 'О КОМПАНИИ', link: '/about' },
-    { name: 'СЕРТИФИКАТЫ', link: '/certificates' },
     { name: 'НОВОСТИ', link: '/news' },
     { name: 'КОНТАКТЫ', link: '/contacts' },
   ];
