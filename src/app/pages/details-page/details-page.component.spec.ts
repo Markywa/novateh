@@ -97,6 +97,31 @@ describe(`Product content rendering (${platform})`, () => {
     expect(photo.getBoundingClientRect().height).toBeCloseTo(carousel.getBoundingClientRect().height, 0);
   });
 
+  it('keeps the primary photo viewer separate from the additional gallery', () => {
+    const component = fixture.componentInstance;
+    if (platform !== 'browser') {
+      component.openCarouselPreview(0);
+      expect(component.previewVisible).toBeFalse();
+      return;
+    }
+    component.carouselItems = [{ id: 1, image: '/one.png' }, { id: 2, image: '/two.png' }];
+    component.galleryItems = [{ id: 10, url: '/extra.png', title: 'Extra', type: 'image', mime_type: 'image/png', size_bytes: 0, sort_order: 0 }];
+    render('Description');
+    component.openCarouselPreview(0);
+    expect(component.previewItems.length).toBe(2);
+    component.nextItem();
+    expect(component.previewMedia!.url).toBe('/two.png');
+    component.zoomIn(); expect(component.scale).toBe(1.5);
+    component.prevItem(); expect(component.previewMedia!.url).toBe('/one.png');
+    expect(component.scale).toBe(1);
+    component.closePreview();
+    component.openMediaPreview(component.galleryItems[0], 0);
+    expect(component.previewItems.length).toBe(1);
+    expect(component.previewMedia!.url).toBe('/extra.png');
+    component.closePreview();
+    expect(document.body.style.overflow).not.toBe('hidden');
+  });
+
   function renderTable(html: string, assortment = false): HTMLElement {
     fixture.detectChanges();
     getProduct.and.returnValue(of({

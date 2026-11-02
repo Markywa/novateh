@@ -12,7 +12,8 @@
                 <div class="container-content__img">
                     <app-carousel 
                         [items]="carouselItems"
-                        [autoPlay]="true"
+                        [autoPlay]="false"
+                        (imageOpen)="openCarouselPreview($event)"
                         [autoPlayInterval]="5000"
                         [showControls]="true"
                         [showIndicators]="true">
@@ -43,7 +44,12 @@
                 <button class="container-switcher__item" [class.active]="activeView === 'view4'" (click)="switchView('view4')">Фото и видео о товаре</button>
             </div>
 
-            <div class="container-sections" [ngSwitch]="activeView">
+            @if((activeView === 'view1' && productEntity.characteristics_html) || (activeView === 'view2' && productEntity.assortment_html)) {
+                <button type="button" class="table-density" [attr.aria-pressed]="compactTables" (click)="compactTables = !compactTables">
+                    {{ compactTables ? 'Обычный размер таблиц' : 'Уменьшить таблицы' }}
+                </button>
+            }
+            <div class="container-sections" [class.compact-tables]="compactTables" [ngSwitch]="activeView">
                 <div *ngSwitchCase="'view1'">
                     @if(productEntity.characteristics_html || productEntity.attributes && productEntity.attributes.length > 0){
                         <div class="container-sections__wrap">
@@ -81,7 +87,7 @@
                                 @for(certificate of productEntity.certificates_list; track certificate.id) {
                                     <div class="certificate-item" (click)="downloadCertificate(certificate)">
                                         <svg-icon src="assets/images/pdf.svg"></svg-icon>
-                                        <span class="certificate-title">{{ certificate.title }}.pdf</span>
+                                        <span class="certificate-title">{{ certificate.title }}</span>
                                         <!-- <span class="certificate-download">Скачать</span> -->
                                     </div>
                                 }
@@ -93,7 +99,7 @@
                         }
                     </div>
                 </div>
-<div class="container" tabindex="0" (keydown)="onKeydown($event)">
+<div class="container">
 
   <div *ngSwitchCase="'view4'">
       @if(galleryItems.length > 0) {
@@ -128,8 +134,8 @@
   </div>
 
 @if(previewVisible && previewMedia) {
-    <div class="fullscreen-modal" (click)="closePreview()" (wheel)="onWheel($event)">
-        <div class="fullscreen-container" (click)="$event.stopPropagation()">
+    <div class="fullscreen-modal" role="dialog" aria-modal="true" aria-label="Просмотр фотографий товара" (click)="closePreview()" (wheel)="onWheel($event)">
+        <div class="fullscreen-container" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" (click)="$event.stopPropagation()">
             
             <button class="modal-close" (click)="closePreview()" aria-label="Закрыть">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -137,7 +143,7 @@
                 </svg>
             </button>
             
-            @if(galleryItems.length > 1) {
+            @if(previewItems.length > 1) {
                 <button class="modal-nav modal-prev" (click)="prevItem()" aria-label="Предыдущий">
                     ‹
                 </button>
@@ -147,7 +153,7 @@
             }
             
             <div class="modal-counter">
-                {{ currentIndex + 1 }} / {{ galleryItems.length }}
+                {{ currentIndex + 1 }} / {{ previewItems.length }}
             </div>
             
             <!-- Кнопки масштабирования для телефона -->
@@ -174,7 +180,7 @@
             }
             
             <!-- Индикатор свайпа для мобильных -->
-            @if(previewMedia.type === 'image' && scale === 1 && galleryItems.length > 1) {
+            @if(previewMedia.type === 'image' && scale === 1 && previewItems.length > 1) {
                 <div class="swipe-hint">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M8 12L12 8L16 12M8 12L12 16L16 12M8 12H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

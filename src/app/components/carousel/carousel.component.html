@@ -1,34 +1,25 @@
-<div 
-  class="carousel"
-  (touchstart)="onTouchStart($event)"
-  (touchmove)="onTouchMove($event)"
-  (touchend)="onTouchEnd()"
->
-  <div class="carousel-container" #carouselContainer>
-    <div 
-      class="carousel-track" 
-      [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'"
-    >
-      <div 
-        class="carousel-slide" 
-        *ngFor="let item of items"
-      >
-        <img [src]="env.baseUrl + item.image" [alt]="item.alt || item.title || ''" class="slide-image">
-        <div class="slide-content" *ngIf="item.title || item.description">
-          <h3 *ngIf="item.title">{{ item.title }}</h3>
-          <p *ngIf="item.description">{{ item.description }}</p>
-        </div>
-      </div>
+<div class="carousel">
+  <div class="carousel-container"
+       (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)"
+       (pointerup)="onPointerUp($event)" (pointercancel)="cancelPointer()">
+    <div class="carousel-track"
+         [style.transition]="dragOffset ? 'none' : ''"
+         [style.transform]="'translateX(calc(-' + currentIndex * 100 + '% + ' + dragOffset + 'px))'">
+      <button type="button" class="carousel-slide" *ngFor="let item of items; let i = index"
+              [tabIndex]="i === currentIndex ? 0 : -1"
+              [attr.aria-label]="'Увеличить фото: ' + (item.alt || item.title || i + 1)"
+              (click)="open(i, $event)">
+        <img [src]="env.baseUrl + item.image" [alt]="item.alt || item.title || ''" class="slide-image" draggable="false">
+      </button>
     </div>
   </div>
-
+  <ng-container *ngIf="showControls && items.length > 1">
+    <button type="button" class="carousel-arrow previous" (click)="prev()" aria-label="Предыдущее фото">‹</button>
+    <button type="button" class="carousel-arrow next" (click)="next()" aria-label="Следующее фото">›</button>
+  </ng-container>
   <div *ngIf="showIndicators && items.length > 1" class="carousel-indicators">
-    <button 
-      *ngFor="let item of items; let i = index" 
-      class="indicator" 
-      [class.active]="i === currentIndex"
-      (click)="goTo(i)"
-      [attr.aria-label]="'Go to slide ' + (i + 1)"
-    ></button>
+    <button type="button" *ngFor="let item of items; let i = index" class="indicator"
+            [class.active]="i === currentIndex" (click)="goTo(i)"
+            [attr.aria-label]="'Фото ' + (i + 1)" [attr.aria-current]="i === currentIndex ? 'true' : null"></button>
   </div>
 </div>

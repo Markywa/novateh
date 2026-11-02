@@ -3,14 +3,16 @@
     width: 100%;
     max-width: 880px;
     height: auto;
-    aspect-ratio: 880 / 291;
+    min-height: 320px;
     margin: 0 auto;
     @media screen and (max-width: 700px) {
-        aspect-ratio: 2 / 1;
+        min-height: 360px;
     }
 }
 
 .container-slider__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -47,12 +49,13 @@
 .slide {
     flex: 0 0 100%;
     display: flex;
-    gap: 90px;
+    gap: 32px;
     align-items: center;
     height: 100%;
 }
 
 .slide-wrap{
+    margin-top: auto;
     width: 100%;
     display: flex;
     
@@ -60,7 +63,7 @@
 
 /* Левая часть - изображение */
 .slide-left {
-    flex: 0 0 40%;
+    flex: 0 0 34%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -76,28 +79,34 @@
 
 /* Правая часть - текст и кнопка */
 .slide-right {
+    min-width: 0;
     flex: 1;
     color: #fff;
     display: flex;
     flex-direction: column;
     padding-right: 10px;
     height: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 12px;
 }
 
 .slide-right h3 {
-    font-size: 18px;
+    line-height: 1.15;
+    font-size: 36px;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
     font-weight: bold;
     margin: 0;
     color: black;
 }
 
-.slide-right p {
+.slide-description {
     font-size: 14px;
     line-height: 1.4;
     margin: 0;
     opacity: 0.9;
     color: black;
+    white-space: pre-line;
 }
 
 .margin{
@@ -172,7 +181,7 @@
     }
 
     .slide{
-        gap: 30px;
+        gap: 16px;
     }
 
     .slide-right{
@@ -180,11 +189,11 @@
     }
 
     .slide-right h3{
-        font-size: 14px;
+        font-size: 24px;
     }
 
-    .slide-right p{
-        font-size: 12px;
+    .slide-description{
+        font-size: 14px;
     }
 
     .default-button{
@@ -211,6 +220,12 @@
     // .btn-details {
     //     margin: 0 auto;
     // }
+}
+
+@media (max-width: 600px) {
+  .slide { flex-direction: column; gap: 12px; }
+  .slide-left { flex: 0 0 140px; height: 140px; }
+  .slide-right { width: 100%; padding: 0 12px; }
 }
 
 // Стили для drag-to-slide функционала
@@ -249,3 +264,4 @@
         touch-action: pan-y pinch-zoom; // Разрешаем вертикальный скролл, но горизонтальный обрабатываем сами
     }
 }
+:host { display: block; flex: 1; min-width: 0; }

@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, HostListener, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { A11yModule } from '@angular/cdk/a11y';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService, TProductCardDetails } from '../../services/products-service/products.service';
@@ -35,6 +36,7 @@ interface MediaGalleryItem {
   selector: 'app-details-page',
   standalone: true,
   imports: [
+    A11yModule,
     AngularSvgIconModule,
     AsyncPipe,
     BreadCrumbsComponent,
@@ -67,6 +69,10 @@ export class DetailsPageComponent implements OnInit {
   
   carouselItems: CarouselItem[] = [];
   galleryItems: MediaGalleryItem[] = [];
+  previewItems: MediaGalleryItem[] = [];
+  compactTables = false;
+  private previousOverflow = '';
+  private previousFocus: HTMLElement | null = null;
   Math = Math; 
   environment = environment;
   
@@ -99,8 +105,10 @@ export class DetailsPageComponent implements OnInit {
   public agentList$ = this.agentService.getAgentsList$();
 
   ngOnInit(): void {
+    this.destroyRef.onDestroy(() => { if (this.previewVisible) this.closePreview(); });
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
     this.detailRequest?.unsubscribe();
+    if (this.previewVisible) this.closePreview();
     this.errorTitle = '';
     this.parsedAssortmentHtml = this.parsedCharacteristicsHtml = '';
     this.carouselItems = [];
@@ -249,10 +257,21 @@ export class DetailsPageComponent implements OnInit {
     return `${cert.title.replace(/[^a-zа-яё0-9]/gi, '_')}.pdf`;
   }
 
-  openMediaPreview(mediaItem: MediaGalleryItem, index: number): void {
+  openCarouselPreview(index: number): void {
+    const items: MediaGalleryItem[] = this.carouselItems.map((item, i) => ({
+      id: item.id, url: item.image, title: item.alt || this.productEntity.name,
+      type: 'image', mime_type: 'image/*', size_bytes: 0, sort_order: i,
+    }));
+    if (items[index]) this.openMediaPreview(items[index], index, items);
+  }
+
+  openMediaPreview(mediaItem: MediaGalleryItem, index: number, items = this.galleryItems): void {
     if (!this.isBrowser) return;
 
     this.previewMedia = mediaItem;
+    this.previewItems = items;
+    this.previousOverflow = document.body.style.overflow;
+    this.previousFocus = document.activeElement as HTMLElement;
     this.currentIndex = index;
     this.previewVisible = true;
     this.resetZoom();
@@ -271,7 +290,8 @@ export class DetailsPageComponent implements OnInit {
     this.previewVisible = false;
     this.previewMedia = null;
     this.resetZoom();
-    document.body.style.overflow = '';
+    document.body.style.overflow = this.previousOverflow;
+    this.previousFocus?.focus();
 
     var element = document.body.getElementsByClassName('container__wrap')[0];
     if (element) {
@@ -280,9 +300,9 @@ export class DetailsPageComponent implements OnInit {
   }
 
   nextItem(): void {
-    if (this.currentIndex < this.galleryItems.length - 1) {
+    if (this.currentIndex < this.previewItems.length - 1) {
       this.currentIndex++;
-      this.previewMedia = this.galleryItems[this.currentIndex];
+      this.previewMedia = this.previewItems[this.currentIndex];
       this.resetZoom();
     }
   }
@@ -290,7 +310,7 @@ export class DetailsPageComponent implements OnInit {
   prevItem(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
-      this.previewMedia = this.galleryItems[this.currentIndex];
+      this.previewMedia = this.previewItems[this.currentIndex];
       this.resetZoom();
     }
   }

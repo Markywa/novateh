@@ -47,6 +47,12 @@ export class HeaderComponent {
         if (!isPlatformBrowser(this.platformId)) return;
 
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (this.isZoomGesture || (window.visualViewport?.scale || 1) > 1.01) {
+            this.lastScrollTop = currentScroll;
+            this.isHeaderVisible = true;
+            this.isHeaderHidden = false;
+            return;
+        }
         
         if (currentScroll > this.lastScrollTop && currentScroll > 10) {
             this.isHeaderVisible = false;
@@ -61,11 +67,14 @@ export class HeaderComponent {
     }
 
       private lastScrollY = 0;
+    private isZoomGesture = false;
     private lastTouchY = 0;
     
     @HostListener('touchstart', ['$event'])
     onTouchStart(event: TouchEvent) {
         if (!isPlatformBrowser(this.platformId)) return;
+        this.isZoomGesture = event.touches.length !== 1;
+        if (this.isZoomGesture) return;
 
         this.lastTouchY = event.touches[0].clientY;
         this.lastScrollY = window.scrollY;
@@ -74,6 +83,7 @@ export class HeaderComponent {
     @HostListener('touchmove', ['$event'])
     onTouchMove(event: TouchEvent) {
         if (!isPlatformBrowser(this.platformId)) return;
+        if (event.touches.length !== 1 || this.isZoomGesture || (window.visualViewport?.scale || 1) > 1.01) return;
 
         const currentTouchY = event.touches[0].clientY;
         const currentScrollY = window.scrollY;
@@ -88,6 +98,17 @@ export class HeaderComponent {
         
         this.lastTouchY = currentTouchY;
         this.lastScrollY = currentScrollY;
+    }
+
+    @HostListener('touchend', ['$event'])
+    onTouchEnd(event: TouchEvent) {
+        if (!isPlatformBrowser(this.platformId) || event.touches.length) return;
+        if (this.isZoomGesture) {
+            this.isHeaderVisible = true;
+            this.isHeaderHidden = false;
+            this.lastScrollTop = window.scrollY;
+        }
+        this.isZoomGesture = false;
     }
 
 
@@ -115,7 +136,7 @@ export class HeaderComponent {
       // На клиенте создаем полноценный Observable
       return fromEvent(window, 'resize').pipe(
         throttleTime(100),
-        map(() => window.innerWidth < 680),
+        map(() => window.innerWidth <= 850),
         startWith(this.checkIsMobile()),
         shareReplay(1) // Кешируем последнее значение
       );
@@ -125,7 +146,7 @@ export class HeaderComponent {
 
   private checkIsMobile(): boolean {
     if (!isPlatformBrowser(this.platformId)) return false;
-    return window.innerWidth < 680;
+    return window.innerWidth <= 850;
   }
 
   public mobileArr: {name: string, link: string}[] = [

@@ -23,6 +23,24 @@
 .carousel-slide {
   flex: 0 0 100%;
   position: relative;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: white;
+  cursor: zoom-in;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: calc(50% - 20px);
+  width: 36px;
+  height: 40px;
+  border: 0;
+  background: rgba(255,255,255,.85);
+  font-size: 28px;
+  cursor: pointer;
+  &.previous { left: 0; }
+  &.next { right: 0; }
 }
 
 .slide-image {

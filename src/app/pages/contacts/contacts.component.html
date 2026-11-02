@@ -23,6 +23,11 @@
                 } -->
                     
                 <div [innerHTML]="content.html_second | safeHtml"></div>
+                @if(content.requisites_file) {
+                    <a class="requisites-download" [href]="content.requisites_file" target="_blank" rel="noopener noreferrer">
+                        {{ content.requisites_file_title || 'Скачать реквизиты' }}
+                    </a>
+                }
             </div>
             <div class="container-form">
                 <span class="container-section__item-title">Напишите нам</span>

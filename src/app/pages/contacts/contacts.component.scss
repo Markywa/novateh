@@ -212,3 +212,13 @@ $transition-base: all 0.3s ease;
     margin-top: 6px;
     margin-left: 26px;
 }
+.requisites-download {
+    display: inline-block;
+    align-self: flex-start;
+    margin-top: 16px;
+    padding: 12px 16px;
+    color: #222;
+    background: #FCDA00;
+    border-radius: 4px;
+    text-decoration: none;
+}

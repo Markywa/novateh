@@ -65,6 +65,7 @@ table{
 // Match TinyMCE's compact table defaults without changing app-table widgets.
 // Global scope is intentional: innerHTML descendants have no Angular style attributes.
 .catalog-rich-text {
+  img { max-width: 100%; height: auto; }
   table {
     text-align: left;
 
@@ -81,6 +82,15 @@ table{
     :is(td, th) > p:last-child { margin-bottom: 0; }
   }
 }
+
+.table-density { margin: 8px 0; padding: 10px 14px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; }
+.table-density[aria-pressed="true"] { background: #FCDA00; }
+.compact-tables .catalog-rich-text {
+  table { width: 100% !important; min-width: 0 !important; font-size: 10px !important; }
+  table :is(td, th) { padding: 1px 3px !important; }
+  table :is(p, span, td, th) { font-size: 10px !important; line-height: 1.2 !important; }
+}
+app-slider .slide-description p { margin: 0 0 6px; }
 
 input[type="text"],
 input[type="email"],

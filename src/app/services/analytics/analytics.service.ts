@@ -36,6 +36,7 @@ export class AnalyticsService {
   private initialized = false;
   private lastTrackedUrl: string | null = null;
   private previousPageUrl = '';
+  private sessionConsent: 'accepted' | 'declined' | null = null;
 
   initializeFromStoredConsent(): void {
     if (this.getStoredConsent() === 'accepted') {
@@ -46,21 +47,25 @@ export class AnalyticsService {
   getStoredConsent(): 'accepted' | 'declined' | null {
     if (!this.isBrowser) return null;
 
-    const consent = localStorage.getItem(AnalyticsService.CONSENT_STORAGE_KEY);
-    return consent === 'accepted' || consent === 'declined' ? consent : null;
+    try {
+      const consent = localStorage.getItem(AnalyticsService.CONSENT_STORAGE_KEY);
+      return consent === 'accepted' || consent === 'declined' ? consent : this.sessionConsent;
+    } catch {
+      return this.sessionConsent;
+    }
   }
 
   acceptCookies(): void {
     if (!this.isBrowser) return;
 
-    localStorage.setItem(AnalyticsService.CONSENT_STORAGE_KEY, 'accepted');
+    this.storeConsent('accepted');
     this.initialize();
   }
 
   declineCookies(): void {
     if (!this.isBrowser) return;
 
-    localStorage.setItem(AnalyticsService.CONSENT_STORAGE_KEY, 'declined');
+    this.storeConsent('declined');
     if (this.initialized) {
       window.ym?.(this.counterId, 'destruct');
       this.initialized = false;
@@ -81,6 +86,12 @@ export class AnalyticsService {
 
     this.previousPageUrl = absoluteUrl;
     this.lastTrackedUrl = absoluteUrl;
+  }
+
+  private storeConsent(consent: 'accepted' | 'declined'): void {
+    this.sessionConsent = consent;
+    try { localStorage.setItem(AnalyticsService.CONSENT_STORAGE_KEY, consent); }
+    catch { /* Private browsing may deny storage; keep the choice for this session. */ }
   }
 
   reachGoal(goal: AnalyticsGoal, params?: Record<string, unknown>): void {

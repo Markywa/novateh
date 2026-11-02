@@ -265,8 +265,8 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
       }
 
       const markerPixel: [number, number] = mapSize[0] < 600
-        ? [mapSize[0] / 2, mapSize[1] * 0.75]
-        : [mapSize[0] / 2, mapSize[1] / 2];
+        ? [mapSize[0] / 2, mapSize[1] / 2]
+        : [mapSize[0] * 0.3, mapSize[1] / 2];
       view.centerOn(projectedCoordinates, mapSize, markerPixel);
     } catch (error) {
       console.error('Error updating map position:', error);

@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
+import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID, OnChanges, OnDestroy, NgZone } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Component, Input, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
+
 export interface CarouselItem {
   id: number;
   image: string;
@@ -11,135 +11,82 @@ export interface CarouselItem {
 }
 
 @Component({
-  selector: 'app-carousel',
-  standalone: true,
-  imports: [
-    CommonModule,
-  ],
-  templateUrl: './carousel.component.html',
-  styleUrl: './carousel.component.scss'
+  selector: 'app-carousel', standalone: true, imports: [CommonModule],
+  templateUrl: './carousel.component.html', styleUrl: './carousel.component.scss'
 })
-export class CarouselComponent {
+export class CarouselComponent implements OnChanges, OnDestroy {
   @Input() items: CarouselItem[] = [];
-  @Input() autoPlay: boolean = true;
-  @Input() autoPlayInterval: number = 3000;
-  @Input() showControls: boolean = true;
-  @Input() showIndicators: boolean = true;
-  @Input() swipeThreshold: number = 50;
-
-  @ViewChild('carouselContainer') carouselContainer!: ElementRef;
-
+  @Input() autoPlay = true;
+  @Input() autoPlayInterval = 3000;
+  @Input() showControls = true;
+  @Input() showIndicators = true;
+  @Input() swipeThreshold = 50;
+  @Output() imageOpen = new EventEmitter<number>();
   env = environment;
-  currentIndex: number = 0;
-  private autoPlayTimer: any;
-  
-  touchStartX: number = 0;
-  touchEndX: number = 0;
-  isSwiping: boolean = false;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
-  ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    if (this.autoPlay && this.items.length > 1) {
-      this.startAutoPlay();
-    }
-  }
-
-  ngOnDestroy() {
-    this.stopAutoPlay();
-  }
-
-  next() {
-    this.currentIndex = (this.currentIndex + 1) % this.items.length;
+  currentIndex = 0;
+  dragOffset = 0;
+  private pointerId: number | null = null;
+  private startX = 0;
+  private startY = 0;
+  private moved = false;
+  private timer?: ReturnType<typeof setInterval>;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone) {}
+  ngOnChanges() {
+    this.currentIndex = Math.min(this.currentIndex, Math.max(0, this.items.length - 1));
     this.restartAutoPlay();
   }
-
-  prev() {
-    this.currentIndex = this.currentIndex === 0 
-      ? this.items.length - 1 
-      : this.currentIndex - 1;
-    this.restartAutoPlay();
-  }
-
+  ngOnDestroy() { this.stopAutoPlay(); }
+  next() { this.goTo((this.currentIndex + 1) % this.items.length); }
+  prev() { this.goTo((this.currentIndex + this.items.length - 1) % this.items.length); }
   goTo(index: number) {
+    if (!Number.isInteger(index) || index < 0 || index >= this.items.length) return;
     this.currentIndex = index;
     this.restartAutoPlay();
   }
-
-  onTouchStart(event: TouchEvent) {
-    this.touchStartX = event.touches[0].clientX;
-    this.isSwiping = true;
+  open(index: number, event: MouseEvent) {
+    if ((!this.moved || event.detail === 0) && this.items[index]) this.imageOpen.emit(index);
+    this.moved = false;
+  }
+  onPointerDown(event: PointerEvent) {
+    if (!event.isPrimary || event.button !== 0) return;
+    this.pointerId = event.pointerId;
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+    this.moved = false;
+    this.dragOffset = 0;
+    const target = (event.target as HTMLElement).closest('button') || event.currentTarget as HTMLElement;
+    target.setPointerCapture(event.pointerId);
     this.stopAutoPlay();
   }
-
-  onTouchMove(event: TouchEvent) {
-    if (!isPlatformBrowser(this.platformId)) return;
-    if (!this.isSwiping) return;
-    this.touchEndX = event.touches[0].clientX;
-    
-    const diff = this.touchEndX - this.touchStartX;
-    const track = document.querySelector('.carousel-track') as HTMLElement;
-    if (track) {
-      const currentTranslate = -this.currentIndex * 100;
-      const dragTranslate = currentTranslate + (diff / this.carouselContainer.nativeElement.offsetWidth) * 100;
-      track.style.transform = `translateX(${dragTranslate}%)`;
-      track.style.transition = 'none';
-    }
+  onPointerMove(event: PointerEvent) {
+    if (this.pointerId !== event.pointerId) return;
+    const dx = event.clientX - this.startX;
+    const dy = event.clientY - this.startY;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) > 8) this.moved = true;
+    if (Math.abs(dx) > Math.abs(dy)) this.dragOffset = dx;
   }
-
-  onTouchEnd() {
-    if (!this.isSwiping) return;
-    
-    const diff = this.touchEndX - this.touchStartX;
-    const threshold = this.swipeThreshold;
-    
-    const track = document.querySelector('.carousel-track') as HTMLElement;
-    if (track) {
-      track.style.transition = 'transform 0.5s ease-in-out';
+  onPointerUp(event: PointerEvent) {
+    if (this.pointerId !== event.pointerId) return;
+    const dx = event.clientX - this.startX;
+    const dy = event.clientY - this.startY;
+    this.moved ||= Math.max(Math.abs(dx), Math.abs(dy)) > 8;
+    if (Math.abs(dx) > this.swipeThreshold && Math.abs(dx) > Math.abs(dy)) {
+      dx > 0 ? this.prev() : this.next();
     }
-    
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        this.prev();
-      } else {
-        this.next();
-      }
-    } else {
-      if (track) {
-        track.style.transform = `translateX(-${this.currentIndex * 100}%)`;
-      }
-    }
-    
-    this.isSwiping = false;
-    this.touchStartX = 0;
-    this.touchEndX = 0;
-    
-    if (this.autoPlay) {
-      this.startAutoPlay();
-    }
+    this.cancelPointer();
   }
-
-  private startAutoPlay() {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    this.stopAutoPlay();
-    this.autoPlayTimer = setInterval(() => {
-      this.next();
-    }, this.autoPlayInterval);
+  cancelPointer() {
+    this.pointerId = null;
+    this.dragOffset = 0;
+    this.restartAutoPlay();
   }
-
-  private stopAutoPlay() {
-    if (this.autoPlayTimer) {
-      clearInterval(this.autoPlayTimer);
-      this.autoPlayTimer = null;
-    }
-  }
-
+  private stopAutoPlay() { clearInterval(this.timer); }
   private restartAutoPlay() {
-    if (this.autoPlay) {
-      this.startAutoPlay();
+    this.stopAutoPlay();
+    if (isPlatformBrowser(this.platformId) && this.autoPlay && this.items.length > 1) {
+      this.zone.runOutsideAngular(() => {
+        this.timer = setInterval(() => this.zone.run(() => this.next()), this.autoPlayInterval);
+      });
     }
   }
 }

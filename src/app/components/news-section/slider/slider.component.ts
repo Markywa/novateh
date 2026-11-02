@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, HostListener, Inject, PLATFORM_ID, NgZone } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -30,6 +30,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
   totalSlides: number = 0;
   private autoPlayTimer: any;
   private router = inject(Router);
+  private zone = inject(NgZone);
   
   // Drag to slide properties
   isDragging: boolean = false;
@@ -221,9 +222,10 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.autoPlayTimer) {
       clearInterval(this.autoPlayTimer);
     }
-    this.autoPlayTimer = setInterval(() => {
-      this.nextSlide();
-    }, this.autoPlayInterval);
+    // Recurring timers must not block Angular's SSR hydration cleanup.
+    this.zone.runOutsideAngular(() => {
+      this.autoPlayTimer = setInterval(() => this.zone.run(() => this.nextSlide()), this.autoPlayInterval);
+    });
   }
 
   private resetAutoPlay(): void {
