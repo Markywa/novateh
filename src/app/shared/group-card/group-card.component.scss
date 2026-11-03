@@ -61,7 +61,7 @@
     transition: all 0.3s ease;
 
     @media screen and (max-width: 600px) {
-        width: 100%;
+        padding-inline: 6px;
     }
 
     &:hover {
