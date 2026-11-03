@@ -1,5 +1,5 @@
 <div class="container">
-    @for(item of producerList; track producerList){
-        <app-producer [producerItem]="item"></app-producer>
+    @for(item of producerList; track item.id){
+        <app-producer [producerItem]="item" [appearance]="appearance"></app-producer>
     }
 </div>

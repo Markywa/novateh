@@ -32,7 +32,14 @@ async function page(path, status = 200) {
 }
 
 for (const path of ['/', '/catalog', '/about', '/contacts', '/news', '/personal-data', '/privacy-policy', '/group/' + group, '/brand/' + brand]) {
-  await page(path);
+  const result = await page(path);
+  if (path === '/' || path === '/catalog') {
+    const producers = result.html.match(/<app-producer-line\b[^>]*>([\s\S]*?)<\/app-producer-line>/)?.[1];
+    assert.ok(producers, path + ': producer section is server-rendered');
+    assert.match(producers, /href="\/brand\//, path + ': producer links are present');
+    if (path === '/') assert.match(producers, /<img\b[^>]*class="producer-logo"/, 'Home keeps producer logos');
+    else assert.ok(!/<img\b/.test(producers), 'Catalog uses text-only producer cards');
+  }
 }
 const detail = await page('/product/' + product);
 assert.equal(detail.graph.filter(node => node['@type'] === 'Product').length, 1);

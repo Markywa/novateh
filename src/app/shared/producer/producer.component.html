@@ -1,3 +1,7 @@
-<a class="container" [routerLink]="['/brand', producerItem.slug]">
-    <span>{{ producerItem.name }}</span>
+<a class="container" [class.container--logo]="appearance === 'logo'" [routerLink]="['/brand', producerItem.slug]" [attr.aria-label]="producerItem.name">
+    @if (appearance === 'logo' && logoUrl && logoUrl !== failedLogoUrl) {
+        <img class="producer-logo" [src]="logoUrl" [alt]="producerItem.name" (error)="failedLogoUrl = logoUrl">
+    } @else {
+        <span>{{ producerItem.name }}</span>
+    }
 </a>
