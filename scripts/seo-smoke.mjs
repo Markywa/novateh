@@ -37,8 +37,7 @@ for (const path of ['/', '/catalog', '/about', '/contacts', '/news', '/personal-
     const producers = result.html.match(/<app-producer-line\b[^>]*>([\s\S]*?)<\/app-producer-line>/)?.[1];
     assert.ok(producers, path + ': producer section is server-rendered');
     assert.match(producers, /href="\/brand\//, path + ': producer links are present');
-    if (path === '/') assert.match(producers, /<img\b[^>]*class="producer-logo"/, 'Home keeps producer logos');
-    else assert.ok(!/<img\b/.test(producers), 'Catalog uses text-only producer cards');
+    assert.match(producers, /<img\b[^>]*class="producer-logo"/, path + ': producer logos are present');
   }
 }
 const detail = await page('/product/' + product);

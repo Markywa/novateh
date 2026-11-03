@@ -59,20 +59,20 @@ describe('Producer presentation isolation', () => {
     expect(fixture.nativeElement.querySelector('img').getAttribute('src')).toBe('/static/replaced.png');
   });
 
-  it('keeps home and catalog presentations independent and tracks brands by ID', () => {
+  it('keeps logo and text-only lists independent and tracks brands by ID', () => {
     const home = TestBed.createComponent(ProducerLineComponent);
-    const catalog = TestBed.createComponent(ProducerLineComponent);
+    const search = TestBed.createComponent(ProducerLineComponent);
     const second = { ...brand, id: 2, name: 'Second', slug: 'second' };
     home.componentRef.setInput('producerList', [brand, second]);
-    catalog.componentRef.setInput('producerList', [brand, second]);
-    catalog.componentRef.setInput('appearance', 'text');
-    home.detectChanges(); catalog.detectChanges();
+    search.componentRef.setInput('producerList', [brand, second]);
+    search.componentRef.setInput('appearance', 'text');
+    home.detectChanges(); search.detectChanges();
     expect(home.nativeElement.querySelectorAll('img').length).toBe(2);
-    expect(catalog.nativeElement.querySelectorAll('img').length).toBe(0);
+    expect(search.nativeElement.querySelectorAll('img').length).toBe(0);
     const first = home.nativeElement.querySelector('app-producer');
     home.componentRef.setInput('producerList', [second, brand]);
     home.detectChanges();
     expect(home.nativeElement.querySelectorAll('app-producer')[1]).toBe(first);
-    expect(catalog.nativeElement.querySelectorAll('img').length).toBe(0);
+    expect(search.nativeElement.querySelectorAll('img').length).toBe(0);
   });
 });
